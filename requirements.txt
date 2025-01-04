@@ -1,0 +1,5 @@
+pygame
+numpy
+curses
+
+# pip install requirements.txt
