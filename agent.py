@@ -8,7 +8,6 @@ class QLearningAgent:
     def __init__(
         self,
         actions,
-        board_size=10,
         learning_rate=0.3,
         discount_factor=0.995,
         exploration_rate=1.0,
@@ -23,7 +22,6 @@ class QLearningAgent:
         self.q_table = {}
         self.discovered_objects = {}
         self.verbose = verbose
-        self.board_size = board_size
         self.visited_cells = set()
         self.steps = 0
         self.learning_enabled = True
@@ -88,12 +86,6 @@ class QLearningAgent:
             self.discovered_objects[obj] = reward
             if self.verbose:
                 print(f"Récompense mise à jour pour l'objet {obj} : {reward}.")
-                
-    def avoid_loops(self, head_position):
-        self.visited_cells.add(head_position)
-        if len(self.visited_cells) == self.board_size * self.board_size:
-            self.visited_cells.clear()
-        return head_position in self.visited_cells
 
     def save_model(self, filepath):
         with open(filepath, "w") as f:
@@ -115,11 +107,6 @@ class QLearningAgent:
         self.exploration_rate = max(
             min_rate, self.exploration_rate * self.exploration_decay
         )
-
-    def display_discovered_objects(self):
-        print("Objets découverts :")
-        for obj, reward in self.discovered_objects.items():
-            print(f"  {obj}: {reward}")
 
     def get_q_values(self, state):
         return self.q_table.get(state, {action: 0 for action in self.actions})

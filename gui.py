@@ -121,7 +121,7 @@ class SnakeGUI:
         # Label pour les Q-values (au milieu)
         self.q_values_label = tk.Label(
             self.labels_frame,
-            text="Q-values actuel:\nUP\t=> W : 0.00\nDOWN\t=> S : 0.00\nLEFT\t=> S : 0.00\nRIGHT\t=> S : 0.00",
+            text="Q-values de l'état actuel:\nUP\t=> W : 0.00\nDOWN\t=> S : 0.00\nLEFT\t=> S : 0.00\nRIGHT\t=> S : 0.00",
             font=("Arial", 11),
             justify="left",
         )
@@ -271,7 +271,7 @@ class SnakeGUI:
             "LEFT": state[2],
             "RIGHT": state[3],
         }
-        q_values_text = "Q-values actuel:\n"
+        q_values_text = "Q-values de l'état actuel:\n"
         for action in directions:
             q_values_text += f"{action:<7}\t=> {state_mapping[action]} : {q_values[action]:.2f}\n"
         self.q_values_label.config(text=q_values_text)
