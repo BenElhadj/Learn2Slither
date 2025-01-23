@@ -105,38 +105,46 @@ class SnakeGUI:
         )
         self.manual_button.grid(row=0, column=4, padx=5, pady=10)
 
-        # Label pour les statistiques
+        # Frame pour les labels (statistiques, Q-values, objets découverts)
+        self.labels_frame = tk.Frame(master)
+        self.labels_frame.pack(fill=tk.BOTH, expand=True)
+
+        # Label pour les statistiques (à gauche)
         self.stats_label = tk.Label(
-            master,
+            self.labels_frame,
             text="\nStats:\nScore: 0\nSteps: 0\nMax Length: 3\n",
             font=("Arial", 11),
             justify="left",
         )
-        self.stats_label.pack(side="left", padx=20)
+        self.stats_label.grid(row=0, column=0, padx=10, pady=5, sticky="w")
 
-        # Label pour les objets découverts
-        self.objects_discovered_label = tk.Label(
-            master, text="Objets découverts:", font=("Arial", 11), justify="left"
-        )
-        self.objects_discovered_label.pack(side="left", padx=20)
-
-        # Label pour les Q-values
+        # Label pour les Q-values (au milieu)
         self.q_values_label = tk.Label(
-            master,
-            text="Q-values pour l'état actuel:\nUP => W : 0.00\nDOWN => S : 0.00\nLEFT => S : 0.00\nRIGHT => S : 0.00",
-            font=("Arial", 12),
+            self.labels_frame,
+            text="Q-values actuel:\nUP\t=> W : 0.00\nDOWN\t=> S : 0.00\nLEFT\t=> S : 0.00\nRIGHT\t=> S : 0.00",
+            font=("Arial", 11),
             justify="left",
         )
-        self.q_values_label.pack(pady=5, padx=10)
+        self.q_values_label.grid(row=0, column=1, padx=10, pady=5, sticky="w")
 
-        # Label pour l'action choisie
+        # Label pour l'action choisie (à droite)
         self.action_label = tk.Label(
-            master,
+            self.labels_frame,
             text="Action choisie: None",
-            font=("Arial", 12),
+            font=("Arial", 11),
             justify="left",
         )
-        self.action_label.pack(pady=5, padx=10)
+        self.action_label.grid(row=1, column=1, padx=1, pady=5, sticky="w")
+
+        # Label pour les objets découverts (à droite)
+        self.objects_discovered_label = tk.Label(
+            self.labels_frame,
+            text="Objets découverts:",
+            font=("Arial", 11),
+            justify="left",
+        )
+        self.objects_discovered_label.grid(row=0, column=2, padx=10, pady=5, sticky="w")
+            
 
     def update_status_label(self, message):
         """Met à jour le texte du label avec un message unique."""
@@ -223,7 +231,8 @@ class SnakeGUI:
                 self.current_session += 1
                 self.run_training_sessions()
                 if self.current_session != self.sessions:
-                    time.sleep(2)
+                    # time.sleep(2)
+                    time.sleep(0.5)
             elif self.running:
                 self.master.after(100, self.run_game_session)
             else:
@@ -262,9 +271,9 @@ class SnakeGUI:
             "LEFT": state[2],
             "RIGHT": state[3],
         }
-        q_values_text = "Q-values pour l'état actuel:\n"
+        q_values_text = "Q-values actuel:\n"
         for action in directions:
-            q_values_text += f"{action:<7} => {state_mapping[action]} : {q_values[action]:.2f}\n"
+            q_values_text += f"{action:<7}\t=> {state_mapping[action]} : {q_values[action]:.2f}\n"
         self.q_values_label.config(text=q_values_text)
 
     def update_action_label(self, action):
@@ -454,7 +463,9 @@ class COMMAND_LINE:
                 if result == "Game Over":
                     print(f"\nGame Over!   ==> {session} Session terminée.", end="")
                     if session != sessions:
-                        time.sleep(2)
+                        # time.sleep(2)
+                        time.sleep(0.5)
+                        
                     break
                 else :
                     board.steps += 1
