@@ -1,10 +1,11 @@
 # board.py
 import random
 
+
 class Board:
     def __init__(self, size=10, initial_score=1000):
         self.size = size
-        self.grid = [['0' for _ in range(size)] for _ in range(size)]
+        self.grid = [["0" for _ in range(size)] for _ in range(size)]
         self.snake = self.initialize_snake()
         self.green_apples = []
         self.red_apple = None
@@ -14,6 +15,7 @@ class Board:
         self.steps = 0
         self.max_length = 3
         self.initial_score = initial_score
+        self.max_length_reached = 3
 
     def initialize_snake(self):
         start_x = random.randint(1, self.size - 2)
@@ -59,7 +61,11 @@ class Board:
     def random_empty_cell(self):
         while True:
             x, y = random.randint(0, self.size - 1), random.randint(0, self.size - 1)
-            if (x, y) not in self.snake and (x, y) not in self.green_apples and (x, y) != self.red_apple:
+            if (
+                (x, y) not in self.snake
+                and (x, y) not in self.green_apples
+                and (x, y) != self.red_apple
+            ):
                 return x, y
 
     def update(self):
@@ -67,7 +73,9 @@ class Board:
         dx, dy = self.snake_dir
         new_head = (head_x + dx, head_y + dy)
 
-        if (new_head in self.snake) or not (0 <= new_head[0] < self.size and 0 <= new_head[1] < self.size):
+        if (new_head in self.snake) or not (
+            0 <= new_head[0] < self.size and 0 <= new_head[1] < self.size
+        ):
             return "Game Over"
 
         if new_head in self.green_apples:
@@ -76,6 +84,7 @@ class Board:
             self.green_apples.append(self.random_empty_cell())
             self.score += 20
             self.max_length = max(self.max_length, len(self.snake))
+            self.max_length_reached = max(self.max_length_reached, len(self.snake))
             return "Ate Green Apple"
         elif new_head == self.red_apple:
             self.snake.pop()
@@ -93,13 +102,13 @@ class Board:
             return "Moved"
 
     def render(self):
-        self.grid = [['0' for _ in range(self.size)] for _ in range(self.size)]
+        self.grid = [["0" for _ in range(self.size)] for _ in range(self.size)]
         for gx, gy in self.green_apples:
-            self.grid[gx][gy] = 'G'
+            self.grid[gx][gy] = "G"
         rx, ry = self.red_apple
-        self.grid[rx][ry] = 'R'
+        self.grid[rx][ry] = "R"
         for i, (x, y) in enumerate(self.snake):
-            self.grid[x][y] = 'H' if i == 0 else 'S'
+            self.grid[x][y] = "H" if i == 0 else "S"
         for row in self.grid:
             print(" ".join(row))
         print()
@@ -110,7 +119,7 @@ class Board:
             self.cell_info(head_x - 1, head_y),
             self.cell_info(head_x + 1, head_y),
             self.cell_info(head_x, head_y - 1),
-            self.cell_info(head_x, head_y + 1)
+            self.cell_info(head_x, head_y + 1),
         )
         return state
 
