@@ -80,29 +80,19 @@ class SnakeGUI:
         self.control_frame.pack()
 
         # Boutons de contrôle
-        self.start_button = tk.Button(
-            self.control_frame, text="Start", command=self.start_training
-        )
+        self.start_button = tk.Button(self.control_frame, text="Start", command=self.start_training)
         self.start_button.grid(row=0, column=0, padx=5, pady=10)
 
-        self.pause_button = tk.Button(
-            self.control_frame, text="Pause", command=self.pause_training
-        )
+        self.pause_button = tk.Button(self.control_frame, text="Pause", command=self.pause_training)
         self.pause_button.grid(row=0, column=1, padx=5)
 
-        self.step_button = tk.Button(
-            self.control_frame, text="Step", command=self.step_training
-        )
+        self.step_button = tk.Button(self.control_frame, text="Step", command=self.step_training)
         self.step_button.grid(row=0, column=2, padx=5)
 
-        self.reset_button = tk.Button(
-            self.control_frame, text="Reset", command=self.reset_board
-        )
+        self.reset_button = tk.Button(self.control_frame, text="Reset", command=self.reset_board)
         self.reset_button.grid(row=0, column=3, padx=5)
 
-        self.manual_button = tk.Button(
-            self.control_frame, text="Manual", command=self.toggle_manual_mode
-        )
+        self.manual_button = tk.Button(self.control_frame, text="Manual", command=self.toggle_manual_mode)
         self.manual_button.grid(row=0, column=4, padx=5, pady=10)
 
         # Frame pour les labels (statistiques, Q-values, objets découverts)
@@ -166,7 +156,7 @@ class SnakeGUI:
         self.running = True
         self.step_mode = False
         self.manual_mode = False
-        self.current_session = 0
+        # self.current_session = 0
         self.run_training_sessions()
 
     def run_training_sessions(self):
@@ -175,8 +165,8 @@ class SnakeGUI:
             self.update_status_label(
                 f"Mode: {self.mode}\nSession {self.current_session + 1}/{self.sessions} est lancée."
             )
-            self.board.reset()
-            self.board.steps = 0
+            # self.board.reset()
+            # self.board.steps = 0
             self.running = True
             self.run_game_session()
         else:
@@ -192,12 +182,7 @@ class SnakeGUI:
         if self.running or self.step_mode:
             state = self.board.get_state()
             action = self.agent.choose_action(str(state), training=True)
-            direction_mapping = {
-                "UP": (-1, 0),
-                "DOWN": (1, 0),
-                "LEFT": (0, -1),
-                "RIGHT": (0, 1),
-            }
+            direction_mapping = {"UP": (-1, 0), "DOWN": (1, 0), "LEFT": (0, -1), "RIGHT": (0, 1),}
             if action in direction_mapping:
                 self.board.snake_dir = direction_mapping[action]
 
@@ -237,8 +222,8 @@ class SnakeGUI:
                 self.master.after(100, self.run_game_session)
             else:
                 self.running = False
-                self.current_session += 1
-                self.run_training_sessions()
+                # self.current_session += 1
+                # self.run_training_sessions()
 
     def draw_board(self):
         self.canvas.delete("all")
@@ -294,7 +279,9 @@ class SnakeGUI:
         self.run_game_session()
 
     def reset_board(self):
+        self.current_session = 0
         self.board.reset()
+        self.board.steps = 0
         self.running = False
         self.step_mode = False
         self.manual_mode = False
