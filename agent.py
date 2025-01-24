@@ -8,9 +8,9 @@ class QLearningAgent:
     def __init__(
         self,
         actions,
-        learning_rate=0.3,
+        learning_rate=0.7,
         discount_factor=0.995,
-        exploration_rate=1.0,
+        exploration_rate=0.3,
         exploration_decay=0.99,
         verbose=False,
     ):
@@ -22,7 +22,6 @@ class QLearningAgent:
         self.q_table = {}
         self.discovered_objects = {}
         self.verbose = verbose
-        self.visited_cells = set()
         self.steps = 0
         self.learning_enabled = True
 
