@@ -146,13 +146,13 @@ class SnakeGUI:
     def increase_speed(self):
         """Augmente la vitesse en diminuant le délai."""
         self.step_mode = False
-        self.speed = max(10, self.speed - 10)  # Limite minimale de 10 ms
+        self.speed = max(20, self.speed - 20)  # Limite minimale de 10 ms
         self.display_speed(f"Vitesse augmentée:\n{self.speed} ms par étape")
 
     def decrease_speed(self):
         """Diminue la vitesse en augmentant le délai."""
         self.step_mode = False
-        self.speed = min(1000, self.speed + 10)  # Limite maximale de 1000 ms
+        self.speed = min(560, self.speed + 20)  # Limite maximale de 1000 ms
         self.display_speed(f"Vitesse diminuée:\n{self.speed} ms par étape")
 
     def update_status_label(self, message):
