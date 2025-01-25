@@ -17,8 +17,9 @@ class SnakeGUI:
         sessions=1,
     ):
         self.master = master
+        
         self.master.title("Entraînement Snake AI")
-        self.board = Board(size=board_size, initial_score=board_size * 10)
+        self.board = Board(size=board_size)
         self.agent = QLearningAgent(
             actions=["UP", "DOWN", "LEFT", "RIGHT"], verbose=False
         )
@@ -44,6 +45,7 @@ class SnakeGUI:
         self.load_model_path = load_model_path
         self.dontlearn = dontlearn
         self.cell_size = 25
+        self.speed = 100
 
         # Initialiser l'interface utilisateur
         self._setup_ui(master, board_size)
@@ -65,7 +67,7 @@ class SnakeGUI:
             wraplength=400,
         )
         self.status_label.pack(pady=10, padx=10)
-
+        
         # Canvas pour afficher le plateau de jeu
         self.canvas = tk.Canvas(
             master,
@@ -80,20 +82,26 @@ class SnakeGUI:
         self.control_frame.pack()
 
         # Boutons de contrôle
+        self.start_button = tk.Button(self.control_frame, text="-", command=self.decrease_speed)
+        self.start_button.grid(row=0, column=0, padx=3, pady=10)
+
         self.start_button = tk.Button(self.control_frame, text="Start", command=self.start_training)
-        self.start_button.grid(row=0, column=0, padx=5, pady=10)
+        self.start_button.grid(row=0, column=1, padx=0, pady=10)
+
+        self.start_button = tk.Button(self.control_frame, text="+", command=self.increase_speed)
+        self.start_button.grid(row=0, column=2, padx=3, pady=10)
 
         self.pause_button = tk.Button(self.control_frame, text="Pause", command=self.pause_training)
-        self.pause_button.grid(row=0, column=1, padx=5)
+        self.pause_button.grid(row=0, column=3, padx=5)
 
         self.step_button = tk.Button(self.control_frame, text="Step", command=self.step_training)
-        self.step_button.grid(row=0, column=2, padx=5)
+        self.step_button.grid(row=0, column=4, padx=5)
 
         self.reset_button = tk.Button(self.control_frame, text="Reset", command=self.reset_board)
-        self.reset_button.grid(row=0, column=3, padx=5)
+        self.reset_button.grid(row=0, column=5, padx=5)
 
         self.manual_button = tk.Button(self.control_frame, text="Manual", command=self.toggle_manual_mode)
-        self.manual_button.grid(row=0, column=4, padx=5, pady=10)
+        self.manual_button.grid(row=0, column=6, padx=5, pady=10)
 
         # Frame pour les labels (statistiques, Q-values, objets découverts)
         self.labels_frame = tk.Frame(master)
@@ -135,11 +143,49 @@ class SnakeGUI:
         )
         self.objects_discovered_label.grid(row=0, column=2, padx=10, pady=5, sticky="w")
             
+    def increase_speed(self):
+        """Augmente la vitesse en diminuant le délai."""
+        self.step_mode = False
+        self.speed = max(10, self.speed - 10)  # Limite minimale de 10 ms
+        self.display_speed(f"Vitesse augmentée:\n{self.speed} ms par étape")
+
+    def decrease_speed(self):
+        """Diminue la vitesse en augmentant le délai."""
+        self.step_mode = False
+        self.speed = min(1000, self.speed + 10)  # Limite maximale de 1000 ms
+        self.display_speed(f"Vitesse diminuée:\n{self.speed} ms par étape")
 
     def update_status_label(self, message):
         """Met à jour le texte du label avec un message unique."""
         self.status_label.config(text=message)
         self.master.update()
+        
+    def display_speed(self, message):
+        """Affiche temporairement un message de vitesse en bas de l'interface."""
+        # Stocker le texte du message
+        self.speed_message_text = message
+
+        # Afficher le message
+        if hasattr(self, "speed_message_id") and self.speed_message_id:
+            self.canvas.delete(self.speed_message_id)
+        self.speed_message_id = self.canvas.create_text(
+            self.board.size * self.cell_size / 2,
+            self.board.size * self.cell_size - 20,
+            text=self.speed_message_text,
+            font=("Arial", 12, "bold"),
+            fill="black",
+        )
+
+        # Planifier la suppression du message après 2 secondes
+        self.master.after(2000, self.clear_speed_message)
+
+    def clear_speed_message(self):
+        """Supprime le message de vitesse après un délai."""
+        if hasattr(self, "speed_message_id") and self.speed_message_id:
+            self.canvas.delete(self.speed_message_id)
+            self.speed_message_id = None
+        if hasattr(self, "speed_message_text"):
+            del self.speed_message_text
 
     def display_game_over(self):
         """Affiche le message 'GAME OVER!' au centre de l'écran."""
@@ -156,17 +202,21 @@ class SnakeGUI:
         self.running = True
         self.step_mode = False
         self.manual_mode = False
-        # self.current_session = 0
-        self.run_training_sessions()
+        if self.current_session == 0:
+            self.run_training_sessions()
+        else:
+            # print("step_mode ==> ", self.step_mode)
+            self.run_game_session()
 
     def run_training_sessions(self):
         if self.current_session < self.sessions:
             # Afficher la progression de la session en cours
-            self.update_status_label(
-                f"Mode: {self.mode}\nSession {self.current_session + 1}/{self.sessions} est lancée."
-            )
-            # self.board.reset()
-            # self.board.steps = 0
+            if self.save_model_path:
+                self.update_status_label(
+                    f"Mode: {self.mode}\nSession {self.current_session + 1}/{self.sessions} est lancée."
+                )
+            self.board.reset()
+            self.board.steps = 0
             self.running = True
             self.run_game_session()
         else:
@@ -216,13 +266,12 @@ class SnakeGUI:
                 self.current_session += 1
                 self.run_training_sessions()
                 if self.current_session != self.sessions:
-                    # time.sleep(2)
                     time.sleep(0.5)
             elif self.running:
-                self.master.after(100, self.run_game_session)
+                self.master.after(self.speed, self.run_game_session)
             else:
                 self.running = False
-                # self.current_session += 1
+                self.current_session += 1
                 # self.run_training_sessions()
 
     def draw_board(self):
@@ -245,6 +294,15 @@ class SnakeGUI:
                     fill=color,
                     outline="black",
                 )
+
+        if hasattr(self, "speed_message_text"):
+            self.speed_message_id = self.canvas.create_text(
+                self.board.size * self.cell_size / 2,
+                self.board.size * self.cell_size - 20,
+                text=self.speed_message_text,
+                font=("Arial", 12, "bold"),
+                fill="black",
+            )
 
     def update_q_values_label(self, state):
         """Met à jour le label pour afficher les Q-values pour l'état actuel."""
