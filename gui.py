@@ -34,7 +34,7 @@ class SnakeGUI:
         elif save_model_path:
             self.mode = "Learning"
         else:
-            self.mode = "Learning"  # Par défaut
+            self.mode = "Game"  # Par défaut
 
         self.sessions = sessions
         self.current_session = 0
@@ -211,21 +211,24 @@ class SnakeGUI:
     def run_training_sessions(self):
         if self.current_session < self.sessions:
             # Afficher la progression de la session en cours
-            if self.save_model_path:
-                self.update_status_label(
-                    f"Mode: {self.mode}\nSession {self.current_session + 1}/{self.sessions} est lancée."
-                )
+            # if self.save_model_path:
+            self.update_status_label(
+                f"Mode: {self.mode}\nSession {self.current_session + 1}/{self.sessions} est lancée."
+            )
             self.board.reset()
             self.board.steps = 0
             self.running = True
             self.run_game_session()
         else:
             # Afficher le message de fin d'entraînement
-            if self.save_model_path:
+            if self.dontlearn:
+                self.update_status_label(
+                    f"Mode: {self.mode}\nMode Dontlearn activé.\nAucun modèle sauvegardé."
+                )
+            elif self.save_model_path:
                 self.update_status_label(
                     f"Mode: {self.mode}\nApprentissage terminé.\nModèle sauvegardé dans :\n- {self.save_model_path}"
                 )
-            if self.save_model_path:
                 self.agent.save_model(self.save_model_path)
 
     def run_game_session(self):
@@ -367,17 +370,20 @@ class SnakeGUI:
             self.draw_board()
             self.update_stats_label()
             if result == "Game Over":
+                self.display_game_over()
                 self.manual_mode = False
 
     def on_close(self):
-        if self.save_model_path:
+        if self.dontlearn:
+            return
+        elif self.save_model_path:
             self.agent.save_model(self.save_model_path)
         self.master.destroy()
 
     def draw_discovered_objects(self):
         if self.mode == "Dontlearn":
             self.objects_discovered_label.config(
-                text="Objets découverts: Non gérés en mode Dontlearn."
+                text="Objets découverts:\nMode Dontlearn.\nNe gérés pas\nles objets."
             )
         else:
             discovered_objects = self.agent.discovered_objects
@@ -411,7 +417,6 @@ class COMMAND_LINE:
 
         if dontlearn:
             agent.dontlearn()
-            print("Mode sans apprentissage activé : l'agent joue de manière aléatoire.")
 
         # Initialisation : Effacer l'écran
         os.system("cls" if os.name == "nt" else "clear")
@@ -457,7 +462,9 @@ class COMMAND_LINE:
         def display_objects_discovered():
             discovered = agent.discovered_objects
             print("\nObjets découverts :")
-            if discovered:
+            if dontlearn:
+                print("  Mode Dontlearn activé. Ne gère pas les objets.")
+            elif discovered:
                 # Convertir les objets découverts en une liste de tuples (objet, récompense)
                 items = list(discovered.items())
                 # Afficher les objets en 3 colonnes
@@ -516,5 +523,9 @@ class COMMAND_LINE:
                     board.steps += 1
 
         if save_model:
-            agent.save_model(save_model)
-            print(f"\nModèle sauvegardé dans : {save_model}")
+            if dontlearn:
+                print("\nMode Dontlearn activé. Aucun modèle sauvegardé.")
+            else:
+                agent.save_model(save_model)
+                print(f"\nModèle sauvegardé dans : {save_model}")
+                

@@ -23,6 +23,7 @@ def main():
     )
     parser.add_argument(
         "-dontlearn",
+        # print("Nouvel argument pour désactiver l'apprentissage"),
         action="store_true",
         help="Disable learning for evaluation",
     )
@@ -46,6 +47,7 @@ def main():
             save_model_path=args.save,
             load_model_path=args.load,
             sessions=args.sessions,
+            dontlearn=args.dontlearn,
         )
         app.board.steps = 0
 
@@ -87,6 +89,7 @@ def main():
             load_model=args.load,
             visual=True,
             board_size=args.size,  # Passer la taille du plateau au mode CLI
+            dontlearn=args.dontlearn,
         )
 
 if __name__ == "__main__":

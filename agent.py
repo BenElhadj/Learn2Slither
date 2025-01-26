@@ -109,3 +109,4 @@ class QLearningAgent:
 
     def get_q_values(self, state):
         return self.q_table.get(state, {action: 0 for action in self.actions})
+    
