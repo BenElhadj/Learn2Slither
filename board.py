@@ -35,14 +35,14 @@ class Board:
         new_head = (head_x + dx, head_y + dy)
 
         if not (0 <= new_head[0] < self.size and 0 <= new_head[1] < self.size):
-            return -100
+            return -100  # Mur
         if new_head in self.snake:
-            return -100
+            return -50  # Corps du serpent
         if new_head in self.green_apples:
-            return +20
+            return +20  # Pomme verte
         if new_head == self.red_apple:
-            return -10
-        return 0
+            return -10  # Pomme rouge
+        return 0  # Case vide
 
     def reset(self):
         self.snake = self.initialize_snake()
@@ -73,9 +73,10 @@ class Board:
         dx, dy = self.snake_dir
         new_head = (head_x + dx, head_y + dy)
 
-        if (new_head in self.snake) or not (
-            0 <= new_head[0] < self.size and 0 <= new_head[1] < self.size
-        ):
+        if new_head in self.snake:
+            return "Hit Snake Body"
+        
+        if not (0 <= new_head[0] < self.size and 0 <= new_head[1] < self.size):
             return "Game Over"
 
         if new_head in self.green_apples:

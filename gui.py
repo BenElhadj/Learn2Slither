@@ -245,12 +245,14 @@ class SnakeGUI:
                 reward = 20
             elif result == "Ate Red Apple":
                 reward = -10
+            elif result == "Hit Snake Body":
+                reward = -50
             elif result == "Game Over":
                 reward = -100
 
             self.agent.handle_new_objects(str(state), action, reward)
 
-            if result != "Game Over":
+            if result != "Game Over" and result != "Hit Snake Body":
                 next_state = self.board.get_state()
                 self.agent.learn(str(state), action, reward, str(next_state))
                 self.agent.decay_exploration()
@@ -263,10 +265,11 @@ class SnakeGUI:
             self.update_stats_label()
             self.draw_discovered_objects()
 
-            if result == "Game Over":
+            if result == "Game Over" or result == "Hit Snake Body":
                 self.display_game_over()
                 self.running = False
                 self.current_session += 1
+                self.agent.reset_history() 
                 self.run_training_sessions()
                 if self.current_session != self.sessions:
                     time.sleep(0.5)
@@ -297,6 +300,8 @@ class SnakeGUI:
                     fill=color,
                     outline="black",
                 )
+        # Dessiner l'historique des positions
+        self.draw_position_history()
 
         if hasattr(self, "speed_message_text"):
             self.speed_message_id = self.canvas.create_text(
@@ -305,6 +310,21 @@ class SnakeGUI:
                 text=self.speed_message_text,
                 font=("Arial", 12, "bold"),
                 fill="black",
+            )
+
+    def draw_position_history(self):
+        """Dessine l'historique des positions du serpent sur le canvas."""
+        position_history = self.agent.get_position_history()
+        for position in position_history:
+            x, y = position
+            self.canvas.create_oval(
+                y * self.cell_size + self.cell_size // 4,
+                x * self.cell_size + self.cell_size // 4,
+                (y + 1) * self.cell_size - self.cell_size // 4,
+                (x + 1) * self.cell_size - self.cell_size // 4,
+                fill="gray",
+                outline="gray",
+                # font=("Arial", 7, "bold"),
             )
 
     def update_q_values_label(self, state):
@@ -369,7 +389,7 @@ class SnakeGUI:
                 self.board.steps += 1
             self.draw_board()
             self.update_stats_label()
-            if result == "Game Over":
+            if result == "Game Over" or result == "Hit Snake Body":
                 self.display_game_over()
                 self.manual_mode = False
 
@@ -381,23 +401,28 @@ class SnakeGUI:
         self.master.destroy()
 
     def draw_discovered_objects(self):
+        """Affiche les objets découverts dans l'interface graphique, avec la mention '-Wall' pour le mur."""
         if self.mode == "Dontlearn":
             self.objects_discovered_label.config(
-                text="Objets découverts:\nMode Dontlearn.\nNe gérés pas\nles objets."
+                text="Objets découverts:\nMode Dontlearn.\nNe gère pas les objets."
             )
         else:
             discovered_objects = self.agent.discovered_objects
             if discovered_objects:
                 objects_text = ""
                 for obj, reward in discovered_objects.items():
-                    objects_text += f"{obj}: {reward}\n"
+                    if obj == self.agent.wall_obj:
+                        objects_text += f"'{obj}': {reward} '-Wall'\n"
+                    else:
+                        objects_text += f"'{obj}': {reward}\n"
                 self.objects_discovered_label.config(
                     text=f"Objets découverts:\n{objects_text}"
                 )
             else:
                 self.objects_discovered_label.config(
-                    text="Aucun objet découvert pour l'instant."
+                    text="Objets découverts:\nAucun objet découvert pour l'instant."
                 )
+
                 
 class COMMAND_LINE:
     @staticmethod
@@ -499,6 +524,7 @@ class COMMAND_LINE:
                 reward = {
                     "Ate Green Apple": 20,
                     "Ate Red Apple": -10,
+                    "Hit Snake Body": -50,
                     "Game Over": -100,
                 }.get(result, -1)
 
@@ -512,7 +538,7 @@ class COMMAND_LINE:
                 print(f"\nAction choisie : {action}")
                 display_objects_discovered()
 
-                if result == "Game Over":
+                if result == "Game Over" or esult == "Hit Snake Body":
                     print(f"\nGame Over!   ==> {session} Session terminée.", end="")
                     if session != sessions:
                         # time.sleep(2)
