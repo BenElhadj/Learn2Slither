@@ -495,7 +495,8 @@ class COMMAND_LINE:
                 # Afficher les objets en 3 colonnes
                 for i in range(0, len(items), 3):
                     line = items[i:i+3]
-                    formatted_line = " | ".join(f"{obj:2} ==> {reward:5}" for obj, reward in line)
+                    # formatted_line = " | ".join(f"{obj:2} ==> {reward:5}" for obj, reward in line)
+                    formatted_line = " | ".join(f"{obj:2} ==> {reward:5}" for obj, reward in line if isinstance(obj, str) and isinstance(reward, (int, float)))
                     print(formatted_line)
             else:
                 print("  Aucun objet découvert pour l'instant.")
@@ -538,7 +539,7 @@ class COMMAND_LINE:
                 print(f"\nAction choisie : {action}")
                 display_objects_discovered()
 
-                if result == "Game Over" or esult == "Hit Snake Body":
+                if result == "Game Over" or result == "Hit Snake Body":
                     print(f"\nGame Over!   ==> {session} Session terminée.", end="")
                     if session != sessions:
                         # time.sleep(2)

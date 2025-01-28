@@ -77,7 +77,7 @@ class QLearningAgent:
             y -= 1
         elif action == "RIGHT":
             y += 1
-        print(f"Position actuelle : {self.current_position}")
+        # print(f"Position actuelle : {self.current_position}")
 
         # Enregistrer la nouvelle position dans l'historique
         self.current_position = (x, y)
@@ -120,16 +120,7 @@ class QLearningAgent:
         """Détecte les murs et déduit la taille du plateau."""
         objects = ast.literal_eval(state)
         obj_up, obj_down, obj_left, obj_right = objects[:4]
-        # print(f"objects ======> {objects}")
-        # self.max_x, self.max_y = self.board_size
-        # print(f"obj_up -------> {obj_up}")
-        # print(f"obj_down -----> {obj_down}")
-        # print(f"obj_left -----> {obj_left}")
-        # print(f"obj_right ----> {obj_right}")
 
-        # Initialiser les variables pour détecter les murs
-
-        
         self.detect_walls(state)
         
         if self.wall_obj is None:
@@ -156,15 +147,15 @@ class QLearningAgent:
             self.max_x = self.current_position[0] + 1 if self.current_position[0] + 1 > self.max_x else self.max_x
             # self.board_size = (self.current_position[0] + 1 if self.current_position[0] + 1 > self.board_size[0] else self.board_size[0], self.board_size[1])
             self.wall_up = False
-            print(f"obj_down  {obj_down} | board_size ==> {self.board_size} | current_position ==> {self.current_position} | self.wall_up ====> {self.wall_up}")
+            # print(f"obj_down  {obj_down} | board_size ==> {self.board_size} | current_position ==> {self.current_position} | self.wall_up ====> {self.wall_up}")
 
         if obj_right == self.wall_obj and self.wall_left:  # Mur à droite
             self.max_y = self.current_position[1] + 1 if self.current_position[1] + 1 > self.max_y else self.max_y
             # self.board_size = (self.board_size[0], self.current_position[1] + 1 if self.current_position[1] + 1 > self.board_size[1] else self.board_size[1])
             self.wall_left = False
-            print(f"obj_right {obj_right} | board_size ==> {self.board_size} | current_position ==> {self.current_position} | self.wall_left ==> {self.wall_left}")
+            # print(f"obj_right {obj_right} | board_size ==> {self.board_size} | current_position ==> {self.current_position} | self.wall_left ==> {self.wall_left}")
         # self.board_size = (self.max_x, self.max_y)
-        print(f"(self.max_x, self.max_y) ========= {(self.max_x, self.max_y)}")
+        # print(f"(self.max_x, self.max_y) ========= {(self.max_x, self.max_y)}")
         self.discovered_objects["Board_Size"] = (self.max_x, self.max_y)
 
 
