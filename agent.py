@@ -27,10 +27,14 @@ class QLearningAgent:
         self.current_position = (0, 0)  # Position actuelle supposée (initialisée à (0, 0))
         self.history_length = 3  # Longueur initiale de l'historique
         self.board_size = (0, 0)  # Taille du plateau (initialisée à (0, 0))
-        self.wall_obj = 0  # Symbole représentant les murs (initialement inconnu)
+        
+        self.wall_obj = ""  # Symbole représentant les murs (initialement inconnu)
         self.wall_up = False
         self.wall_left = False
         self.max_x, self.max_y = self.board_size
+        self.locked_x = 0
+        self.locked_y = 0
+        self.mini_size = (7, 7)
 
 
     def dontlearn(self):
@@ -77,7 +81,6 @@ class QLearningAgent:
             y -= 1
         elif action == "RIGHT":
             y += 1
-        # print(f"Position actuelle : {self.current_position}")
 
         # Enregistrer la nouvelle position dans l'historique
         self.current_position = (x, y)
@@ -88,7 +91,7 @@ class QLearningAgent:
             self.position_history.pop(0)
 
         # Détecter les murs et déduire la taille du plateau
-        self.detect_board_size(state)
+        self.detect_board(state)
 
         # Ajuster les positions si elles dépassent les limites du plateau
         self.adjust_positions_to_board_limits()
@@ -116,8 +119,11 @@ class QLearningAgent:
                 self.wall_obj = obj_left
       
 
-    def detect_board_size(self, state):
+    def detect_board(self, state):
         """Détecte les murs et déduit la taille du plateau."""
+        if self.board_size > self.mini_size:
+            return
+
         objects = ast.literal_eval(state)
         obj_up, obj_down, obj_left, obj_right = objects[:4]
 
@@ -130,38 +136,39 @@ class QLearningAgent:
         if obj_up == self.wall_obj:
             if self.current_position[0] < 0:
                 self.current_position = (abs(self.current_position[0]) * 2, self.current_position[1])
-            self.current_position = (1, self.current_position[1])  # Réinitialiser x à 0
+            self.current_position = (1, self.current_position[1])
             self.wall_up = True
-            # print(f"obj_up    {obj_up} | board_size ==> {self.board_size} | current_position ==> {self.current_position} | self.wall_up ====> {self.wall_up}")
 
         if obj_left == self.wall_obj:
             if self.current_position[1] < 0:
                 self.current_position = (self.current_position[0], abs(self.current_position[1]) * 2)
-            # self.current_position = ((self.current_position[0] + 1), 0)  # Réinitialiser y à 0
             self.current_position = (self.current_position[0], 1)
             self.wall_left = True
-            # print(f"obj_left  {obj_left} | board_size ==> {self.board_size} | current_position ==> {self.current_position} | self.wall_left ==> {self.wall_left}")
 
         # Détecter les murs en bas et à droite et calcul des dimensions du plateau
-        if obj_down == self.wall_obj and self.wall_up:  # Mur en bas
-            self.max_x = self.current_position[0] + 1 if self.current_position[0] + 1 > self.max_x else self.max_x
-            # self.board_size = (self.current_position[0] + 1 if self.current_position[0] + 1 > self.board_size[0] else self.board_size[0], self.board_size[1])
-            self.wall_up = False
-            # print(f"obj_down  {obj_down} | board_size ==> {self.board_size} | current_position ==> {self.current_position} | self.wall_up ====> {self.wall_up}")
+        if self.locked_x < 3 and obj_down == self.wall_obj and self.wall_up:  # Mur en bas
+            if self.current_position[0] + 1 > 7:    
+                if self.max_x == self.current_position[0] + 1:
+                    self.locked_x += 1
+                self.max_x = self.current_position[0] + 1
+                self.wall_up = False
+            
+        if  self.locked_y < 3 and obj_right == self.wall_obj and self.wall_left:  # Mur à droite
+            if self.current_position[1] + 1 > 7:     
+                if self.max_y == self.current_position[1] + 1:
+                    self.locked_y += 1
+                self.max_y = self.current_position[1] + 1
+                self.wall_left = False
 
-        if obj_right == self.wall_obj and self.wall_left:  # Mur à droite
-            self.max_y = self.current_position[1] + 1 if self.current_position[1] + 1 > self.max_y else self.max_y
-            # self.board_size = (self.board_size[0], self.current_position[1] + 1 if self.current_position[1] + 1 > self.board_size[1] else self.board_size[1])
-            self.wall_left = False
-            # print(f"obj_right {obj_right} | board_size ==> {self.board_size} | current_position ==> {self.current_position} | self.wall_left ==> {self.wall_left}")
-        # self.board_size = (self.max_x, self.max_y)
-        # print(f"(self.max_x, self.max_y) ========= {(self.max_x, self.max_y)}")
-        self.discovered_objects["Board_Size"] = (self.max_x, self.max_y)
+        if self.locked_x >= 3 and self.locked_y >= 3:
+            if self.board_size != (self.max_x, self.max_y):
+                self.board_size = (self.max_x, self.max_y)
+            
 
 
     def adjust_positions_to_board_limits(self):
         """Ajuste les positions si elles dépassent les limites du plateau."""
-        if self.board_size == (0, 0):
+        if self.board_size <= self.mini_size:
             return  # La taille du plateau est inconnue
 
         max_x, max_y = self.board_size
@@ -192,6 +199,8 @@ class QLearningAgent:
         """Réinitialise l'historique des positions et sa longueur."""
         self.position_history = []
         self.history_length = 3  # Réinitialiser la longueur de l'historique à 3
+        self.wall_up = False
+        self.wall_left = False
 
 
     def learn(self, state, action, reward, next_state):
@@ -238,7 +247,7 @@ class QLearningAgent:
                     "discovered_objects": self.discovered_objects,
                     # "position_history": self.position_history,  # Sauvegarder l'historique des positions
                     # "history_length": self.history_length,  # Sauvegarder la longueur de l'historique
-                    # "board_size": self.board_size,  # Sauvegarder la taille du plateau
+                    "board_size": self.board_size,  # Sauvegarder la taille du plateau
                     "wall_obj": self.wall_obj, # Sauvegarder l'objet mur
                 },
                 f,
@@ -251,7 +260,7 @@ class QLearningAgent:
             self.discovered_objects = data.get("discovered_objects", {})
             # self.position_history = data.get("position_history", [])  # Charger l'historique des positions
             # self.history_length = data.get("history_length", 3)  # Charger la longueur de l'historique
-            # self.board_size = data.get("board_size", (0, 0))  # Charger la taille du plateau
+            self.board_size = data.get("board_size", (0, 0))  # Charger la taille du plateau
             self.wall_obj = data.get("wall_obj", '')  # Charger l'objet mur
 
     def decay_exploration(self, min_rate=0.01):
@@ -265,3 +274,4 @@ class QLearningAgent:
     def get_position_history(self):
         """Retourne l'historique des positions du serpent."""
         return self.position_history
+    

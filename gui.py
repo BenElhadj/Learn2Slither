@@ -275,10 +275,7 @@ class SnakeGUI:
                     time.sleep(0.5)
             elif self.running:
                 self.master.after(self.speed, self.run_game_session)
-            else:
-                self.running = False
-                self.current_session += 1
-                # self.run_training_sessions()
+
 
     def draw_board(self):
         self.canvas.delete("all")
@@ -416,7 +413,7 @@ class SnakeGUI:
                     else:
                         objects_text += f"'{obj}': {reward}\n"
                 self.objects_discovered_label.config(
-                    text=f"Objets découverts:\n{objects_text}"
+                    text=f"Objets découverts:\nboard_size: {self.agent.board_size}\n{objects_text}"
                 )
             else:
                 self.objects_discovered_label.config(
@@ -486,7 +483,7 @@ class COMMAND_LINE:
 
         def display_objects_discovered():
             discovered = agent.discovered_objects
-            print("\nObjets découverts :")
+            print(f"\nObjets découverts :\nboard_size: {agent.board_size}")
             if dontlearn:
                 print("  Mode Dontlearn activé. Ne gère pas les objets.")
             elif discovered:
@@ -496,7 +493,12 @@ class COMMAND_LINE:
                 for i in range(0, len(items), 3):
                     line = items[i:i+3]
                     # formatted_line = " | ".join(f"{obj:2} ==> {reward:5}" for obj, reward in line)
-                    formatted_line = " | ".join(f"{obj:2} ==> {reward:5}" for obj, reward in line if isinstance(obj, str) and isinstance(reward, (int, float)))
+                    # formatted_line = " | ".join(f"{obj:2} ==> {reward:5}" for obj, reward in line if isinstance(obj, str) and isinstance(reward, (int, float)))
+                    formatted_line = " | ".join(
+                        f"{obj:2}-Wall ==> {reward:3}" if obj == agent.wall_obj else f"{obj:7} ==> {reward:4}"
+                        for obj, reward in line 
+                        if isinstance(obj, str) and isinstance(reward, (int, float))
+                    )
                     print(formatted_line)
             else:
                 print("  Aucun objet découvert pour l'instant.")
