@@ -37,16 +37,17 @@ class SnakeGUI:
         else:
             self.mode = "Game"  # Par défaut
 
-        self.sessions = sessions
-        self.current_session = 0
+        self.speed = 100
         self.running = False
+        self.sessions = sessions
         self.step_mode = False
+        self.cell_size = 25
+        self.dontlearn = dontlearn
         self.manual_mode = False
+        self.length_history = []
+        self.current_session = 0
         self.save_model_path = save_model_path
         self.load_model_path = load_model_path
-        self.dontlearn = dontlearn
-        self.cell_size = 25
-        self.speed = 100
 
         # Initialiser l'interface utilisateur
         self._setup_ui(master, board_size)
@@ -126,11 +127,14 @@ class SnakeGUI:
         # Label pour les statistiques (à gauche)
         self.stats_label = tk.Label(
             self.labels_frame,
-            text="\nStats:\nScore: 0\nSteps: 0\nMax Length: 3\n",
+            text="\nStats:\nScore: 0\nSteps: 0\nMax Length: 3\nLength History",
             font=("Arial", 11),
             justify="left",
+            cursor="hand2",
         )
         self.stats_label.grid(row=0, column=0, padx=10, pady=5, sticky="w")
+        # Liens d'événement de clic pour Length History
+        self.stats_label.bind("<Button-1>", self.show_length_history)
 
         # Label pour les Q-values (au milieu)
         q_val_txt = "DOWN\t=> S : 0.00\nLEFT\t=> S : 0.00\nRIGHT\t=> S : 0.00"
@@ -140,7 +144,7 @@ class SnakeGUI:
             font=("Arial", 11),
             justify="left",
         )
-        self.q_values_label.grid(row=0, column=1, padx=10, pady=5, sticky="w")
+        self.q_values_label.grid(row=0, column=1, padx=10, pady=0, sticky="w")
 
         # Label pour l'action choisie (à droite)
         self.action_label = tk.Label(
@@ -210,11 +214,13 @@ class SnakeGUI:
 
     def display_game_over(self):
         """Affiche le message 'GAME OVER!' au centre de l'écran."""
-        GO_txt = "GAME OVER!\nSession "
         self.canvas.create_text(
             self.board.size * self.cell_size / 2,
             self.board.size * self.cell_size / 2,
-            text=f"{GO_txt}{self.current_session + 1}/{self.sessions}",
+            text=(
+                f"GAME OVER!\nSession {self.current_session + 1}/"
+                f"{self.sessions}\nScore: {self.board.max_length}"
+            ),
             font=("Arial", 24, "bold"),
             fill="red",
         )
@@ -233,7 +239,6 @@ class SnakeGUI:
     def run_training_sessions(self):
         if self.current_session < self.sessions:
             # Afficher la progression de la session en cours
-            # if self.save_model_path:
             mode_txt = f"Mode: {self.mode}\nSession {self.current_session + 1}"
             self.update_status_label(f"{mode_txt}/{self.sessions} est lancée.")
             self.board.reset()
@@ -294,13 +299,16 @@ class SnakeGUI:
             self.draw_discovered_objects()
 
             if result == "Game Over" or result == "Hit Snake Body":
+                self.length_history.append(self.board.max_length)
                 self.display_game_over()
                 self.running = False
                 self.current_session += 1
                 self.agent.reset_history()
                 self.run_training_sessions()
                 if self.current_session != self.sessions:
-                    time.sleep(0.5)
+                    time.sleep(2)
+                    # time.sleep(0.5)
+
             elif self.running:
                 self.master.after(self.speed, self.run_game_session)
 
@@ -365,7 +373,8 @@ class SnakeGUI:
         }
         q_values_text = "Q-values de l'état actuel:\n"
         for action in directions:
-            q_values_text += f"{action:<7}\t=> {state_mapping[action]} : {q_values[action]:.2f}\n"
+            q_values_text += (f"{action:<7}\t=> {state_mapping[action]}"
+                              f" : {q_values[action]:.2f}\n")
         self.q_values_label.config(text=q_values_text)
 
     def update_action_label(self, action):
@@ -373,10 +382,30 @@ class SnakeGUI:
         self.action_label.config(text=f"Action choisie: {action}")
 
     def update_stats_label(self):
-        text = f"\nStats:\nSteps: {self.board.steps}\nScore: "
-        self.stats_label.config(
-            text=f"{text}{self.board.max_length}\nMax Length: {self.board.max_length_reached}\n"
+        stats_text = (
+            f"\nStats:\nSteps: {self.board.steps}\n"
+            f"Score: {self.board.max_length}\n"
+            f"Max Length: {self.board.max_length_reached}\n"
+            f"Length History"
         )
+        self.stats_label.config(text=stats_text)
+
+    def show_length_history(self, event=None):
+        # Créer une nouvelle fenêtre pour afficher l'historique des longueurs
+        history_window = tk.Toplevel(self.master)
+        history_window.title("Length History")
+        # Créer un widget Text pour afficher les longueurs
+        history_text = tk.Text(
+            history_window, wrap=tk.WORD, width=40, height=20
+        )
+        history_text.pack(padx=10, pady=10)
+        # Ajouter les longueurs à la fenêtre
+        for i, length in enumerate(self.length_history, start=1):
+            history_text.insert(
+                tk.END, f"Session {i}: Max Length = {length}\n"
+            )
+        # Empêcher l'utilisateur de modifier le texte
+        history_text.config(state=tk.DISABLED)
 
     def pause_training(self):
         self.running = False
@@ -489,9 +518,7 @@ class COMMAND_LINE:
         def display_session_info(session, steps, max_length, score):
             print(f"Mode : {mode} | Session : {session}/{sessions}")
             text = f"Steps : {steps} | Max Length :"
-            print(
-                f"{text} {max_length} | Score : {score}\n"
-            )
+            print(f"{text} {max_length} | Score : {score}\n")
 
         def display_board():
             print("Carte actuelle :")
@@ -523,7 +550,8 @@ class COMMAND_LINE:
             }
             for action in directions:
                 print(
-                    f"  {action:<7} => {state_mapping[action]} : {q_values[action]:.2f}"
+                    f"  {action:<7} => {state_mapping[action]}",
+                    f" : {q_values[action]:.2f}"
                 )
 
         def display_objects_discovered():
@@ -599,11 +627,12 @@ class COMMAND_LINE:
                 if result == "Game Over" or result == "Hit Snake Body":
                     print(
                         f"\nGame Over!   ==> {session} Session terminée.",
+                        # f"Score: {score}",
                         end="",
                     )
                     if session != sessions:
-                        # time.sleep(2)
-                        time.sleep(0.5)
+                        time.sleep(2)
+                        # time.sleep(0.5)
 
                     break
                 else:
