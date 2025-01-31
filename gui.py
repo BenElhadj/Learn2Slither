@@ -498,6 +498,7 @@ class COMMAND_LINE:
 
         board = Board(size=board_size)
         agent = QLearningAgent(actions=["UP", "DOWN", "LEFT", "RIGHT"])
+        length_history = []  # Initialiser l'historique des longueurs
 
         if load_model:
             agent.load_model(load_model)
@@ -579,8 +580,21 @@ class COMMAND_LINE:
             else:
                 print("  Aucun objet découvert pour l'instant.")
 
+        def display_length_history(length_history):
+            print("\nLength History:")
+            for i in range(0, len(length_history), 2):
+                line = length_history[i: i + 2]
+                formatted_line = " | ".join(
+                    f"Length session {i + j + 1:4} ==> {length:3}"
+                    for j, length in enumerate(line)
+                )
+                print(formatted_line)
+
+        length_history = []  # Initialiser l'historique des longueurs
+
         for session in range(1, sessions + 1):
             board.reset()
+            agent.reset_history()
             board.steps = 0
             print(f"Session {session}/{sessions} en cours...")
             while True:
@@ -625,11 +639,13 @@ class COMMAND_LINE:
                 display_objects_discovered()
 
                 if result == "Game Over" or result == "Hit Snake Body":
+                    length_history.append(board.max_length)
                     print(
-                        f"\nGame Over!   ==> {session} Session terminée.",
-                        # f"Score: {score}",
+                        f"\nGame Over!   ==> {session} Session terminée avec",
+                        f"un score: {board.max_length}\n",
                         end="",
                     )
+                    display_length_history(length_history)
                     if session != sessions:
                         time.sleep(2)
                         # time.sleep(0.5)
