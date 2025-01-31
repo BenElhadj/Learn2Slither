@@ -6,6 +6,7 @@ import tkinter as tk
 from board import Board
 from agent import QLearningAgent
 
+
 class SnakeGUI:
     def __init__(
         self,
@@ -17,7 +18,7 @@ class SnakeGUI:
         sessions=1,
     ):
         self.master = master
-        
+
         self.master.title("Entraînement Snake AI")
         self.board = Board(size=board_size)
         self.agent = QLearningAgent(
@@ -53,8 +54,9 @@ class SnakeGUI:
         self.master.bind("<Key>", self.manual_control)
 
         # Afficher le message initial
+        Mode_text = f"\n- {self.sessions} sessions {self.mode}."
         self.update_status_label(
-            f"Mode: {self.mode}\nAppuyez sur start pour démarrer:\n- {self.sessions} sessions {self.mode}."
+            f"Mode: {self.mode}\nAppuyez sur start pour démarrer:{Mode_text}"
         )
 
     def _setup_ui(self, master, board_size):
@@ -67,7 +69,7 @@ class SnakeGUI:
             wraplength=400,
         )
         self.status_label.pack(pady=10, padx=10)
-        
+
         # Canvas pour afficher le plateau de jeu
         self.canvas = tk.Canvas(
             master,
@@ -82,25 +84,39 @@ class SnakeGUI:
         self.control_frame.pack()
 
         # Boutons de contrôle
-        self.start_button = tk.Button(self.control_frame, text="-", command=self.decrease_speed)
+        self.start_button = tk.Button(
+            self.control_frame, text="-", command=self.decrease_speed
+        )
         self.start_button.grid(row=0, column=0, padx=3, pady=10)
 
-        self.start_button = tk.Button(self.control_frame, text="Start", command=self.start_training)
+        self.start_button = tk.Button(
+            self.control_frame, text="Start", command=self.start_training
+        )
         self.start_button.grid(row=0, column=1, padx=0, pady=10)
 
-        self.start_button = tk.Button(self.control_frame, text="+", command=self.increase_speed)
+        self.start_button = tk.Button(
+            self.control_frame, text="+", command=self.increase_speed
+        )
         self.start_button.grid(row=0, column=2, padx=3, pady=10)
 
-        self.pause_button = tk.Button(self.control_frame, text="Pause", command=self.pause_training)
+        self.pause_button = tk.Button(
+            self.control_frame, text="Pause", command=self.pause_training
+        )
         self.pause_button.grid(row=0, column=3, padx=5)
 
-        self.step_button = tk.Button(self.control_frame, text="Step", command=self.step_training)
+        self.step_button = tk.Button(
+            self.control_frame, text="Step", command=self.step_training
+        )
         self.step_button.grid(row=0, column=4, padx=5)
 
-        self.reset_button = tk.Button(self.control_frame, text="Reset", command=self.reset_board)
+        self.reset_button = tk.Button(
+            self.control_frame, text="Reset", command=self.reset_board
+        )
         self.reset_button.grid(row=0, column=5, padx=5)
 
-        self.manual_button = tk.Button(self.control_frame, text="Manual", command=self.toggle_manual_mode)
+        self.manual_button = tk.Button(
+            self.control_frame, text="Manual", command=self.toggle_manual_mode
+        )
         self.manual_button.grid(row=0, column=6, padx=5, pady=10)
 
         # Frame pour les labels (statistiques, Q-values, objets découverts)
@@ -117,9 +133,10 @@ class SnakeGUI:
         self.stats_label.grid(row=0, column=0, padx=10, pady=5, sticky="w")
 
         # Label pour les Q-values (au milieu)
+        q_val_txt = "DOWN\t=> S : 0.00\nLEFT\t=> S : 0.00\nRIGHT\t=> S : 0.00"
         self.q_values_label = tk.Label(
             self.labels_frame,
-            text="Q-values de l'état actuel:\nUP\t=> W : 0.00\nDOWN\t=> S : 0.00\nLEFT\t=> S : 0.00\nRIGHT\t=> S : 0.00",
+            text=f"Q-values de l'état actuel:\nUP\t=> W : 0.00\n{q_val_txt}",
             font=("Arial", 11),
             justify="left",
         )
@@ -141,8 +158,10 @@ class SnakeGUI:
             font=("Arial", 11),
             justify="left",
         )
-        self.objects_discovered_label.grid(row=0, column=2, padx=10, pady=5, sticky="w")
-            
+        self.objects_discovered_label.grid(
+            row=0, column=2, padx=10, pady=5, sticky="w"
+        )
+
     def increase_speed(self):
         """Augmente la vitesse en diminuant le délai."""
         self.step_mode = False
@@ -159,9 +178,11 @@ class SnakeGUI:
         """Met à jour le texte du label avec un message unique."""
         self.status_label.config(text=message)
         self.master.update()
-        
+
     def display_speed(self, message):
-        """Affiche temporairement un message de vitesse en bas de l'interface."""
+        """
+        Affiche temporairement un message de vitesse en bas de l'interface.
+        """
         # Stocker le texte du message
         self.speed_message_text = message
 
@@ -189,10 +210,11 @@ class SnakeGUI:
 
     def display_game_over(self):
         """Affiche le message 'GAME OVER!' au centre de l'écran."""
+        GO_txt = "GAME OVER!\nSession "
         self.canvas.create_text(
             self.board.size * self.cell_size / 2,
             self.board.size * self.cell_size / 2,
-            text=f"GAME OVER!\nSession {self.current_session + 1}/{self.sessions}",
+            text=f"{GO_txt}{self.current_session + 1}/{self.sessions}",
             font=("Arial", 24, "bold"),
             fill="red",
         )
@@ -212,9 +234,8 @@ class SnakeGUI:
         if self.current_session < self.sessions:
             # Afficher la progression de la session en cours
             # if self.save_model_path:
-            self.update_status_label(
-                f"Mode: {self.mode}\nSession {self.current_session + 1}/{self.sessions} est lancée."
-            )
+            mode_txt = f"Mode: {self.mode}\nSession {self.current_session + 1}"
+            self.update_status_label(f"{mode_txt}/{self.sessions} est lancée.")
             self.board.reset()
             self.board.steps = 0
             self.running = True
@@ -222,12 +243,14 @@ class SnakeGUI:
         else:
             # Afficher le message de fin d'entraînement
             if self.dontlearn:
+                dontlearn_txt = "Mode Dontlearn activé.\nAucun modèle"
                 self.update_status_label(
-                    f"Mode: {self.mode}\nMode Dontlearn activé.\nAucun modèle sauvegardé."
+                    f"Mode: {self.mode}\n{dontlearn_txt} sauvegardé."
                 )
             elif self.save_model_path:
+                path_txt = "Apprentissage terminé.\nModèle sauvegardé dans :\n"
                 self.update_status_label(
-                    f"Mode: {self.mode}\nApprentissage terminé.\nModèle sauvegardé dans :\n- {self.save_model_path}"
+                    f"Mode: {self.mode}\n{path_txt}- {self.save_model_path}"
                 )
                 self.agent.save_model(self.save_model_path)
 
@@ -235,7 +258,12 @@ class SnakeGUI:
         if self.running or self.step_mode:
             state = self.board.get_state()
             action = self.agent.choose_action(str(state), training=True)
-            direction_mapping = {"UP": (-1, 0), "DOWN": (1, 0), "LEFT": (0, -1), "RIGHT": (0, 1),}
+            direction_mapping = {
+                "UP": (-1, 0),
+                "DOWN": (1, 0),
+                "LEFT": (0, -1),
+                "RIGHT": (0, 1),
+            }
             if action in direction_mapping:
                 self.board.snake_dir = direction_mapping[action]
 
@@ -269,13 +297,12 @@ class SnakeGUI:
                 self.display_game_over()
                 self.running = False
                 self.current_session += 1
-                self.agent.reset_history() 
+                self.agent.reset_history()
                 self.run_training_sessions()
                 if self.current_session != self.sessions:
                     time.sleep(0.5)
             elif self.running:
                 self.master.after(self.speed, self.run_game_session)
-
 
     def draw_board(self):
         self.canvas.delete("all")
@@ -325,7 +352,9 @@ class SnakeGUI:
             )
 
     def update_q_values_label(self, state):
-        """Met à jour le label pour afficher les Q-values pour l'état actuel."""
+        """
+        Met à jour le label pour afficher les Q-values pour l'état actuel.
+        """
         q_values = self.agent.get_q_values(str(state))
         directions = ["UP", "DOWN", "LEFT", "RIGHT"]
         state_mapping = {
@@ -344,8 +373,9 @@ class SnakeGUI:
         self.action_label.config(text=f"Action choisie: {action}")
 
     def update_stats_label(self):
+        text = f"\nStats:\nSteps: {self.board.steps}\nScore: "
         self.stats_label.config(
-            text=f"\nStats:\nSteps: {self.board.steps}\nScore: {self.board.max_length}\nMax Length: {self.board.max_length_reached}\n"
+            text=f"{text}{self.board.max_length}\nMax Length: {self.board.max_length_reached}\n"
         )
 
     def pause_training(self):
@@ -398,33 +428,43 @@ class SnakeGUI:
         self.master.destroy()
 
     def draw_discovered_objects(self):
-        """Affiche les objets découverts dans l'interface graphique, avec la mention '-Wall' pour le mur."""
+        """
+        Affiche les objets découverts dans l'interface graphique,
+        avec la mention '-Wall' pour le mur.
+        """
         if self.mode == "Dontlearn":
+            text = "Ne gère pas les objets."
             self.objects_discovered_label.config(
-                text="Objets découverts:\nMode Dontlearn.\nNe gère pas les objets."
+                text=f"Objets découverts:\nMode Dontlearn.\n{text}"
             )
         else:
             discovered_objects = self.agent.discovered_objects
             if discovered_objects:
                 objects_text = ""
+                obj_text = "Objets découverts:\nboard_size:"
                 for obj, reward in discovered_objects.items():
                     if obj == self.agent.wall_obj:
                         objects_text += f"'{obj}': {reward} '-Wall'\n"
                     else:
                         objects_text += f"'{obj}': {reward}\n"
                 self.objects_discovered_label.config(
-                    text=f"Objets découverts:\nboard_size: {self.agent.board_size}\n{objects_text}"
+                    text=f"{obj_text} {self.agent.board_size}\n{objects_text}"
                 )
             else:
                 self.objects_discovered_label.config(
-                    text="Objets découverts:\nAucun objet découvert pour l'instant."
+                    text="Objets découverts:\nAucun objet pour l'instant."
                 )
 
-                
+
 class COMMAND_LINE:
     @staticmethod
     def run_command_line_mode(
-        sessions, save_model=None, load_model=None, visual=False, dontlearn=None, board_size=10
+        sessions,
+        save_model=None,
+        load_model=None,
+        visual=False,
+        dontlearn=None,
+        board_size=10,
     ):
 
         board = Board(size=board_size)
@@ -448,7 +488,10 @@ class COMMAND_LINE:
 
         def display_session_info(session, steps, max_length, score):
             print(f"Mode : {mode} | Session : {session}/{sessions}")
-            print(f"Steps : {steps} | Max Length : {max_length} | Score : {score}\n")
+            text = f"Steps : {steps} | Max Length :"
+            print(
+                f"{text} {max_length} | Score : {score}\n"
+            )
 
         def display_board():
             print("Carte actuelle :")
@@ -479,7 +522,9 @@ class COMMAND_LINE:
                 "RIGHT": state[3],
             }
             for action in directions:
-                print(f"  {action:<7} => {state_mapping[action]} : {q_values[action]:.2f}")
+                print(
+                    f"  {action:<7} => {state_mapping[action]} : {q_values[action]:.2f}"
+                )
 
         def display_objects_discovered():
             discovered = agent.discovered_objects
@@ -487,17 +532,20 @@ class COMMAND_LINE:
             if dontlearn:
                 print("  Mode Dontlearn activé. Ne gère pas les objets.")
             elif discovered:
-                # Convertir les objets découverts en une liste de tuples (objet, récompense)
+                # Convertir les objets découverts en liste (objet, récompense)
                 items = list(discovered.items())
                 # Afficher les objets en 3 colonnes
                 for i in range(0, len(items), 3):
-                    line = items[i:i+3]
-                    # formatted_line = " | ".join(f"{obj:2} ==> {reward:5}" for obj, reward in line)
-                    # formatted_line = " | ".join(f"{obj:2} ==> {reward:5}" for obj, reward in line if isinstance(obj, str) and isinstance(reward, (int, float)))
+                    line = items[i: i + 3]
                     formatted_line = " | ".join(
-                        f"{obj:2}-Wall ==> {reward:3}" if obj == agent.wall_obj else f"{obj:7} ==> {reward:4}"
-                        for obj, reward in line 
-                        if isinstance(obj, str) and isinstance(reward, (int, float))
+                        (
+                            f"{obj:2}-Wall ==> {reward:3}"
+                            if obj == agent.wall_obj
+                            else f"{obj:7} ==> {reward:4}"
+                        )
+                        for obj, reward in line
+                        if isinstance(obj, str)
+                        and isinstance(reward, (int, float))
                     )
                     print(formatted_line)
             else:
@@ -509,12 +557,19 @@ class COMMAND_LINE:
             print(f"Session {session}/{sessions} en cours...")
             while True:
                 clear_screen()
-                display_session_info(session, board.steps, board.max_length_reached, board.max_length)
+                display_session_info(
+                    session,
+                    board.steps,
+                    board.max_length_reached,
+                    board.max_length,
+                )
                 display_board()
 
                 # Choisir une action et mettre à jour l'état
                 state = board.get_state()
-                action = agent.choose_action(str(state), training=not dontlearn)
+                action = agent.choose_action(
+                    str(state), training=not dontlearn
+                )
                 board.snake_dir = {
                     "UP": (-1, 0),
                     "DOWN": (1, 0),
@@ -542,13 +597,16 @@ class COMMAND_LINE:
                 display_objects_discovered()
 
                 if result == "Game Over" or result == "Hit Snake Body":
-                    print(f"\nGame Over!   ==> {session} Session terminée.", end="")
+                    print(
+                        f"\nGame Over!   ==> {session} Session terminée.",
+                        end="",
+                    )
                     if session != sessions:
                         # time.sleep(2)
                         time.sleep(0.5)
-                        
+
                     break
-                else :
+                else:
                     board.steps += 1
 
         if save_model:
@@ -557,4 +615,3 @@ class COMMAND_LINE:
             else:
                 agent.save_model(save_model)
                 print(f"\nModèle sauvegardé dans : {save_model}")
-                

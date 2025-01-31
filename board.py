@@ -60,7 +60,9 @@ class Board:
 
     def random_empty_cell(self):
         while True:
-            x, y = random.randint(0, self.size - 1), random.randint(0, self.size - 1)
+            x, y = random.randint(0, self.size - 1), random.randint(
+                0, self.size - 1
+            )
             if (
                 (x, y) not in self.snake
                 and (x, y) not in self.green_apples
@@ -75,7 +77,7 @@ class Board:
 
         if new_head in self.snake:
             return "Hit Snake Body"
-        
+
         if not (0 <= new_head[0] < self.size and 0 <= new_head[1] < self.size):
             return "Game Over"
 
@@ -85,7 +87,9 @@ class Board:
             self.green_apples.append(self.random_empty_cell())
             self.score += 20
             self.max_length = max(self.max_length, len(self.snake))
-            self.max_length_reached = max(self.max_length_reached, len(self.snake))
+            self.max_length_reached = max(
+                self.max_length_reached, len(self.snake)
+            )
             return "Ate Green Apple"
         elif new_head == self.red_apple:
             self.snake.pop()

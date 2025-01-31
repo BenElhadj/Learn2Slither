@@ -2,6 +2,7 @@
 import argparse
 from gui import SnakeGUI, COMMAND_LINE
 
+
 def main():
     parser = argparse.ArgumentParser(
         description="Train or test a Snake AI using Q-learning."
@@ -18,9 +19,7 @@ def main():
     parser.add_argument(
         "-save", type=str, help="Path to save the trained model"
     )
-    parser.add_argument(
-        "-load", type=str, help="Path to load a trained model"
-    )
+    parser.add_argument("-load", type=str, help="Path to load a trained model")
     parser.add_argument(
         "-dontlearn",
         # print("Nouvel argument pour désactiver l'apprentissage"),
@@ -43,7 +42,7 @@ def main():
         root.title("Snake AI Training")
         app = SnakeGUI(
             root,
-            board_size=args.size,  # Passer la taille du plateau à l'interface graphique
+            board_size=args.size,
             save_model_path=args.save,
             load_model_path=args.load,
             sessions=args.sessions,
@@ -52,8 +51,9 @@ def main():
         app.board.steps = 0
 
         def update_stats_label():
+            text = f"{app.board.steps}\nMax Length: {app.board.max_length}\n"
             app.stats_label.config(
-                text=f"\nStats:\nScore: {app.board.score}\nSteps: {app.board.steps}\nMax Length: {app.board.max_length}\n"
+                text=f"\nStats:\nScore: {app.board.score}\nSteps: {text}"
             )
 
         def run_game():
@@ -91,6 +91,7 @@ def main():
             board_size=args.size,  # Passer la taille du plateau au mode CLI
             dontlearn=args.dontlearn,
         )
+
 
 if __name__ == "__main__":
     main()

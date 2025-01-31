@@ -3,6 +3,7 @@ import random
 import json
 import ast
 
+
 class QLearningAgent:
     def __init__(
         self,
@@ -33,7 +34,7 @@ class QLearningAgent:
         self.current_position = (0, 0)
         self.history_length = 3
         self.board_size = (0, 0)
-        
+
         self.wall_obj = ""
         self.wall_up = False
         self.wall_left = False
@@ -42,12 +43,13 @@ class QLearningAgent:
         self.locked_y = 0
         self.mini_size = (7, 7)
 
-
     def dontlearn(self):
-        """Désactive l'apprentissage et force l'agent à jouer de manière aléatoire."""
+        """
+        Désactive l'apprentissage et force l'agent à jouer
+        de manière aléatoire.
+        """
         self.dontlearn_enabled = False
         self.exploration_rate = 1.0
-
 
     def update_position(self, action, state):
         """Met à jour la position actuelle en fonction de l'action choisie."""
@@ -73,7 +75,6 @@ class QLearningAgent:
         self.detect_board(state)
         # Ajuster les positions si elles dépassent les limites du plateau
         self.adjust_positions(state)
-        
 
     def detect_walls(self, state):
         """Détecte les murs et déduit la taille du plateau."""
@@ -84,7 +85,7 @@ class QLearningAgent:
         reward_up = self.discovered_objects.get(obj_up, 0)
         reward_left = self.discovered_objects.get(obj_left, 0)
         reward_wall_obj = self.discovered_objects.get(self.wall_obj, 0)
-        
+
         # Initialiser ou mettre à jour le symbole du mur
         if self.wall_obj is None:
             if reward_up < reward_left:
@@ -97,15 +98,17 @@ class QLearningAgent:
             if reward_left < reward_wall_obj:
                 self.wall_obj = obj_left
 
-
     def detect_board(self, state):
         """Détecte les murs et déduit la taille du plateau."""
-            
-        if self.board_size[0] > self.mini_size[0] and self.board_size[1] > self.mini_size[1]:
+
+        if (
+            self.board_size[0] > self.mini_size[0]
+            and self.board_size[1] > self.mini_size[1]
+        ):
             return
 
         self.detect_walls(state)
-        
+
         if self.wall_obj is None:
             return
 
@@ -134,65 +137,89 @@ class QLearningAgent:
                 self.max_x = self.current_position[0] + 1
                 self.wall_up = False
         elif self.locked_x >= 3 and obj_down == self.wall_obj:
-            self.current_position = (self.max_x -2, self.current_position[1])
-            
+            self.current_position = (self.max_x - 2, self.current_position[1])
+
         # Détecter les murs à droite et calcul des dimensions y du plateau
-        if  self.locked_y < 3 and obj_right == self.wall_obj and self.wall_left:
-            if self.current_position[1] + 1 > self.mini_size[1]:     
+        if self.locked_y < 3 and obj_right == self.wall_obj and self.wall_left:
+            if self.current_position[1] + 1 > self.mini_size[1]:
                 if self.max_y == self.current_position[1] + 1:
                     self.locked_y += 1
                 self.max_y = self.current_position[1] + 1
                 self.wall_left = False
         elif self.locked_y >= 3 and obj_right == self.wall_obj:
-            self.current_position = (self.current_position[0], self.max_y -2)
+            self.current_position = (self.current_position[0], self.max_y - 2)
 
-        if self.locked_x >= 3 and self.max_x > 0 and self.board_size[0] != self.max_x:
+        if (
+            self.locked_x >= 3
+            and self.max_x > 0
+            and self.board_size[0] != self.max_x
+        ):
             self.board_size = (self.max_x, self.board_size[1])
 
-        if self.locked_y >= 3 and self.max_y > 0 and self.board_size[1] != self.max_y:
+        if (
+            self.locked_y >= 3
+            and self.max_y > 0
+            and self.board_size[1] != self.max_y
+        ):
             self.board_size = (self.board_size[0], self.max_y)
 
-
     def adjust_positions(self, state):
-        """Ajuste les positions du serpent après stabilisation du plateau et recentre le spectre définitivement."""
+        """
+        Ajuste les positions du serpent après stabilisation
+        du plateau et recentre le spectre définitivement.
+        """
 
         # Si la taille du plateau n'est pas encore stabilisée, ne rien faire
-        if self.board_size[0] <= self.mini_size[0] or self.board_size[1] <= self.mini_size[1]:
-            return  
+        if (
+            self.board_size[0] <= self.mini_size[0]
+            or self.board_size[1] <= self.mini_size[1]
+        ):
+            return
 
         max_x, max_y = self.board_size
         objects = ast.literal_eval(state)
         obj_up, obj_down, obj_left, obj_right = objects[:4]
 
-        # Vérification et ajustement de `current_position` 
-        new_x, new_y = self.current_position  # Initialiser les nouvelles coordonnées
+        # Vérification et ajustement de `current_position`
+        new_x, new_y = (
+            self.current_position
+        )  # Initialiser les nouvelles coordonnées
 
         if obj_up == self.wall_obj:
             new_x = 1  # Fixer la limite haute définitive
-        elif self.current_position[0] < 1:  
-            new_x = 0  # Empêcher tout décalage vers le négatif après stabilisation
+        elif self.current_position[0] < 1:
+            new_x = (
+                0  # Empêcher tout décalage vers le négatif après stabilisation
+            )
 
         if obj_left == self.wall_obj:
             new_y = 1  # Fixer la limite gauche définitive
-        elif self.current_position[1] < 1:  
-            new_y = 0  # Empêcher tout décalage vers le négatif après stabilisation
+        elif self.current_position[1] < 1:
+            new_y = (
+                0  # Empêcher tout décalage vers le négatif après stabilisation
+            )
 
         if obj_down == self.wall_obj:
             new_x = max_x - 2  # Fixer la limite basse définitive
-        elif self.current_position[0] > max_x - 2:  
+        elif self.current_position[0] > max_x - 2:
             new_x = max_x - 1
 
         if obj_right == self.wall_obj:
             new_y = max_y - 2  # Fixer la limite droite définitive
-        elif self.current_position[1] > max_x - 2:  
+        elif self.current_position[1] > max_x - 2:
             new_y = max_y - 1
 
         # Calcul du décalage unique
-        dx, dy = new_x - self.current_position[0], new_y - self.current_position[1]
+        dx, dy = (
+            new_x - self.current_position[0],
+            new_y - self.current_position[1],
+        )
 
         if dx != 0 or dy != 0:
             # Appliquer le décalage unique à tout l'historique du spectre
-            self.position_history = [(x + dx, y + dy) for x, y in self.position_history]
+            self.position_history = [
+                (x + dx, y + dy) for x, y in self.position_history
+            ]
 
         # Mise à jour finale de `current_position`
         self.current_position = (new_x, new_y)
@@ -204,29 +231,28 @@ class QLearningAgent:
         ]
         self.current_position = (
             max(0, min(self.current_position[0], max_x - 1)),
-            max(0, min(self.current_position[1], max_y - 1))
+            max(0, min(self.current_position[1], max_y - 1)),
         )
-
 
     def adjust_history_length(self, reward):
         # print(f"self.history_length ===> {self.history_length}")
         """Ajuste la longueur de l'historique en fonction de la récompense."""
         if reward > 0:
-            # Augmenter la longueur de l'historique de 1 en cas de récompense positive
+            # Augmenter la longueur de l'historique en cas de récompense
             self.history_length += 1
         elif reward < -1:
-            # Diminuer la longueur de l'historique de 1 en cas de récompense négative supérieure à -1
+            # Diminuer la longueur de l'historique en cas de pénalité
             self.history_length = max(0, self.history_length - 1)
-            del self.position_history[0]      
-
+            del self.position_history[0]
 
     def reset_history(self):
         """Réinitialise l'historique des positions et sa longueur."""
         self.position_history = []
-        self.history_length = 3  # Réinitialiser la longueur de l'historique à 3
+        self.history_length = (
+            3  # Réinitialiser la longueur de l'historique à 3
+        )
         self.wall_up = False
         self.wall_left = False
-
 
     def learn(self, state, action, reward, next_state):
         if not self.dontlearn_enabled:
@@ -242,12 +268,15 @@ class QLearningAgent:
             next_state, {action: 0 for action in self.actions}
         )
         best_next_action = max(next_q_values, key=next_q_values.get)
-        td_target = reward + self.discount_factor * next_q_values[best_next_action]
+        td_target = (
+            reward + self.discount_factor * next_q_values[best_next_action]
+        )
         td_error = td_target - q_values[action]
-        q_values[action] += self.learning_rate * td_error * (1 - self.exploration_rate)
+        q_values[action] += (
+            self.learning_rate * td_error * (1 - self.exploration_rate)
+        )
 
         self.adjust_history_length(reward)
-
 
     def handle_new_objects(self, state, action, reward):
         if not self.dontlearn_enabled:
@@ -257,13 +286,14 @@ class QLearningAgent:
         previous_reward = self.discovered_objects.get(obj, "Inconnu")
 
         # Ajouter ou mettre à jour l'objet dans discovered_objects
-        if obj not in self.discovered_objects or reward < self.discovered_objects[obj]:
+        if (
+            obj not in self.discovered_objects
+            or reward < self.discovered_objects[obj]
+        ):
             self.discovered_objects[obj] = reward
             if self.verbose:
-                print(
-                    f"Objet {obj} mis à jour : Ancienne récompense = {previous_reward}, Nouvelle récompense = {reward}"
-                )
-
+                text = f"mis à jour : Ancienne récompense = {previous_reward}"
+                print(f"Objet {obj} {text}, Nouvelle récompense = {reward}")
 
     def save_model(self, filepath):
         with open(filepath, "w") as f:
@@ -283,34 +313,36 @@ class QLearningAgent:
                 f,
             )
 
-
     def load_model(self, filepath):
         with open(filepath, "r") as f:
             data = json.load(f)
             self.q_table = data.get("q_table", {})
             self.discovered_objects = data.get("discovered_objects", {})
-            self.wall_obj = data.get("wall_obj", '')  # Charger l'objet mur
-            self.board_size = (data.get("board_size", (0, 0))[0], data.get("board_size", (0, 0))[1])  # Charger la taille du plateau
-            self.score_rate = float(data.get("score_rate", ''))
-            self.heatmap_rate = float(data.get("heatmap_rate", ''))
-            self.learning_rate = float(data.get("learning_rate", ''))
-            self.discount_factor = float(data.get("discount_factor", ''))
-            self.exploration_rate = float(data.get("exploration_rate", ''))
-            self.exploration_decay = float(data.get("exploration_decay", ''))
-
+            self.wall_obj = data.get("wall_obj", "")  # Charger l'objet mur
+            self.board_size = (
+                data.get("board_size", (0, 0))[0],
+                data.get("board_size", (0, 0))[1],
+            )  # Charger la taille du plateau
+            self.score_rate = float(data.get("score_rate", ""))
+            self.heatmap_rate = float(data.get("heatmap_rate", ""))
+            self.learning_rate = float(data.get("learning_rate", ""))
+            self.discount_factor = float(data.get("discount_factor", ""))
+            self.exploration_rate = float(data.get("exploration_rate", ""))
+            self.exploration_decay = float(data.get("exploration_decay", ""))
 
     def decay_exploration(self):
         """Diminue progressivement l'exploration pour éviter l'overfitting"""
-        self.exploration_rate = max(self.min_exploration, self.exploration_rate * self.exploration_decay)
+        self.exploration_rate = max(
+            self.min_exploration,
+            self.exploration_rate * self.exploration_decay,
+        )
 
     def get_q_values(self, state):
         return self.q_table.get(state, {action: 0 for action in self.actions})
 
-
     def get_position_history(self):
         """Retourne l'historique des positions du serpent."""
         return self.position_history
-
 
     def compute_free_space(self, position):
         """Calcule l'espace libre autour d'une position donnée."""
@@ -321,7 +353,12 @@ class QLearningAgent:
         while queue:
             x, y = queue.pop(0)
             count += 1
-            for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:  # UP, DOWN, LEFT, RIGHT
+            for dx, dy in [
+                (-1, 0),
+                (1, 0),
+                (0, -1),
+                (0, 1),
+            ]:  # UP, DOWN, LEFT, RIGHT
                 new_pos = (x + dx, y + dy)
                 if (
                     0 <= new_pos[0] < self.board_size[0]
@@ -335,21 +372,23 @@ class QLearningAgent:
 
         return count
 
-
     def compute_heatmap(self):
         """Crée une carte de chaleur indiquant les zones les plus visitées"""
         heatmap = {}
         for pos in self.position_history:
-            heatmap[pos] = heatmap.get(pos, 0) + 1  # Plus un endroit est visité, plus il est chaud
+            heatmap[pos] = (
+                heatmap.get(pos, 0) + 1
+            )  # Plus un endroit est visité, plus il est chaud
         return heatmap
 
-      
     def choose_action(self, state, training=True):
         if not self.dontlearn_enabled:
             return random.choice(self.actions)
 
         objects = ast.literal_eval(state)
-        unknown_objects = [obj for obj in objects if obj not in self.discovered_objects]
+        unknown_objects = [
+            obj for obj in objects if obj not in self.discovered_objects
+        ]
 
         if unknown_objects:
             chosen_object = random.choice(unknown_objects)
@@ -378,18 +417,24 @@ class QLearningAgent:
                 # Facteur de pénalité si la case a été trop visitée
                 visit_penalty = heatmap.get((x, y), 0) * self.learning_rate
 
-                # Score final basé sur la récompense, l'espace libre et la chaleur
+                # Score final basé au récompense, l'espace libre et la chaleur
                 score = reward + free_space * self.score_rate + visit_penalty
 
                 # Ajouter une pénalité si l'action mène à un piège
-                if free_space < 2:  # Si l'espace libre est trop faible, pénaliser l'action
+                if (
+                    free_space < 2
+                ):  # Si l'espace libre est trop faible, pénaliser l'action
                     score -= 50
 
                 action_scores[self.actions[i]] = score
-            
+
             # Sélectionner les actions avec le score maximal
             max_score = max(action_scores.values())
-            best_actions = [action for action, score in action_scores.items() if score == max_score]
+            best_actions = [
+                action
+                for action, score in action_scores.items()
+                if score == max_score
+            ]
 
             action = random.choice(best_actions)
 
