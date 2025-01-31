@@ -7,7 +7,7 @@ class QLearningAgent:
     def __init__(
         self,
         actions,
-        score_rate=2e-05,#0.00002,
+        score_rate=2e-05,
         heatmap_rate=-0.5,
         learning_rate=0.007,
         discount_factor=0.00995,
@@ -271,8 +271,8 @@ class QLearningAgent:
                 {
                     "q_table": self.q_table,
                     "discovered_objects": self.discovered_objects,
-                    "wall_obj": self.wall_obj, # Sauvegarder l'objet mur
-                    "board_size": self.board_size,  # Sauvegarder la taille du plateau
+                    "wall_obj": self.wall_obj,
+                    "board_size": self.board_size,
                     "score_rate": self.score_rate,
                     "heatmap_rate": self.heatmap_rate,
                     "learning_rate": self.learning_rate,
