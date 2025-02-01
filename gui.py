@@ -49,8 +49,7 @@ class SnakeGUI:
         self.current_session = 0
         self.save_model_path = save_model_path
         self.load_model_path = load_model_path
-
-        # Initialiser l'interface utilisateur
+        self.show_spectrum = False
         self._setup_ui(master, board_size)
         self.draw_board()
         self.master.bind("<Key>", self.manual_control)
@@ -122,6 +121,11 @@ class SnakeGUI:
         )
         self.manual_button.grid(row=0, column=6, padx=5, pady=10)
 
+        self.show_spectrum_btn = tk.Button(
+            self.control_frame, text="Spectre OFF", command=self.spectrum_display
+        )
+        self.show_spectrum_btn.grid(row=0, column=7, padx=5, pady=10)
+
         # Frame pour les labels (statistiques, Q-values, objets découverts)
         self.labels_frame = tk.Frame(master)
         self.labels_frame.pack(fill=tk.BOTH, expand=True)
@@ -184,6 +188,14 @@ class SnakeGUI:
         """Met à jour le texte du label avec un message unique."""
         self.status_label.config(text=message)
         self.master.update()
+        
+    def spectrum_display(self):
+        self.show_spectrum = not self.show_spectrum
+        if self.show_spectrum:
+            self.show_spectrum_btn.config(text="Spectre ON ")
+        else:
+            self.show_spectrum_btn.config(text="Spectre OFF")
+        self.draw_board()
 
     def display_speed(self, message):
         """
@@ -260,13 +272,6 @@ class SnakeGUI:
                     f"Mode: {self.mode}\n{path_txt}- {self.save_model_path}"
                 )
                 self.agent.save_model(self.save_model_path)
-
-
-
-
-
-
-
 
     def open_settings_window(self):
         # Créer une nouvelle fenêtre modale
@@ -346,15 +351,13 @@ class SnakeGUI:
         # Bouton pour valider les modifications
         tk.Button(settings_window, text="Valider", command=lambda: self.apply_settings(settings_window)).pack(pady=10)
 
-
-            
     def choose_save_path(self):
         # Obtenir le chemin du dossier du projet
         project_dir = os.path.dirname(os.path.abspath(__file__))
         
         # Ouvrir l'explorateur de fichiers pour choisir un emplacement de sauvegarde
         file_path = filedialog.asksaveasfilename(
-            initialdir=project_dir,  # Ouvrir le dossier du projet par défaut
+            initialdir=project_dir,
             defaultextension=".json",
             filetypes=[("Fichiers JSON", "*.json"), ("Tous les fichiers", "*.*")],
             title="Enregistrer les poids dans"
@@ -368,14 +371,12 @@ class SnakeGUI:
         
         # Ouvrir l'explorateur de fichiers pour choisir un fichier de poids
         file_path = filedialog.askopenfilename(
-            initialdir=project_dir,  # Ouvrir le dossier du projet par défaut
+            initialdir=project_dir,
             filetypes=[("Fichiers JSON", "*.json"), ("Tous les fichiers", "*.*")],
             title="Ouvrir le fichier des poids"
         )
         if file_path:
             self.load_model_path_var.set(file_path)
-
-
 
     def apply_settings(self, settings_window):
         # Valider la taille du plateau
@@ -408,18 +409,12 @@ class SnakeGUI:
             elif self.mode == "Game" and self.load_model_path:
                 self.agent.load_model(self.load_model_path)
             elif self.mode == "Learning":
-                self.agent.dontlearn_enabled = True  # Réactiver l'apprentissage
-
+                self.agent.dontlearn_enabled = True
         # Mettre à jour le texte du status_label
         self.update_status_label(f"Mode: {self.mode}\nAppuyez sur start pour démarrer:\n- {self.sessions} sessions {self.mode}.")
 
         # Fermer la fenêtre modale
         settings_window.destroy()
-
-
-
-
-
 
     def run_game_session(self):
         if self.running or self.step_mode:
@@ -494,8 +489,8 @@ class SnakeGUI:
                     fill=color,
                     outline="black",
                 )
-        # Dessiner l'historique des positions
-        self.draw_position_history()
+        if self.show_spectrum:
+            self.draw_position_history()
 
         if hasattr(self, "speed_message_text"):
             self.speed_message_id = self.canvas.create_text(
