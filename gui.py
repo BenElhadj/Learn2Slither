@@ -5,6 +5,7 @@ import time
 import tkinter as tk
 from board import Board
 from agent import QLearningAgent
+from tkinter import filedialog, messagebox
 
 
 class SnakeGUI:
@@ -70,6 +71,7 @@ class SnakeGUI:
             wraplength=400,
         )
         self.status_label.pack(pady=10, padx=10)
+        self.status_label.bind("<Button-1>", lambda event: self.open_settings_window())
 
         # Canvas pour afficher le plateau de jeu
         self.canvas = tk.Canvas(
@@ -258,6 +260,166 @@ class SnakeGUI:
                     f"Mode: {self.mode}\n{path_txt}- {self.save_model_path}"
                 )
                 self.agent.save_model(self.save_model_path)
+
+
+
+
+
+
+
+
+    def open_settings_window(self):
+        # Créer une nouvelle fenêtre modale
+        settings_window = tk.Toplevel(self.master)
+        settings_window.title("Paramètres du mode")
+        settings_window.geometry("350x300")
+
+        # Variables pour stocker les valeurs modifiables
+        self.mode_var = tk.StringVar(value=self.mode)  # Variable pour le mode
+        self.sessions_var = tk.IntVar(value=self.sessions)
+        self.save_model_path_var = tk.StringVar(value=self.save_model_path or "")
+        self.load_model_path_var = tk.StringVar(value=self.load_model_path or "")
+        self.board_size_var = tk.IntVar(value=self.board.size)
+
+        # Ajouter un menu déroulant pour sélectionner le mode
+        tk.Label(settings_window, text="Mode:").pack(pady=5)
+        mode_menu = tk.OptionMenu(settings_window, self.mode_var, "Learning", "Game", "Dontlearn")
+        mode_menu.pack()
+
+        # Frame pour contenir les champs dynamiques
+        self.settings_frame = tk.Frame(settings_window)
+        self.settings_frame.pack(pady=10, fill=tk.BOTH, expand=True)
+
+        # Fonction pour mettre à jour les champs en fonction du mode sélectionné
+        def update_fields(*args):
+            print(f"Mode sélectionné : {self.mode_var.get()}")  # Debug
+            # Effacer les champs précédents
+            for widget in self.settings_frame.winfo_children():
+                widget.destroy()
+
+            # Afficher les champs en fonction du mode sélectionné
+            if self.mode_var.get() == "Learning":
+                # Frame pour le chemin de fichier et le bouton "Parcourir"
+                file_frame = tk.Frame(self.settings_frame)
+                file_frame.pack(pady=5, fill=tk.X)
+
+                tk.Label(file_frame, text="Enregistrer les poids dans:").pack(padx=5)
+                entry_button_frame = tk.Frame(file_frame)
+                entry_button_frame.pack(pady=5)
+                tk.Entry(entry_button_frame, textvariable=self.save_model_path_var, width=20).pack(side=tk.LEFT, padx=5)
+                tk.Button(entry_button_frame, text="Parcourir...", command=self.choose_save_path).pack(side=tk.LEFT)
+
+                # Spinbox pour le nombre de sessions
+                tk.Label(self.settings_frame, text="Nombre de sessions d'entraînement:").pack(pady=5)
+                tk.Spinbox(self.settings_frame, from_=1, to=1000, textvariable=self.sessions_var).pack()
+
+            elif self.mode_var.get() == "Game":
+                # Frame pour le chemin de fichier et le bouton "Parcourir"
+                file_frame = tk.Frame(self.settings_frame)
+                file_frame.pack(pady=5, fill=tk.X)
+
+                tk.Label(file_frame, text="Ouvrir le fichier des poids:").pack(padx=5)
+                entry_button_frame = tk.Frame(file_frame)
+                entry_button_frame.pack(pady=5)
+                tk.Entry(entry_button_frame, textvariable=self.load_model_path_var, width=20).pack(side=tk.LEFT, padx=5)
+                tk.Button(entry_button_frame, text="Parcourir...", command=self.choose_load_path).pack(side=tk.LEFT)
+
+                # Spinbox pour le nombre de sessions
+                tk.Label(self.settings_frame, text="Nombre de sessions de jeu:").pack(pady=5)
+                tk.Spinbox(self.settings_frame, from_=1, to=1000, textvariable=self.sessions_var).pack()
+
+            elif self.mode_var.get() == "Dontlearn":
+                # Spinbox pour le nombre de sessions
+                tk.Label(self.settings_frame, text="Nombre de sessions de jeu:").pack(pady=5)
+                tk.Spinbox(self.settings_frame, from_=1, to=1000, textvariable=self.sessions_var).pack()
+
+            # Ajouter un champ pour modifier la taille du plateau
+            tk.Label(self.settings_frame, text="Taille du plateau (8-100):").pack(pady=5)
+            tk.Spinbox(self.settings_frame, from_=8, to=50, textvariable=self.board_size_var).pack()
+
+        # Lier la mise à jour des champs au changement de mode
+        self.mode_var.trace_add("write", update_fields)
+
+        # Appeler update_fields une première fois pour afficher les champs initiaux
+        update_fields()
+
+        # Bouton pour valider les modifications
+        tk.Button(settings_window, text="Valider", command=lambda: self.apply_settings(settings_window)).pack(pady=10)
+
+
+            
+    def choose_save_path(self):
+        # Obtenir le chemin du dossier du projet
+        project_dir = os.path.dirname(os.path.abspath(__file__))
+        
+        # Ouvrir l'explorateur de fichiers pour choisir un emplacement de sauvegarde
+        file_path = filedialog.asksaveasfilename(
+            initialdir=project_dir,  # Ouvrir le dossier du projet par défaut
+            defaultextension=".json",
+            filetypes=[("Fichiers JSON", "*.json"), ("Tous les fichiers", "*.*")],
+            title="Enregistrer les poids dans"
+        )
+        if file_path:
+            self.save_model_path_var.set(file_path)
+
+    def choose_load_path(self):
+        # Obtenir le chemin du dossier du projet
+        project_dir = os.path.dirname(os.path.abspath(__file__))
+        
+        # Ouvrir l'explorateur de fichiers pour choisir un fichier de poids
+        file_path = filedialog.askopenfilename(
+            initialdir=project_dir,  # Ouvrir le dossier du projet par défaut
+            filetypes=[("Fichiers JSON", "*.json"), ("Tous les fichiers", "*.*")],
+            title="Ouvrir le fichier des poids"
+        )
+        if file_path:
+            self.load_model_path_var.set(file_path)
+
+
+
+    def apply_settings(self, settings_window):
+        # Valider la taille du plateau
+        try:
+            new_board_size = int(self.board_size_var.get())
+            if new_board_size < 8 or new_board_size > 100:
+                raise ValueError("La taille du plateau doit être entre 8 et 100.")
+        except ValueError as e:
+            messagebox.showerror("Erreur", str(e))
+            return
+
+        # Mettre à jour les paramètres en fonction des valeurs saisies
+        new_mode = self.mode_var.get()
+        self.sessions = self.sessions_var.get()
+        self.save_model_path = self.save_model_path_var.get() if self.save_model_path_var.get() else None
+        self.load_model_path = self.load_model_path_var.get() if self.load_model_path_var.get() else None
+
+        # Mettre à jour la taille du plateau si elle a changé
+        if new_board_size != self.board.size:
+            self.board = Board(size=new_board_size)
+            self.cell_size = 25  # Réinitialiser la taille des cellules
+            self.canvas.config(width=new_board_size * self.cell_size, height=new_board_size * self.cell_size)
+            self.draw_board()
+
+        # Mettre à jour le mode
+        if new_mode != self.mode:
+            self.mode = new_mode
+            if self.mode == "Dontlearn":
+                self.agent.dontlearn()
+            elif self.mode == "Game" and self.load_model_path:
+                self.agent.load_model(self.load_model_path)
+            elif self.mode == "Learning":
+                self.agent.dontlearn_enabled = True  # Réactiver l'apprentissage
+
+        # Mettre à jour le texte du status_label
+        self.update_status_label(f"Mode: {self.mode}\nAppuyez sur start pour démarrer:\n- {self.sessions} sessions {self.mode}.")
+
+        # Fermer la fenêtre modale
+        settings_window.destroy()
+
+
+
+
+
 
     def run_game_session(self):
         if self.running or self.step_mode:
