@@ -70,7 +70,9 @@ class SnakeGUI:
             wraplength=400,
         )
         self.status_label.pack(pady=10, padx=10)
-        self.status_label.bind("<Button-1>", lambda event: self.open_settings_window())
+        self.status_label.bind(
+            "<Button-1>", lambda event: self.open_settings_window()
+        )
 
         # Canvas pour afficher le plateau de jeu
         self.canvas = tk.Canvas(
@@ -122,7 +124,9 @@ class SnakeGUI:
         self.manual_button.grid(row=0, column=6, padx=5, pady=10)
 
         self.show_spectrum_btn = tk.Button(
-            self.control_frame, text="Spectre OFF", command=self.spectrum_display
+            self.control_frame,
+            text="Spectre OFF",
+            command=self.spectrum_display,
         )
         self.show_spectrum_btn.grid(row=0, column=7, padx=5, pady=10)
 
@@ -188,7 +192,7 @@ class SnakeGUI:
         """Met à jour le texte du label avec un message unique."""
         self.status_label.config(text=message)
         self.master.update()
-        
+
     def spectrum_display(self):
         self.show_spectrum = not self.show_spectrum
         if self.show_spectrum:
@@ -282,22 +286,27 @@ class SnakeGUI:
         # Variables pour stocker les valeurs modifiables
         self.mode_var = tk.StringVar(value=self.mode)  # Variable pour le mode
         self.sessions_var = tk.IntVar(value=self.sessions)
-        self.save_model_path_var = tk.StringVar(value=self.save_model_path or "")
-        self.load_model_path_var = tk.StringVar(value=self.load_model_path or "")
+        self.save_model_path_var = tk.StringVar(
+            value=self.save_model_path or ""
+        )
+        self.load_model_path_var = tk.StringVar(
+            value=self.load_model_path or ""
+        )
         self.board_size_var = tk.IntVar(value=self.board.size)
 
         # Ajouter un menu déroulant pour sélectionner le mode
         tk.Label(settings_window, text="Mode:").pack(pady=5)
-        mode_menu = tk.OptionMenu(settings_window, self.mode_var, "Learning", "Game", "Dontlearn")
+        mode_menu = tk.OptionMenu(
+            settings_window, self.mode_var, "Learning", "Game", "Dontlearn"
+        )
         mode_menu.pack()
 
         # Frame pour contenir les champs dynamiques
         self.settings_frame = tk.Frame(settings_window)
         self.settings_frame.pack(pady=10, fill=tk.BOTH, expand=True)
 
-        # Fonction pour mettre à jour les champs en fonction du mode sélectionné
+        # Fonction pour mettre à jour les champs selon le mode sélectionné
         def update_fields(*args):
-            print(f"Mode sélectionné : {self.mode_var.get()}")  # Debug
             # Effacer les champs précédents
             for widget in self.settings_frame.winfo_children():
                 widget.destroy()
@@ -308,59 +317,115 @@ class SnakeGUI:
                 file_frame = tk.Frame(self.settings_frame)
                 file_frame.pack(pady=5, fill=tk.X)
 
-                tk.Label(file_frame, text="Enregistrer les poids dans:").pack(padx=5)
+                tk.Label(file_frame, text="Enregistrer les poids dans:").pack(
+                    padx=5
+                )
                 entry_button_frame = tk.Frame(file_frame)
                 entry_button_frame.pack(pady=5)
-                tk.Entry(entry_button_frame, textvariable=self.save_model_path_var, width=20).pack(side=tk.LEFT, padx=5)
-                tk.Button(entry_button_frame, text="Parcourir...", command=self.choose_save_path).pack(side=tk.LEFT)
+                tk.Entry(
+                    entry_button_frame,
+                    textvariable=self.save_model_path_var,
+                    width=20,
+                ).pack(side=tk.LEFT, padx=5)
+                tk.Button(
+                    entry_button_frame,
+                    text="Parcourir...",
+                    command=self.choose_save_path,
+                ).pack(side=tk.LEFT)
 
                 # Spinbox pour le nombre de sessions
-                tk.Label(self.settings_frame, text="Nombre de sessions d'entraînement:").pack(pady=5)
-                tk.Spinbox(self.settings_frame, from_=1, to=1000, textvariable=self.sessions_var).pack()
+                tk.Label(
+                    self.settings_frame,
+                    text="Nombre de sessions d'entraînement:",
+                ).pack(pady=5)
+                tk.Spinbox(
+                    self.settings_frame,
+                    from_=1,
+                    to=1000,
+                    textvariable=self.sessions_var,
+                ).pack()
 
             elif self.mode_var.get() == "Game":
                 # Frame pour le chemin de fichier et le bouton "Parcourir"
                 file_frame = tk.Frame(self.settings_frame)
                 file_frame.pack(pady=5, fill=tk.X)
 
-                tk.Label(file_frame, text="Ouvrir le fichier des poids:").pack(padx=5)
+                tk.Label(file_frame, text="Ouvrir le fichier des poids:").pack(
+                    padx=5
+                )
                 entry_button_frame = tk.Frame(file_frame)
                 entry_button_frame.pack(pady=5)
-                tk.Entry(entry_button_frame, textvariable=self.load_model_path_var, width=20).pack(side=tk.LEFT, padx=5)
-                tk.Button(entry_button_frame, text="Parcourir...", command=self.choose_load_path).pack(side=tk.LEFT)
+                tk.Entry(
+                    entry_button_frame,
+                    textvariable=self.load_model_path_var,
+                    width=20,
+                ).pack(side=tk.LEFT, padx=5)
+                tk.Button(
+                    entry_button_frame,
+                    text="Parcourir...",
+                    command=self.choose_load_path,
+                ).pack(side=tk.LEFT)
 
                 # Spinbox pour le nombre de sessions
-                tk.Label(self.settings_frame, text="Nombre de sessions de jeu:").pack(pady=5)
-                tk.Spinbox(self.settings_frame, from_=1, to=1000, textvariable=self.sessions_var).pack()
+                tk.Label(
+                    self.settings_frame, text="Nombre de sessions de jeu:"
+                ).pack(pady=5)
+                tk.Spinbox(
+                    self.settings_frame,
+                    from_=1,
+                    to=1000,
+                    textvariable=self.sessions_var,
+                ).pack()
 
             elif self.mode_var.get() == "Dontlearn":
                 # Spinbox pour le nombre de sessions
-                tk.Label(self.settings_frame, text="Nombre de sessions de jeu:").pack(pady=5)
-                tk.Spinbox(self.settings_frame, from_=1, to=1000, textvariable=self.sessions_var).pack()
+                tk.Label(
+                    self.settings_frame, text="Nombre de sessions de jeu:"
+                ).pack(pady=5)
+                tk.Spinbox(
+                    self.settings_frame,
+                    from_=1,
+                    to=1000,
+                    textvariable=self.sessions_var,
+                ).pack()
 
             # Ajouter un champ pour modifier la taille du plateau
-            tk.Label(self.settings_frame, text="Taille du plateau (8-100):").pack(pady=5)
-            tk.Spinbox(self.settings_frame, from_=8, to=50, textvariable=self.board_size_var).pack()
+            tk.Label(
+                self.settings_frame, text="Taille du plateau (8-100):"
+            ).pack(pady=5)
+            tk.Spinbox(
+                self.settings_frame,
+                from_=8,
+                to=50,
+                textvariable=self.board_size_var,
+            ).pack()
 
         # Lier la mise à jour des champs au changement de mode
         self.mode_var.trace_add("write", update_fields)
 
-        # Appeler update_fields une première fois pour afficher les champs initiaux
+        # Appeler update_fields une fois pour afficher les champs initiaux
         update_fields()
 
         # Bouton pour valider les modifications
-        tk.Button(settings_window, text="Valider", command=lambda: self.apply_settings(settings_window)).pack(pady=10)
+        tk.Button(
+            settings_window,
+            text="Valider",
+            command=lambda: self.apply_settings(settings_window),
+        ).pack(pady=10)
 
     def choose_save_path(self):
         # Obtenir le chemin du dossier du projet
         project_dir = os.path.dirname(os.path.abspath(__file__))
-        
-        # Ouvrir l'explorateur de fichiers pour choisir un emplacement de sauvegarde
+
+        # Ouvrir l'explorateur pour choisir un emplacement de sauvegarde
         file_path = filedialog.asksaveasfilename(
             initialdir=project_dir,
-            defaultextension=".json",
-            filetypes=[("Fichiers JSON", "*.json"), ("Tous les fichiers", "*.*")],
-            title="Enregistrer les poids dans"
+            defaultextension="",
+            filetypes=[
+                ("Tous les fichiers", "*.*"),
+                ("Fichiers JSON", "*.json"),
+            ],
+            title="Enregistrer les poids dans",
         )
         if file_path:
             self.save_model_path_var.set(file_path)
@@ -368,12 +433,15 @@ class SnakeGUI:
     def choose_load_path(self):
         # Obtenir le chemin du dossier du projet
         project_dir = os.path.dirname(os.path.abspath(__file__))
-        
+
         # Ouvrir l'explorateur de fichiers pour choisir un fichier de poids
         file_path = filedialog.askopenfilename(
             initialdir=project_dir,
-            filetypes=[("Fichiers JSON", "*.json"), ("Tous les fichiers", "*.*")],
-            title="Ouvrir le fichier des poids"
+            filetypes=[
+                ("Tous les fichiers", "*.*"),
+                ("Fichiers JSON", "*.json"),
+            ],
+            title="Ouvrir le fichier des poids",
         )
         if file_path:
             self.load_model_path_var.set(file_path)
@@ -383,22 +451,50 @@ class SnakeGUI:
         try:
             new_board_size = int(self.board_size_var.get())
             if new_board_size < 8 or new_board_size > 100:
-                raise ValueError("La taille du plateau doit être entre 8 et 100.")
+                raise ValueError(
+                    "La taille du plateau doit être entre 8 et 100."
+                )
         except ValueError as e:
             messagebox.showerror("Erreur", str(e))
             return
 
+        # reset all
+        self.reset_board()
+        self.agent.q_table = {}
+        self.agent.discovered_objects = {}
+        self.agent.wall_obj = ""
+        self.agent.board_size = (0, 0)
+        self.agent.score_rate = 2e-05
+        self.agent.heatmap_rate = -0.5
+        self.agent.learning_rate = 0.007
+        self.agent.discount_factor = 0.00995
+        self.agent.exploration_rate = 0.2
+        self.agent.exploration_decay = 0.0999
+        self.agent.current_position = (0, 0)
+        self.draw_discovered_objects()
+
         # Mettre à jour les paramètres en fonction des valeurs saisies
         new_mode = self.mode_var.get()
         self.sessions = self.sessions_var.get()
-        self.save_model_path = self.save_model_path_var.get() if self.save_model_path_var.get() else None
-        self.load_model_path = self.load_model_path_var.get() if self.load_model_path_var.get() else None
+        self.save_model_path = (
+            self.save_model_path_var.get()
+            if self.save_model_path_var.get()
+            else None
+        )
+        self.load_model_path = (
+            self.load_model_path_var.get()
+            if self.load_model_path_var.get()
+            else None
+        )
 
         # Mettre à jour la taille du plateau si elle a changé
         if new_board_size != self.board.size:
             self.board = Board(size=new_board_size)
             self.cell_size = 25  # Réinitialiser la taille des cellules
-            self.canvas.config(width=new_board_size * self.cell_size, height=new_board_size * self.cell_size)
+            self.canvas.config(
+                width=new_board_size * self.cell_size,
+                height=new_board_size * self.cell_size,
+            )
             self.draw_board()
 
         # Mettre à jour le mode
@@ -411,7 +507,10 @@ class SnakeGUI:
             elif self.mode == "Learning":
                 self.agent.dontlearn_enabled = True
         # Mettre à jour le texte du status_label
-        self.update_status_label(f"Mode: {self.mode}\nAppuyez sur start pour démarrer:\n- {self.sessions} sessions {self.mode}.")
+        self.update_status_label(
+            f"Mode: {self.mode}\nAppuyez sur start pour démarrer:\n",
+            f"- {self.sessions} sessions {self.mode}."
+        )
 
         # Fermer la fenêtre modale
         settings_window.destroy()
@@ -530,8 +629,10 @@ class SnakeGUI:
         }
         q_values_text = "Q-values de l'état actuel:\n"
         for action in directions:
-            q_values_text += (f"{action:<7}\t=> {state_mapping[action]}"
-                              f" : {q_values[action]:.2f}\n")
+            q_values_text += (
+                f"{action:<7}\t=> {state_mapping[action]}"
+                f" : {q_values[action]:.2f}\n"
+            )
         self.q_values_label.config(text=q_values_text)
 
     def update_action_label(self, action):
@@ -581,6 +682,7 @@ class SnakeGUI:
         self.manual_mode = False
         self.draw_board()
         self.update_stats_label()
+        self.agent.reset_history()
 
     def toggle_manual_mode(self):
         self.manual_mode = not self.manual_mode
@@ -709,7 +811,7 @@ class COMMAND_LINE:
             for action in directions:
                 print(
                     f"  {action:<7} => {state_mapping[action]}",
-                    f" : {q_values[action]:.2f}"
+                    f" : {q_values[action]:.2f}",
                 )
 
         def display_objects_discovered():

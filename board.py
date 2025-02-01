@@ -3,7 +3,7 @@ import random
 
 
 class Board:
-    def __init__(self, size=10, initial_score=1000):
+    def __init__(self, size=10, initial_score=0):
         self.size = size
         self.grid = [["0" for _ in range(size)] for _ in range(size)]
         self.snake = self.initialize_snake()
@@ -102,8 +102,8 @@ class Board:
             self.snake.insert(0, new_head)
             self.snake.pop()
             self.score -= 1
-            if self.score <= 0:
-                return "Game Over"
+            # if self.score <= 0:
+            #     return "Game Over"
             return "Moved"
 
     def render(self):
