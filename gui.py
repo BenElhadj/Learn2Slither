@@ -508,7 +508,7 @@ class SnakeGUI:
                 self.agent.dontlearn_enabled = True
         # Mettre à jour le texte du status_label
         self.update_status_label(
-            f"Mode: {self.mode}\nAppuyez sur start pour démarrer:\n",
+            f"Mode: {self.mode}\nAppuyez sur start pour démarrer:\n"
             f"- {self.sessions} sessions {self.mode}."
         )
 
