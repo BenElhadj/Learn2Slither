@@ -3,14 +3,20 @@ import random
 
 
 class Board:
-    def __init__(self, size=10, initial_score=0, total_red_apples=1, total_green_apples=2):
+    def __init__(
+        self,
+        size=10,
+        initial_score=0,
+        nb_r_app=1,
+        nb_g_app=2,
+    ):
         self.size = size
         self.grid = [["0" for _ in range(size)] for _ in range(size)]
         self.snake = self.initialize_snake()
         self.green_apples = []
-        self.total_green_apples = total_green_apples
+        self.nb_g_app = nb_g_app
         self.red_apples = []
-        self.total_red_apples = total_red_apples
+        self.nb_r_app = nb_r_app
         self.place_apples()
         self.snake_dir = self.random_or_advantageous_direction()
         self.score = initial_score
@@ -53,14 +59,18 @@ class Board:
         self.steps = 0
         self.max_length = 3
         self.green_apples = []
-        self.total_green_apples = self.total_green_apples
+        self.nb_g_app = self.nb_g_app
         self.red_apples = []
-        self.total_red_apples = self.total_red_apples
+        self.nb_r_app = self.nb_r_app
         self.place_apples()
 
     def place_apples(self):
-        self.green_apples = [self.random_empty_cell() for _ in range(self.total_green_apples)]
-        self.red_apples = [self.random_empty_cell() for _ in range(self.total_red_apples)]
+        self.green_apples = [
+            self.random_empty_cell() for _ in range(self.nb_g_app)
+        ]
+        self.red_apples = [
+            self.random_empty_cell() for _ in range(self.nb_r_app)
+        ]
 
     def random_empty_cell(self):
         while True:

@@ -58,8 +58,8 @@ def main():
             load_model_path=args.load,
             sessions=args.sessions,
             dontlearn=args.dontlearn,
-            total_red_apples=args.red,
-            total_green_apples=args.green,
+            nb_r_app=args.red,
+            nb_g_app=args.green,
         )
         app.board.steps = 0
 
@@ -103,8 +103,8 @@ def main():
             visual=True,
             board_size=args.size,
             dontlearn=args.dontlearn,
-            total_red_apples=args.red,
-            total_green_apples=args.green,
+            nb_r_app=args.red,
+            nb_g_app=args.green,
         )
 
 

@@ -15,11 +15,15 @@ class COMMAND_LINE:
         visual=False,
         dontlearn=None,
         board_size=10,
-        total_red_apples=1,
-        total_green_apples=2,
+        nb_r_app=1,
+        nb_g_app=2,
     ):
 
-        board = Board(size=board_size, total_red_apples=total_red_apples ,total_green_apples=total_green_apples)
+        board = Board(
+            size=board_size,
+            nb_r_app=nb_r_app,
+            nb_g_app=nb_g_app,
+        )
         agent = QLearningAgent(actions=["UP", "DOWN", "LEFT", "RIGHT"])
         length_history = []  # Initialiser l'historique des longueurs
 

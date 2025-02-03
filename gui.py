@@ -17,13 +17,15 @@ class SnakeGUI:
         load_model_path=None,
         dontlearn=None,
         sessions=1,
-        total_red_apples=1,
-        total_green_apples=2,
+        nb_r_app=1,
+        nb_g_app=2,
     ):
         self.master = master
 
         self.master.title("Entraînement Snake AI")
-        self.board = Board(size=board_size, total_red_apples=total_red_apples ,total_green_apples=total_green_apples)
+        self.board = Board(
+            size=board_size, nb_r_app=nb_r_app, nb_g_app=nb_g_app
+            )
         self.agent = QLearningAgent(
             actions=["UP", "DOWN", "LEFT", "RIGHT"], verbose=False
         )
@@ -43,8 +45,8 @@ class SnakeGUI:
         self.speed = 100
         self.running = False
         self.sessions = sessions
-        self.total_red_apples = total_red_apples,
-        self.total_green_apples = total_green_apples,
+        self.nb_r_app = nb_r_app,
+        self.nb_g_app = nb_g_app,
         self.step_mode = False
         self.cell_size = 25
         self.dontlearn = dontlearn
@@ -288,14 +290,20 @@ class SnakeGUI:
 
         self.mode_var = tk.StringVar(value=self.mode)
         self.sessions_var = tk.IntVar(value=self.sessions)
-        self.save_model_path_var = tk.StringVar(value=self.save_model_path or "")
-        self.load_model_path_var = tk.StringVar(value=self.load_model_path or "")
+        self.save_model_path_var = tk.StringVar(
+            value=self.save_model_path or ""
+            )
+        self.load_model_path_var = tk.StringVar(
+            value=self.load_model_path or ""
+            )
         self.board_size_var = tk.IntVar(value=self.board.size)
-        self.total_red_apples_var = tk.IntVar(value=self.total_red_apples)
-        self.total_green_apples_var = tk.IntVar(value=self.total_green_apples)
+        self.total_red_apples_var = tk.IntVar(value=self.nb_r_app)
+        self.total_green_apples_var = tk.IntVar(value=self.nb_g_app)
 
         tk.Label(settings_window, text="Mode:").pack(pady=5)
-        mode_menu = tk.OptionMenu(settings_window, self.mode_var, "Learning", "Game", "Dontlearn")
+        mode_menu = tk.OptionMenu(
+            settings_window, self.mode_var, "Learning", "Game", "Dontlearn"
+            )
         mode_menu.pack()
 
         self.settings_frame = tk.Frame(settings_window)
@@ -308,38 +316,95 @@ class SnakeGUI:
             if self.mode_var.get() == "Learning":
                 file_frame = tk.Frame(self.settings_frame)
                 file_frame.pack(pady=5, fill=tk.X)
-                tk.Label(file_frame, text="Enregistrer les poids dans:").pack(padx=5)
+                tk.Label(
+                    file_frame, text="Enregistrer les poids dans:"
+                    ).pack(padx=5)
                 entry_button_frame = tk.Frame(file_frame)
                 entry_button_frame.pack(pady=5)
-                tk.Entry(entry_button_frame, textvariable=self.save_model_path_var, width=20).pack(side=tk.LEFT, padx=5)
-                tk.Button(entry_button_frame, text="Parcourir...", command=self.choose_save_path).pack(side=tk.LEFT)
-                tk.Label(self.settings_frame, text="Nombre de sessions d'entraînement:").pack(pady=5)
-                tk.Spinbox(self.settings_frame, from_=1, to=1000, textvariable=self.sessions_var).pack()
-
+                tk.Entry(
+                    entry_button_frame,
+                    textvariable=self.save_model_path_var,
+                    width=20
+                    ).pack(side=tk.LEFT, padx=5)
+                tk.Button(
+                    entry_button_frame,
+                    text="Parcourir...",
+                    command=self.choose_save_path
+                    ).pack(side=tk.LEFT)
+                tk.Label(
+                    self.settings_frame,
+                    text="Nombre de sessions d'entraînement:"
+                    ).pack(pady=5)
+                tk.Spinbox(
+                    self.settings_frame,
+                    from_=1,
+                    to=1000,
+                    textvariable=self.sessions_var
+                    ).pack()
             elif self.mode_var.get() == "Game":
                 file_frame = tk.Frame(self.settings_frame)
                 file_frame.pack(pady=5, fill=tk.X)
-                tk.Label(file_frame, text="Ouvrir le fichier des poids:").pack(padx=5)
+                tk.Label(
+                    file_frame, text="Ouvrir le fichier des poids:"
+                         ).pack(padx=5)
                 entry_button_frame = tk.Frame(file_frame)
                 entry_button_frame.pack(pady=5)
-                tk.Entry(entry_button_frame, textvariable=self.load_model_path_var, width=20).pack(side=tk.LEFT, padx=5)
-                tk.Button(entry_button_frame, text="Parcourir...", command=self.choose_load_path).pack(side=tk.LEFT)
-                tk.Label(self.settings_frame, text="Nombre de sessions de jeu:").pack(pady=5)
-                tk.Spinbox(self.settings_frame, from_=1, to=1000, textvariable=self.sessions_var).pack()
-
-            tk.Label(self.settings_frame, text="Taille du plateau (8-100):").pack(pady=5)
-            tk.Spinbox(self.settings_frame, from_=8, to=50, textvariable=self.board_size_var).pack()
-            
-            tk.Label(self.settings_frame, text="Nombre de pommes rouges:").pack(pady=5)
-            tk.Spinbox(self.settings_frame, from_=0, to=10, textvariable=self.total_red_apples_var).pack()
-            
-            tk.Label(self.settings_frame, text="Nombre de pommes vertes:").pack(pady=5)
-            tk.Spinbox(self.settings_frame, from_=0, to=10, textvariable=self.total_green_apples_var).pack()
+                tk.Entry(
+                    entry_button_frame,
+                    textvariable=self.load_model_path_var,
+                    width=20
+                    ).pack(side=tk.LEFT, padx=5)
+                tk.Button(
+                    entry_button_frame,
+                    text="Parcourir...",
+                    command=self.choose_load_path
+                    ).pack(side=tk.LEFT)
+                tk.Label(
+                    self.settings_frame,
+                    text="Nombre de sessions de jeu:"
+                    ).pack(pady=5)
+                tk.Spinbox(
+                    self.settings_frame, from_=1,
+                    to=1000,
+                    textvariable=self.sessions_var
+                    ).pack()
+            tk.Label(
+                self.settings_frame, text="Taille du plateau (8-100):"
+                ).pack(pady=5)
+            tk.Spinbox(
+                self.settings_frame,
+                from_=8,
+                to=50,
+                textvariable=self.board_size_var
+                ).pack()
+            tk.Label(
+                self.settings_frame,
+                text="Nombre de pommes rouges:"
+                ).pack(pady=5)
+            tk.Spinbox(
+                self.settings_frame,
+                from_=0,
+                to=10,
+                textvariable=self.total_red_apples_var
+                ).pack()
+            tk.Label(
+                self.settings_frame,
+                text="Nombre de pommes vertes:"
+                ).pack(pady=5)
+            tk.Spinbox(
+                self.settings_frame,
+                from_=0,
+                to=10,
+                textvariable=self.total_green_apples_var
+                ).pack()
 
         self.mode_var.trace_add("write", update_fields)
         update_fields()
-
-        tk.Button(settings_window, text="Valider", command=lambda: self.apply_settings(settings_window)).pack(pady=10)
+        tk.Button(
+            settings_window,
+            text="Valider",
+            command=lambda: self.apply_settings(settings_window)
+            ).pack(pady=10)
 
     def choose_save_path(self):
         # Obtenir le chemin du dossier du projet
@@ -400,10 +465,10 @@ class SnakeGUI:
         self.agent.exploration_decay = 0.0999
         self.agent.current_position = (0, 0)
         self.draw_discovered_objects()
-        self.total_red_apples = self.total_red_apples_var.get()
-        self.total_green_apples = self.total_green_apples_var.get()
-        self.board.total_red_apples = self.total_red_apples
-        self.board.total_green_apples = self.total_green_apples
+        self.nb_r_app = self.total_red_apples_var.get()
+        self.nb_g_app = self.total_green_apples_var.get()
+        self.board.nb_r_app = self.nb_r_app
+        self.board.nb_g_app = self.nb_g_app
 
         # Mettre à jour les paramètres en fonction des valeurs saisies
         new_mode = self.mode_var.get()
@@ -435,10 +500,16 @@ class SnakeGUI:
             f"Mode: {self.mode}\nAppuyez sur start pour démarrer:\n"
             f"- {self.sessions} sessions {self.mode}."
         )
-        
-        self.board = Board(size=self.board_size, total_red_apples=self.total_red_apples, total_green_apples=self.total_green_apples)
-        
-        self.update_status_label(f"Mode: {self.mode}\n{self.sessions} sessions {self.mode}.\nSur un plateau de taille {self.board_size}.\nPommes rouges: {self.total_red_apples}, Pommes vertes: {self.total_green_apples}")
+        self.board = Board(
+            size=self.board_size,
+            nb_r_app=self.nb_r_app,
+            nb_g_app=self.nb_g_app
+            )
+        self.update_status_label(
+            f"Mode: {self.mode}\n{self.sessions} sessions {self.mode}.\n"
+            f"Sur un plateau de taille {self.board_size}.\n"
+            f"Pommes rouges: {self.nb_r_app}, Pommes vertes: {self.nb_g_app}"
+            )
 
         # Fermer la fenêtre modale
         settings_window.destroy()
@@ -466,7 +537,6 @@ class SnakeGUI:
                 reward = -50
             elif result == "Game Over":
                 reward = -100
-                
             self.agent.handle_new_objects(str(state), action, reward)
 
             if result != "Game Over" and result != "Hit Snake Body":
