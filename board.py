@@ -3,12 +3,14 @@ import random
 
 
 class Board:
-    def __init__(self, size=10, initial_score=0):
+    def __init__(self, size=10, initial_score=0, total_red_apples=1, total_green_apples=2):
         self.size = size
         self.grid = [["0" for _ in range(size)] for _ in range(size)]
         self.snake = self.initialize_snake()
         self.green_apples = []
-        self.red_apple = None
+        self.total_green_apples = total_green_apples
+        self.red_apples = []
+        self.total_red_apples = total_red_apples
         self.place_apples()
         self.snake_dir = self.random_or_advantageous_direction()
         self.score = initial_score
@@ -40,7 +42,7 @@ class Board:
             return -50  # Corps du serpent
         if new_head in self.green_apples:
             return +20  # Pomme verte
-        if new_head == self.red_apple:
+        if new_head == self.red_apples:
             return -10  # Pomme rouge
         return 0  # Case vide
 
@@ -51,12 +53,14 @@ class Board:
         self.steps = 0
         self.max_length = 3
         self.green_apples = []
-        self.red_apple = None
+        self.total_green_apples = self.total_green_apples
+        self.red_apples = []
+        self.total_red_apples = self.total_red_apples
         self.place_apples()
 
     def place_apples(self):
-        self.green_apples = [self.random_empty_cell() for _ in range(2)]
-        self.red_apple = self.random_empty_cell()
+        self.green_apples = [self.random_empty_cell() for _ in range(self.total_green_apples)]
+        self.red_apples = [self.random_empty_cell() for _ in range(self.total_red_apples)]
 
     def random_empty_cell(self):
         while True:
@@ -66,7 +70,7 @@ class Board:
             if (
                 (x, y) not in self.snake
                 and (x, y) not in self.green_apples
-                and (x, y) != self.red_apple
+                and (x, y) not in self.red_apples
             ):
                 return x, y
 
@@ -91,27 +95,26 @@ class Board:
                 self.max_length_reached, len(self.snake)
             )
             return "Ate Green Apple"
-        elif new_head == self.red_apple:
+        elif new_head in self.red_apples:
             self.snake.pop()
             if len(self.snake) == 0:
                 return "Game Over"
-            self.red_apple = self.random_empty_cell()
+            self.red_apples.remove(new_head)
+            self.red_apples.append(self.random_empty_cell())
             self.score -= 10
             return "Ate Red Apple"
         else:
             self.snake.insert(0, new_head)
             self.snake.pop()
             self.score -= 1
-            # if self.score <= 0:
-            #     return "Game Over"
             return "Moved"
 
     def render(self):
         self.grid = [["0" for _ in range(self.size)] for _ in range(self.size)]
         for gx, gy in self.green_apples:
             self.grid[gx][gy] = "G"
-        rx, ry = self.red_apple
-        self.grid[rx][ry] = "R"
+        for rx, ry in self.red_apples:
+            self.grid[rx][ry] = "R"
         for i, (x, y) in enumerate(self.snake):
             self.grid[x][y] = "H" if i == 0 else "S"
         for row in self.grid:
@@ -135,6 +138,6 @@ class Board:
             return "S"
         if (x, y) in self.green_apples:
             return "G"
-        if (x, y) == self.red_apple:
+        if (x, y) in self.red_apples:
             return "R"
         return "0"

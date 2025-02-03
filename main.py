@@ -1,6 +1,7 @@
 # main.py
 import argparse
-from gui import SnakeGUI, COMMAND_LINE
+from gui import SnakeGUI
+from cli import COMMAND_LINE
 
 
 def main():
@@ -22,16 +23,26 @@ def main():
     parser.add_argument("-load", type=str, help="Path to load a trained model")
     parser.add_argument(
         "-dontlearn",
-        # print("Nouvel argument pour désactiver l'apprentissage"),
         action="store_true",
         help="Disable learning for evaluation",
     )
-    # Nouvel argument pour la taille du plateau
     parser.add_argument(
         "-size",
         type=int,
         default=10,
         help="Size of the board (N x N)",
+    )
+    parser.add_argument(
+        "-green",
+        type=int,
+        default=2,
+        help="Total number of the green appel",
+    )
+    parser.add_argument(
+        "-red",
+        type=int,
+        default=1,
+        help="Total number of the red appel",
     )
     args = parser.parse_args()
 
@@ -47,6 +58,8 @@ def main():
             load_model_path=args.load,
             sessions=args.sessions,
             dontlearn=args.dontlearn,
+            total_red_apples=args.red,
+            total_green_apples=args.green,
         )
         app.board.steps = 0
 
@@ -88,8 +101,10 @@ def main():
             save_model=args.save,
             load_model=args.load,
             visual=True,
-            board_size=args.size,  # Passer la taille du plateau au mode CLI
+            board_size=args.size,
             dontlearn=args.dontlearn,
+            total_red_apples=args.red,
+            total_green_apples=args.green,
         )
 
 

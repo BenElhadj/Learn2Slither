@@ -17,11 +17,13 @@ class SnakeGUI:
         load_model_path=None,
         dontlearn=None,
         sessions=1,
+        total_red_apples=1,
+        total_green_apples=2,
     ):
         self.master = master
 
         self.master.title("Entraînement Snake AI")
-        self.board = Board(size=board_size)
+        self.board = Board(size=board_size, total_red_apples=total_red_apples ,total_green_apples=total_green_apples)
         self.agent = QLearningAgent(
             actions=["UP", "DOWN", "LEFT", "RIGHT"], verbose=False
         )
@@ -41,6 +43,8 @@ class SnakeGUI:
         self.speed = 100
         self.running = False
         self.sessions = sessions
+        self.total_red_apples = total_red_apples,
+        self.total_green_apples = total_green_apples,
         self.step_mode = False
         self.cell_size = 25
         self.dontlearn = dontlearn
@@ -278,140 +282,64 @@ class SnakeGUI:
                 self.agent.save_model(self.save_model_path)
 
     def open_settings_window(self):
-        # Créer une nouvelle fenêtre modale
         settings_window = tk.Toplevel(self.master)
         settings_window.title("Paramètres du mode")
-        settings_window.geometry("350x300")
+        settings_window.geometry("350x400")
 
-        # Variables pour stocker les valeurs modifiables
-        self.mode_var = tk.StringVar(value=self.mode)  # Variable pour le mode
+        self.mode_var = tk.StringVar(value=self.mode)
         self.sessions_var = tk.IntVar(value=self.sessions)
-        self.save_model_path_var = tk.StringVar(
-            value=self.save_model_path or ""
-        )
-        self.load_model_path_var = tk.StringVar(
-            value=self.load_model_path or ""
-        )
+        self.save_model_path_var = tk.StringVar(value=self.save_model_path or "")
+        self.load_model_path_var = tk.StringVar(value=self.load_model_path or "")
         self.board_size_var = tk.IntVar(value=self.board.size)
+        self.total_red_apples_var = tk.IntVar(value=self.total_red_apples)
+        self.total_green_apples_var = tk.IntVar(value=self.total_green_apples)
 
-        # Ajouter un menu déroulant pour sélectionner le mode
         tk.Label(settings_window, text="Mode:").pack(pady=5)
-        mode_menu = tk.OptionMenu(
-            settings_window, self.mode_var, "Learning", "Game", "Dontlearn"
-        )
+        mode_menu = tk.OptionMenu(settings_window, self.mode_var, "Learning", "Game", "Dontlearn")
         mode_menu.pack()
 
-        # Frame pour contenir les champs dynamiques
         self.settings_frame = tk.Frame(settings_window)
         self.settings_frame.pack(pady=10, fill=tk.BOTH, expand=True)
 
-        # Fonction pour mettre à jour les champs selon le mode sélectionné
         def update_fields(*args):
-            # Effacer les champs précédents
             for widget in self.settings_frame.winfo_children():
                 widget.destroy()
 
-            # Afficher les champs en fonction du mode sélectionné
             if self.mode_var.get() == "Learning":
-                # Frame pour le chemin de fichier et le bouton "Parcourir"
                 file_frame = tk.Frame(self.settings_frame)
                 file_frame.pack(pady=5, fill=tk.X)
-
-                tk.Label(file_frame, text="Enregistrer les poids dans:").pack(
-                    padx=5
-                )
+                tk.Label(file_frame, text="Enregistrer les poids dans:").pack(padx=5)
                 entry_button_frame = tk.Frame(file_frame)
                 entry_button_frame.pack(pady=5)
-                tk.Entry(
-                    entry_button_frame,
-                    textvariable=self.save_model_path_var,
-                    width=20,
-                ).pack(side=tk.LEFT, padx=5)
-                tk.Button(
-                    entry_button_frame,
-                    text="Parcourir...",
-                    command=self.choose_save_path,
-                ).pack(side=tk.LEFT)
-
-                # Spinbox pour le nombre de sessions
-                tk.Label(
-                    self.settings_frame,
-                    text="Nombre de sessions d'entraînement:",
-                ).pack(pady=5)
-                tk.Spinbox(
-                    self.settings_frame,
-                    from_=1,
-                    to=1000,
-                    textvariable=self.sessions_var,
-                ).pack()
+                tk.Entry(entry_button_frame, textvariable=self.save_model_path_var, width=20).pack(side=tk.LEFT, padx=5)
+                tk.Button(entry_button_frame, text="Parcourir...", command=self.choose_save_path).pack(side=tk.LEFT)
+                tk.Label(self.settings_frame, text="Nombre de sessions d'entraînement:").pack(pady=5)
+                tk.Spinbox(self.settings_frame, from_=1, to=1000, textvariable=self.sessions_var).pack()
 
             elif self.mode_var.get() == "Game":
-                # Frame pour le chemin de fichier et le bouton "Parcourir"
                 file_frame = tk.Frame(self.settings_frame)
                 file_frame.pack(pady=5, fill=tk.X)
-
-                tk.Label(file_frame, text="Ouvrir le fichier des poids:").pack(
-                    padx=5
-                )
+                tk.Label(file_frame, text="Ouvrir le fichier des poids:").pack(padx=5)
                 entry_button_frame = tk.Frame(file_frame)
                 entry_button_frame.pack(pady=5)
-                tk.Entry(
-                    entry_button_frame,
-                    textvariable=self.load_model_path_var,
-                    width=20,
-                ).pack(side=tk.LEFT, padx=5)
-                tk.Button(
-                    entry_button_frame,
-                    text="Parcourir...",
-                    command=self.choose_load_path,
-                ).pack(side=tk.LEFT)
+                tk.Entry(entry_button_frame, textvariable=self.load_model_path_var, width=20).pack(side=tk.LEFT, padx=5)
+                tk.Button(entry_button_frame, text="Parcourir...", command=self.choose_load_path).pack(side=tk.LEFT)
+                tk.Label(self.settings_frame, text="Nombre de sessions de jeu:").pack(pady=5)
+                tk.Spinbox(self.settings_frame, from_=1, to=1000, textvariable=self.sessions_var).pack()
 
-                # Spinbox pour le nombre de sessions
-                tk.Label(
-                    self.settings_frame, text="Nombre de sessions de jeu:"
-                ).pack(pady=5)
-                tk.Spinbox(
-                    self.settings_frame,
-                    from_=1,
-                    to=1000,
-                    textvariable=self.sessions_var,
-                ).pack()
+            tk.Label(self.settings_frame, text="Taille du plateau (8-100):").pack(pady=5)
+            tk.Spinbox(self.settings_frame, from_=8, to=50, textvariable=self.board_size_var).pack()
+            
+            tk.Label(self.settings_frame, text="Nombre de pommes rouges:").pack(pady=5)
+            tk.Spinbox(self.settings_frame, from_=0, to=10, textvariable=self.total_red_apples_var).pack()
+            
+            tk.Label(self.settings_frame, text="Nombre de pommes vertes:").pack(pady=5)
+            tk.Spinbox(self.settings_frame, from_=0, to=10, textvariable=self.total_green_apples_var).pack()
 
-            elif self.mode_var.get() == "Dontlearn":
-                # Spinbox pour le nombre de sessions
-                tk.Label(
-                    self.settings_frame, text="Nombre de sessions de jeu:"
-                ).pack(pady=5)
-                tk.Spinbox(
-                    self.settings_frame,
-                    from_=1,
-                    to=1000,
-                    textvariable=self.sessions_var,
-                ).pack()
-
-            # Ajouter un champ pour modifier la taille du plateau
-            tk.Label(
-                self.settings_frame, text="Taille du plateau (8-100):"
-            ).pack(pady=5)
-            tk.Spinbox(
-                self.settings_frame,
-                from_=8,
-                to=50,
-                textvariable=self.board_size_var,
-            ).pack()
-
-        # Lier la mise à jour des champs au changement de mode
         self.mode_var.trace_add("write", update_fields)
-
-        # Appeler update_fields une fois pour afficher les champs initiaux
         update_fields()
 
-        # Bouton pour valider les modifications
-        tk.Button(
-            settings_window,
-            text="Valider",
-            command=lambda: self.apply_settings(settings_window),
-        ).pack(pady=10)
+        tk.Button(settings_window, text="Valider", command=lambda: self.apply_settings(settings_window)).pack(pady=10)
 
     def choose_save_path(self):
         # Obtenir le chemin du dossier du projet
@@ -450,9 +378,9 @@ class SnakeGUI:
         # Valider la taille du plateau
         try:
             new_board_size = int(self.board_size_var.get())
-            if new_board_size < 8 or new_board_size > 100:
+            if new_board_size < 8 or new_board_size > 50:
                 raise ValueError(
-                    "La taille du plateau doit être entre 8 et 100."
+                    "La taille du plateau doit être entre 8 et 50."
                 )
         except ValueError as e:
             messagebox.showerror("Erreur", str(e))
@@ -472,31 +400,27 @@ class SnakeGUI:
         self.agent.exploration_decay = 0.0999
         self.agent.current_position = (0, 0)
         self.draw_discovered_objects()
+        self.total_red_apples = self.total_red_apples_var.get()
+        self.total_green_apples = self.total_green_apples_var.get()
+        self.board.total_red_apples = self.total_red_apples
+        self.board.total_green_apples = self.total_green_apples
 
         # Mettre à jour les paramètres en fonction des valeurs saisies
         new_mode = self.mode_var.get()
         self.sessions = self.sessions_var.get()
-        self.save_model_path = (
-            self.save_model_path_var.get()
-            if self.save_model_path_var.get()
-            else None
-        )
-        self.load_model_path = (
-            self.load_model_path_var.get()
-            if self.load_model_path_var.get()
-            else None
-        )
+        self.save_model_path = self.save_model_path_var.get() or None
+        self.load_model_path = self.load_model_path_var.get() or None
 
         # Mettre à jour la taille du plateau si elle a changé
         if new_board_size != self.board.size:
-            self.board = Board(size=new_board_size)
-            self.cell_size = 25  # Réinitialiser la taille des cellules
+            self.cell_size = 25
             self.canvas.config(
                 width=new_board_size * self.cell_size,
                 height=new_board_size * self.cell_size,
             )
             self.draw_board()
 
+        self.board_size = new_board_size
         # Mettre à jour le mode
         if new_mode != self.mode:
             self.mode = new_mode
@@ -511,6 +435,10 @@ class SnakeGUI:
             f"Mode: {self.mode}\nAppuyez sur start pour démarrer:\n"
             f"- {self.sessions} sessions {self.mode}."
         )
+        
+        self.board = Board(size=self.board_size, total_red_apples=self.total_red_apples, total_green_apples=self.total_green_apples)
+        
+        self.update_status_label(f"Mode: {self.mode}\n{self.sessions} sessions {self.mode}.\nSur un plateau de taille {self.board_size}.\nPommes rouges: {self.total_red_apples}, Pommes vertes: {self.total_green_apples}")
 
         # Fermer la fenêtre modale
         settings_window.destroy()
@@ -538,7 +466,7 @@ class SnakeGUI:
                 reward = -50
             elif result == "Game Over":
                 reward = -100
-
+                
             self.agent.handle_new_objects(str(state), action, reward)
 
             if result != "Game Over" and result != "Hit Snake Body":
@@ -576,7 +504,7 @@ class SnakeGUI:
                 color = "white"
                 if (x, y) in self.board.green_apples:
                     color = "green"
-                elif (x, y) == self.board.red_apple:
+                elif (x, y) in self.board.red_apples:
                     color = "red"
                 elif (x, y) in self.board.snake:
                     color = "blue" if (x, y) == self.board.snake[0] else "cyan"
@@ -742,180 +670,3 @@ class SnakeGUI:
                 self.objects_discovered_label.config(
                     text="Objets découverts:\nAucun objet pour l'instant."
                 )
-
-
-class COMMAND_LINE:
-    @staticmethod
-    def run_command_line_mode(
-        sessions,
-        save_model=None,
-        load_model=None,
-        visual=False,
-        dontlearn=None,
-        board_size=10,
-    ):
-
-        board = Board(size=board_size)
-        agent = QLearningAgent(actions=["UP", "DOWN", "LEFT", "RIGHT"])
-        length_history = []  # Initialiser l'historique des longueurs
-
-        if load_model:
-            agent.load_model(load_model)
-            print(f"Modèle chargé depuis : {load_model}")
-            mode = "Game"
-        else:
-            mode = "Learning"
-
-        if dontlearn:
-            agent.dontlearn()
-
-        # Initialisation : Effacer l'écran
-        os.system("cls" if os.name == "nt" else "clear")
-
-        def clear_screen():
-            os.system("cls" if os.name == "nt" else "clear")
-
-        def display_session_info(session, steps, max_length, score):
-            print(f"Mode : {mode} | Session : {session}/{sessions}")
-            text = f"Steps : {steps} | Max Length :"
-            print(f"{text} {max_length} | Score : {score}\n")
-
-        def display_board():
-            print("Carte actuelle :")
-            print("w " * (board.size + 2))
-            for i in range(board.size):
-                row = ["w"]
-                for j in range(board.size):
-                    if (i, j) in board.snake:
-                        row.append("H" if (i, j) == board.snake[0] else "S")
-                    elif (i, j) in board.green_apples:
-                        row.append("G")
-                    elif (i, j) == board.red_apple:
-                        row.append("R")
-                    else:
-                        row.append("0")
-                row.append("w")
-                print(" ".join(row))
-            print("w " * (board.size + 2))
-
-        def display_q_values(state):
-            print("\nQ-values pour l'état actuel:")
-            q_values = agent.get_q_values(str(state))
-            directions = ["UP", "DOWN", "LEFT", "RIGHT"]
-            state_mapping = {
-                "UP": state[0],
-                "DOWN": state[1],
-                "LEFT": state[2],
-                "RIGHT": state[3],
-            }
-            for action in directions:
-                print(
-                    f"  {action:<7} => {state_mapping[action]}",
-                    f" : {q_values[action]:.2f}",
-                )
-
-        def display_objects_discovered():
-            discovered = agent.discovered_objects
-            print(f"\nObjets découverts :\nboard_size: {agent.board_size}")
-            if dontlearn:
-                print("  Mode Dontlearn activé. Ne gère pas les objets.")
-            elif discovered:
-                # Convertir les objets découverts en liste (objet, récompense)
-                items = list(discovered.items())
-                # Afficher les objets en 3 colonnes
-                for i in range(0, len(items), 3):
-                    line = items[i: i + 3]
-                    formatted_line = " | ".join(
-                        (
-                            f"{obj:2}-Wall ==> {reward:3}"
-                            if obj == agent.wall_obj
-                            else f"{obj:7} ==> {reward:4}"
-                        )
-                        for obj, reward in line
-                        if isinstance(obj, str)
-                        and isinstance(reward, (int, float))
-                    )
-                    print(formatted_line)
-            else:
-                print("  Aucun objet découvert pour l'instant.")
-
-        def display_length_history(length_history):
-            print("\nLength History:")
-            for i in range(0, len(length_history), 2):
-                line = length_history[i: i + 2]
-                formatted_line = " | ".join(
-                    f"Length session {i + j + 1:4} ==> {length:3}"
-                    for j, length in enumerate(line)
-                )
-                print(formatted_line)
-
-        length_history = []  # Initialiser l'historique des longueurs
-
-        for session in range(1, sessions + 1):
-            board.reset()
-            agent.reset_history()
-            board.steps = 0
-            print(f"Session {session}/{sessions} en cours...")
-            while True:
-                clear_screen()
-                display_session_info(
-                    session,
-                    board.steps,
-                    board.max_length_reached,
-                    board.max_length,
-                )
-                display_board()
-
-                # Choisir une action et mettre à jour l'état
-                state = board.get_state()
-                action = agent.choose_action(
-                    str(state), training=not dontlearn
-                )
-                board.snake_dir = {
-                    "UP": (-1, 0),
-                    "DOWN": (1, 0),
-                    "LEFT": (0, -1),
-                    "RIGHT": (0, 1),
-                }[action]
-                result = board.update()
-
-                # Récompenser l'agent
-                reward = {
-                    "Ate Green Apple": 20,
-                    "Ate Red Apple": -10,
-                    "Hit Snake Body": -50,
-                    "Game Over": -100,
-                }.get(result, -1)
-
-                if not dontlearn:
-                    next_state = board.get_state()
-                    agent.learn(str(state), action, reward, str(next_state))
-                    agent.decay_exploration()
-
-                # Afficher les Q-values et objets découverts
-                display_q_values(state)
-                print(f"\nAction choisie : {action}")
-                display_objects_discovered()
-
-                if result == "Game Over" or result == "Hit Snake Body":
-                    length_history.append(board.max_length)
-                    print(
-                        f"\nGame Over!   ==> {session} Session terminée avec",
-                        f"un score: {board.max_length}\n",
-                        end="",
-                    )
-                    display_length_history(length_history)
-                    if session != sessions:
-                        time.sleep(2)
-                        # time.sleep(0.5)
-
-                    break
-                else:
-                    board.steps += 1
-
-        if save_model:
-            if dontlearn:
-                print("\nMode Dontlearn activé. Aucun modèle sauvegardé.")
-            else:
-                agent.save_model(save_model)
-                print(f"\nModèle sauvegardé dans : {save_model}")
