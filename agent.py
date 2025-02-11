@@ -2,6 +2,7 @@
 import random
 import json
 import ast
+import os
 
 
 class QLearningAgent:
@@ -296,7 +297,20 @@ class QLearningAgent:
                 print(f"Objet {obj} {text}, Nouvelle récompense = {reward}")
 
     def save_model(self, filepath):
-        with open(filepath, "w") as f:
+        # S'assurer que le chemin est correct
+        if not filepath.endswith(".json"):
+            filepath += ".json"
+
+        # S'assurer que le dossier 'models' existe
+        models_dir = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)), "models"
+        )
+        os.makedirs(models_dir, exist_ok=True)
+
+        # Construire le chemin complet du fichier
+        save_path = os.path.join(models_dir, os.path.basename(filepath))
+
+        with open(save_path, "w") as f:
             json.dump(
                 {
                     "q_table": self.q_table,
