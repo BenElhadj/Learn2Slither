@@ -122,14 +122,19 @@
         .file-input-group input {
             flex: 1;
         }
-
+        
         .file-input-wrapper {
             flex: 1;
             display: block;
+            font-weight: 600;
+            font-size: 13px;
+            color: #2c3e50;
         }
 
         .file-input-wrapper input {
             width: 100%;
+            margin-top: 5px;
+            display: block;
         }
         
         /* Styles d'accessibilité */
@@ -497,9 +502,15 @@
 
                         <!-- Section fichiers - VERSION COMPLÈTE CORRIGÉE -->
                         <div class="file-input-group">
-                            <input type="text" id="model-path" name="model-path" 
-                                placeholder="Chemin du modèle..." 
-                                aria-label="Chemin du modèle pour charger ou sauvegarder le modèle">
+                            <label class="file-input-wrapper">
+                                Chemin du modèle:
+                                <input type="text" id="model-path" name="model-path" 
+                                    placeholder="Ex: model.json"
+                                    aria-describedby="model-path-help">
+                                <div id="model-path-help" class="sr-only">
+                                    Entrez le chemin du fichier modèle à charger ou sauvegarder
+                                </div>
+                            </label>
                             <button type="button" onclick="loadModel()" aria-label="Charger le modèle">📂 Charger</button>
                             <button type="button" onclick="saveModel()" aria-label="Sauvegarder le modèle">💾 Sauvegarder</button>
                         </div>
