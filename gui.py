@@ -25,7 +25,7 @@ class SnakeGUI:
         self.master.title("Entraînement Snake AI")
         self.board = Board(
             size=board_size, nb_r_app=nb_r_app, nb_g_app=nb_g_app
-            )
+        )
         self.agent = QLearningAgent(
             actions=["UP", "DOWN", "LEFT", "RIGHT"], verbose=False
         )
@@ -45,8 +45,8 @@ class SnakeGUI:
         self.speed = 100
         self.running = False
         self.sessions = sessions
-        self.nb_r_app = nb_r_app,
-        self.nb_g_app = nb_g_app,
+        self.nb_r_app = (nb_r_app,)
+        self.nb_g_app = (nb_g_app,)
         self.step_mode = False
         self.cell_size = 25
         self.dontlearn = dontlearn
@@ -286,16 +286,16 @@ class SnakeGUI:
     def open_settings_window(self):
         settings_window = tk.Toplevel(self.master)
         settings_window.title("Paramètres du mode")
-        settings_window.geometry("350x400")
+        settings_window.geometry("350x420")
 
         self.mode_var = tk.StringVar(value=self.mode)
         self.sessions_var = tk.IntVar(value=self.sessions)
         self.save_model_path_var = tk.StringVar(
             value=self.save_model_path or ""
-            )
+        )
         self.load_model_path_var = tk.StringVar(
             value=self.load_model_path or ""
-            )
+        )
         self.board_size_var = tk.IntVar(value=self.board.size)
         self.total_red_apples_var = tk.IntVar(value=self.nb_r_app)
         self.total_green_apples_var = tk.IntVar(value=self.nb_g_app)
@@ -303,7 +303,7 @@ class SnakeGUI:
         tk.Label(settings_window, text="Mode:").pack(pady=5)
         mode_menu = tk.OptionMenu(
             settings_window, self.mode_var, "Learning", "Game", "Dontlearn"
-            )
+        )
         mode_menu.pack()
 
         self.settings_frame = tk.Frame(settings_window)
@@ -316,123 +316,149 @@ class SnakeGUI:
             if self.mode_var.get() == "Learning":
                 file_frame = tk.Frame(self.settings_frame)
                 file_frame.pack(pady=5, fill=tk.X)
-                tk.Label(
-                    file_frame, text="Enregistrer les poids dans:"
-                    ).pack(padx=5)
+                tk.Label(file_frame, text="Enregistrer les poids dans:").pack(
+                    padx=5
+                )
                 entry_button_frame = tk.Frame(file_frame)
                 entry_button_frame.pack(pady=5)
                 tk.Entry(
                     entry_button_frame,
                     textvariable=self.save_model_path_var,
-                    width=20
-                    ).pack(side=tk.LEFT, padx=5)
+                    width=20,
+                ).pack(side=tk.LEFT, padx=5)
                 tk.Button(
                     entry_button_frame,
                     text="Parcourir...",
-                    command=self.choose_save_path
-                    ).pack(side=tk.LEFT)
+                    command=self.choose_save_path,
+                ).pack(side=tk.LEFT)
                 tk.Label(
                     self.settings_frame,
-                    text="Nombre de sessions d'entraînement:"
-                    ).pack(pady=5)
+                    text="Nombre de sessions d'entraînement:",
+                ).pack(pady=5)
                 tk.Spinbox(
                     self.settings_frame,
                     from_=1,
                     to=1000,
-                    textvariable=self.sessions_var
-                    ).pack()
+                    textvariable=self.sessions_var,
+                ).pack()
             elif self.mode_var.get() == "Game":
                 file_frame = tk.Frame(self.settings_frame)
                 file_frame.pack(pady=5, fill=tk.X)
-                tk.Label(
-                    file_frame, text="Ouvrir le fichier des poids:"
-                         ).pack(padx=5)
+                tk.Label(file_frame, text="Ouvrir le fichier des poids:").pack(
+                    padx=5
+                )
                 entry_button_frame = tk.Frame(file_frame)
                 entry_button_frame.pack(pady=5)
                 tk.Entry(
                     entry_button_frame,
                     textvariable=self.load_model_path_var,
-                    width=20
-                    ).pack(side=tk.LEFT, padx=5)
+                    width=20,
+                ).pack(side=tk.LEFT, padx=5)
                 tk.Button(
                     entry_button_frame,
                     text="Parcourir...",
-                    command=self.choose_load_path
-                    ).pack(side=tk.LEFT)
+                    command=self.choose_load_path,
+                ).pack(side=tk.LEFT)
                 tk.Label(
-                    self.settings_frame,
-                    text="Nombre de sessions de jeu:"
-                    ).pack(pady=5)
+                    self.settings_frame, text="Nombre de sessions de jeu:"
+                ).pack(pady=5)
                 tk.Spinbox(
-                    self.settings_frame, from_=1,
+                    self.settings_frame,
+                    from_=1,
                     to=1000,
-                    textvariable=self.sessions_var
-                    ).pack()
+                    textvariable=self.sessions_var,
+                ).pack()
             tk.Label(
                 self.settings_frame, text="Taille du plateau (8-100):"
-                ).pack(pady=5)
+            ).pack(pady=5)
             tk.Spinbox(
                 self.settings_frame,
                 from_=8,
                 to=50,
-                textvariable=self.board_size_var
-                ).pack()
+                textvariable=self.board_size_var,
+            ).pack()
             tk.Label(
-                self.settings_frame,
-                text="Nombre de pommes rouges:"
-                ).pack(pady=5)
+                self.settings_frame, text="Nombre de pommes rouges:"
+            ).pack(pady=5)
             tk.Spinbox(
                 self.settings_frame,
                 from_=0,
                 to=10,
-                textvariable=self.total_red_apples_var
-                ).pack()
+                textvariable=self.total_red_apples_var,
+            ).pack()
             tk.Label(
-                self.settings_frame,
-                text="Nombre de pommes vertes:"
-                ).pack(pady=5)
+                self.settings_frame, text="Nombre de pommes vertes:"
+            ).pack(pady=5)
             tk.Spinbox(
                 self.settings_frame,
                 from_=0,
                 to=10,
-                textvariable=self.total_green_apples_var
-                ).pack()
+                textvariable=self.total_green_apples_var,
+            ).pack()
 
         self.mode_var.trace_add("write", update_fields)
         update_fields()
         tk.Button(
             settings_window,
             text="Valider",
-            command=lambda: self.apply_settings(settings_window)
-            ).pack(pady=10)
+            command=lambda: self.apply_settings(settings_window),
+        ).pack(pady=10)
 
     def choose_save_path(self):
         # Obtenir le chemin du dossier du projet
-        project_dir = os.path.dirname(os.path.abspath(__file__))
+        models_dir = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)), "models"
+        )
+
+        # S'assurer que le dossier existe, sinon le créer
+        os.makedirs(models_dir, exist_ok=True)
 
         # Ouvrir l'explorateur pour choisir un emplacement de sauvegarde
         file_path = filedialog.asksaveasfilename(
-            initialdir=project_dir,
-            defaultextension="",
-            filetypes=[
-                ("Tous les fichiers", "*.*"),
-                ("Fichiers JSON", "*.json"),
-            ],
             title="Enregistrer les poids dans",
+            initialdir=models_dir,  # Forcer l'ouverture dans le dossier models
+            filetypes=[
+                ("Fichiers JSON", "*.json"),
+                ("Tous les fichiers", "*.*"),
+            ],
+            defaultextension=".json",  # Ajouter automatiquement .json
         )
+
+        # Ajouter automatiquement .json, Si l'utilisateur ne le spécifie pas
+        if file_path and not file_path.endswith(".json"):
+            file_path += ".json"
+
+        # Forcer l'enregistrement dans le dossier models
         if file_path:
-            self.save_model_path_var.set(file_path)
+            file_name = os.path.basename(
+                file_path
+            )  # Récupérer le nom du fichier
+            file_path = os.path.join(
+                models_dir, file_name
+            )  # Nouveau chemin dans models
+
+        # Mettre à jour la variable avec le chemin du fichier
+        self.save_model_path_var.set(file_path)
+        self.save_model_path = (
+            file_path  # Mettre à jour le chemin de sauvegarde
+        )
 
     def choose_load_path(self):
         # Obtenir le chemin du dossier du projet
-        project_dir = os.path.dirname(os.path.abspath(__file__))
+        models_dir = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)), "models"
+        )
+
+        # Vérifier si le dossier existe (éviter erreur si inexistant)
+        if not os.path.exists(models_dir):
+            os.makedirs(models_dir, exist_ok=True)
 
         # Ouvrir l'explorateur de fichiers pour choisir un fichier de poids
         file_path = filedialog.askopenfilename(
-            initialdir=project_dir,
+            initialdir=models_dir,
             filetypes=[
-                ("Tous les fichiers", "*.*"),
                 ("Fichiers JSON", "*.json"),
+                ("Tous les fichiers", "*.*"),
             ],
             title="Ouvrir le fichier des poids",
         )
@@ -503,13 +529,13 @@ class SnakeGUI:
         self.board = Board(
             size=self.board_size,
             nb_r_app=self.nb_r_app,
-            nb_g_app=self.nb_g_app
-            )
+            nb_g_app=self.nb_g_app,
+        )
         self.update_status_label(
             f"Mode: {self.mode}\n{self.sessions} sessions {self.mode}.\n"
             f"Sur un plateau de taille {self.board_size}.\n"
             f"Pommes rouges: {self.nb_r_app}, Pommes vertes: {self.nb_g_app}"
-            )
+        )
 
         # Fermer la fenêtre modale
         settings_window.destroy()
