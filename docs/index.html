@@ -421,6 +421,7 @@
             color: var(--primary-color);
         }
         
+        /* Styles pour le responsive */
         @media (max-width: 1024px) {
             .main-content {
                 grid-template-columns: 1fr;
@@ -442,6 +443,12 @@
             
             .parameters-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            .status-bar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
             }
         }
     </style>
@@ -474,7 +481,7 @@
                             </div>
                         </div>
                         
-                        <!-- Section des paramètres - VERSION COMPLÈTE CORRIGÉE -->
+                        <!-- Section des paramètres -->
                         <div class="parameters-section">
                             <div>
                                 <div class="settings-group">
@@ -500,7 +507,7 @@
                             </div>
                         </div>
 
-                        <!-- Section fichiers - VERSION COMPLÈTE CORRIGÉE -->
+                        <!-- Section fichiers -->
                         <div class="file-input-group">
                             <label class="file-input-wrapper">
                                 Chemin du modèle:
@@ -514,6 +521,7 @@
                             <button type="button" onclick="loadModel()" aria-label="Charger le modèle">📂 Charger</button>
                             <button type="button" onclick="saveModel()" aria-label="Sauvegarder le modèle">💾 Sauvegarder</button>
                         </div>
+                    </div>
                     
                     <!-- Barre de status -->
                     <div class="status-bar">
