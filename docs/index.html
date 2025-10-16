@@ -387,25 +387,27 @@
                                 <button class="warning" onclick="setMode('Dontlearn')">🎲 Dontlearn</button>
                             </div>
                         </div>
-                        
-                        <div class="settings-group">
-                            <label>Sessions: <span id="sessions-value">10</span></label>
-                            <input type="range" id="sessions" min="1" max="100" value="10" onchange="updateSessionsValue()">
+                        <div>
+                            <div class="settings-group">
+                                <label>Sessions: <span id="sessions-value">10</span></label>
+                                <input type="range" id="sessions" min="1" max="100" value="10" onchange="updateSessionsValue()">
+                            </div>
+                            
+                            <div class="settings-group">
+                                <label>Taille du plateau: <span id="size-value">10</span></label>
+                                <input type="range" id="board-size" min="8" max="20" value="10" onchange="updateSizeValue()">
+                            </div>
                         </div>
-                        
-                        <div class="settings-group">
-                            <label>Taille du plateau: <span id="size-value">10</span></label>
-                            <input type="range" id="board-size" min="8" max="20" value="10" onchange="updateSizeValue()">
-                        </div>
-                        
-                        <div class="settings-group">
-                            <label>Pommes vertes: <span id="green-value">2</span></label>
-                            <input type="range" id="green-apples" min="1" max="5" value="2" onchange="updateGreenValue()">
-                        </div>
-                        
-                        <div class="settings-group">
-                            <label>Pommes rouges: <span id="red-value">1</span></label>
-                            <input type="range" id="red-apples" min="0" max="3" value="1" onchange="updateRedValue()">
+                        <div>
+                            <div class="settings-group">
+                                <label>Pommes vertes: <span id="green-value">2</span></label>
+                                <input type="range" id="green-apples" min="1" max="5" value="2" onchange="updateGreenValue()">
+                            </div>
+                            
+                            <div class="settings-group">
+                                <label>Pommes rouges: <span id="red-value">1</span></label>
+                                <input type="range" id="red-apples" min="0" max="3" value="1" onchange="updateRedValue()">
+                            </div>
                         </div>
                         
                         <div class="file-input-group">
@@ -1552,9 +1554,6 @@
             updateSizeValue();
             updateGreenValue();
             updateRedValue();
-            
-            console.log("🎮 Snake AI Q-Learning initialisé avec succès!");
-            console.log("📋 Interface optimisée pour une meilleure expérience utilisateur");
         });
     </script>
 </body>
