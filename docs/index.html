@@ -331,6 +331,12 @@
     </div>
 
     <script>
+        // 🎯 CORRECTION : Déclarer toutes les variables GLOBALES en premier
+        let game = null;
+        let autoPlayInterval = null;
+        let manualMode = false;
+        let gameSpeed = 200;
+
         // Implémentation du jeu Snake avec IA Q-learning simplifiée
         class QLearningAgent {
             constructor(actions) {
@@ -432,15 +438,22 @@
             }
 
             reset() {
-                this.grid = Array(this.size).fill().map(() => Array(this.size).fill('0'));
+                // 🎯 CORRECTION : Initialiser d'abord les tableaux VIDE
                 this.snake = this.initializeSnake();
-                this.greenApples = this.placeApples(2);
-                this.redApples = this.placeApples(1);
+                this.greenApples = [];
+                this.redApples = [];
+                
+                // 🎯 CORRECTION : Maintenant initialiser la grille et les pommes
+                this.grid = Array(this.size).fill().map(() => Array(this.size).fill('0'));
                 this.score = 0;
                 this.steps = 0;
                 this.maxLength = 3;
                 this.gameOver = false;
                 this.lastAction = null;
+                
+                // 🎯 CORRECTION : Placer les pommes après avoir initialisé les tableaux
+                this.greenApples = this.placeApples(2);
+                this.redApples = this.placeApples(1);
                 this.updateGrid();
             }
 
@@ -468,9 +481,17 @@
             }
 
             isOccupied(x, y) {
-                return this.snake.some(segment => segment[0] === x && segment[1] === y) ||
-                       this.greenApples.some(apple => apple[0] === x && apple[1] === y) ||
-                       this.redApples.some(apple => apple[0] === x && apple[1] === y);
+                // 🎯 CORRECTION : Vérifier que les tableaux existent avant d'utiliser .some()
+                const snakeOccupied = this.snake ? this.snake.some(segment => 
+                    segment[0] === x && segment[1] === y) : false;
+                    
+                const greenOccupied = this.greenApples ? this.greenApples.some(apple => 
+                    apple[0] === x && apple[1] === y) : false;
+                    
+                const redOccupied = this.redApples ? this.redApples.some(apple => 
+                    apple[0] === x && apple[1] === y) : false;
+                    
+                return snakeOccupied || greenOccupied || redOccupied;
             }
 
             updateGrid() {
@@ -596,14 +617,10 @@
             }
         }
 
-        // 🎯 CODE CORRIGÉ - LANCEMENT AUTOMATIQUE
-        let game = new SnakeGame();
-        let autoPlayInterval = null;
-        let manualMode = false;
-        let gameSpeed = 200;
-
+        // 🎯 FONCTIONS CORRIGÉES - TOUTES LES VARIABLES SONT MAINTENANT DÉCLARÉES
         function initializeGame() {
             console.log("🎮 Initialisation du jeu Snake AI...");
+            game = new SnakeGame();
             renderGame();
             
             // Lancer l'auto-play après 1 seconde
@@ -666,6 +683,8 @@
         }
 
         function updateStatistics() {
+            if (!game) return;
+            
             document.getElementById('score').textContent = game.score;
             document.getElementById('max-length').textContent = game.maxLength;
             document.getElementById('steps').textContent = game.steps;
@@ -691,6 +710,8 @@
         }
 
         function toggleAutoPlay() {
+            if (!game) return;
+            
             if (autoPlayInterval) {
                 stopAutoPlay();
                 document.querySelector('button.primary').textContent = '🎯 Auto-play IA';
@@ -715,6 +736,8 @@
         }
 
         function toggleManualMode() {
+            if (!game) return;
+            
             stopAutoPlay();
             manualMode = !manualMode;
             updateStatistics();
@@ -730,7 +753,9 @@
             if (autoPlayInterval) {
                 clearInterval(autoPlayInterval);
                 autoPlayInterval = null;
-                document.querySelector('button.primary').textContent = '🎯 Auto-play IA';
+                if (document.querySelector('button.primary')) {
+                    document.querySelector('button.primary').textContent = '🎯 Auto-play IA';
+                }
             }
         }
 
@@ -750,7 +775,7 @@
 
         // Keyboard controls for manual mode
         document.addEventListener('keydown', (e) => {
-            if (!manualMode || game.gameOver) return;
+            if (!game || !manualMode || game.gameOver) return;
             
             let action = null;
             switch(e.key) {
