@@ -415,7 +415,26 @@
                             <button onclick="loadModel()">📂 Charger</button>
                             <button onclick="saveModel()">💾 Sauvegarder</button>
                         </div>
-                    </div>
+
+                        </div>
+                                            <div class="status-bar">
+                            <div class="status-item">
+                                <span>Status:</span>
+                                <span class="status-value" id="status">Prêt</span>
+                            </div>
+                            <div class="status-item">
+                                <span>Mode:</span>
+                                <span class="status-value" id="mode-display">Learning</span>
+                            </div>
+                            <div class="status-item">
+                                <span>Vitesse:</span>
+                                <span class="status-value" id="speed-display">200</span>ms
+                            </div>
+                            <div class="status-item">
+                                <span>Session:</span>
+                                <span class="status-value" id="session">1/10</span>
+                            </div>
+                        </div>
                 </div>
                 
                 <!-- Plateau de jeu -->
@@ -441,24 +460,6 @@
                         <button onclick="changeSpeed('faster')">⚡ Accélérer</button>
                     </div>
                     
-                    <div class="status-bar">
-                        <div class="status-item">
-                            <span>Status:</span>
-                            <span class="status-value" id="status">Prêt</span>
-                        </div>
-                        <div class="status-item">
-                            <span>Mode:</span>
-                            <span class="status-value" id="mode-display">Learning</span>
-                        </div>
-                        <div class="status-item">
-                            <span>Vitesse:</span>
-                            <span class="status-value" id="speed-display">200</span>ms
-                        </div>
-                        <div class="status-item">
-                            <span>Session:</span>
-                            <span class="status-value" id="session">1/10</span>
-                        </div>
-                    </div>
                 </div>
             </div>
             
