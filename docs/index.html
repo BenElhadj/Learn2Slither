@@ -509,29 +509,7 @@
             </div>
             
             <div class="info-section">
-                <!-- Statistiques -->
-                <div class="info-card">
-                    <h2>📊 Statistiques</h2>
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-value" id="score">0</div>
-                            <div class="stat-label">Score</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="steps">0</div>
-                            <div class="stat-label">Steps</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="max-length">3</div>
-                            <div class="stat-label">Longueur Max</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="exploration-rate">0.200</div>
-                            <div class="stat-label">Exploration</div>
-                        </div>
-                    </div>
-                </div>
-                
+                                
                 <!-- Q-Learning Agent -->
                 <div class="info-card">
                     <h2>🧠 Q-Learning Agent</h2>
@@ -563,6 +541,29 @@
                         <div class="legend-item">
                             <div class="legend-color" style="background: #7f8c8d;"></div>
                             <span>Mur (W)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statistiques -->
+                <div class="info-card">
+                    <h2>📊 Statistiques</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="score">0</div>
+                            <div class="stat-label">Score</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="steps">0</div>
+                            <div class="stat-label">Steps</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="max-length">3</div>
+                            <div class="stat-label">Longueur Max</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="exploration-rate">0.200</div>
+                            <div class="stat-label">Exploration</div>
                         </div>
                     </div>
                 </div>
@@ -648,7 +649,7 @@
                 this.score = 0;
                 this.steps = 0;
                 this.max_length = 3;
-                this.initial_score = 0;
+                this.initial_score = 3;
                 this.max_length_reached = 3;
             }
 
@@ -752,7 +753,7 @@
                     this.snake.unshift(new_head);
                     this.green_apples.splice(greenAppleIndex, 1);
                     this.green_apples.push(this.random_empty_cell());
-                    this.score += 20;
+                    this.score += 1;
                     this.max_length = Math.max(this.max_length, this.snake.length);
                     this.max_length_reached = Math.max(this.max_length_reached, this.snake.length);
                     return "Ate Green Apple";
@@ -776,7 +777,6 @@
                 // Déplacement normal
                 this.snake.unshift(new_head);
                 this.snake.pop();
-                this.score -= 1;
                 return "Moved";
             }
 
