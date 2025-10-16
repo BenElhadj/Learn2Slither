@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Snake AI - Q-Learning</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        #game-container { margin: 20px 0; }
+        .grid { 
+            display: inline-grid;
+            grid-template-columns: repeat(10, 30px);
+            gap: 1px;
+            background-color: #ddd;
+            padding: 2px;
+        }
+        .cell {
+            width: 30px;
+            height: 30px;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        .snake-head { background-color: #0066cc; color: white; }
+        .snake-body { background-color: #66aaff; }
+        .green-apple { background-color: #00cc66; }
+        .red-apple { background-color: #ff6666; }
+        .wall { background-color: #666666; color: white; }
+        .controls { margin: 10px 0; }
+        button { margin: 5px; padding: 8px 15px; }
+        .stats { margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>🐍 Snake AI avec Q-Learning</h1>
+    
+    <div class="stats">
+        <div>Score: <span id="score">0</span></div>
+        <div>Longueur max: <span id="max-length">3</span></div>
+        <div>Status: <span id="status">En cours</span></div>
+    </div>
+    
+    <div id="game-container"></div>
+    
+    <div class="controls">
+        <button onclick="resetGame()">Nouvelle Partie</button>
+        <button onclick="autoPlay()">Auto-play</button>
+        <button onclick="stopAutoPlay()">Stop</button>
+    </div>
+    
+    <div class="info">
+        <h3>Comment ça marche :</h3>
+        <p>L'agent apprend à jouer au Snake en utilisant l'algorithme Q-learning.</p>
+        <p>• 🟦 Tête du serpent • 🟦 Corps du serpent</p>
+        <p>• 🟩 Pomme verte (+20 points) • 🟥 Pomme rouge (-10 points)</p>
+    </div>
+
+    <script>
+        // Implémentation JavaScript simplifiée de la logique du jeu
+        class SnakeGame {
+            constructor(size = 10) {
+                this.size = size;
+                this.reset();
+            }
+            
+            reset() {
+                this.grid = Array(this.size).fill().map(() => Array(this.size).fill('0'));
+                this.snake = this.initializeSnake();
+                this.greenApples = this.placeApples(2, 'G');
+                this.redApples = this.placeApples(1, 'R');
+                this.score = 0;
+                this.maxLength = 3;
+                this.gameOver = false;
+                this.direction = this.randomDirection();
+                this.updateGrid();
+            }
+            
+            initializeSnake() {
+                const startX = Math.floor(this.size / 2);
+                const startY = Math.floor(this.size / 2);
+                return [
+                    [startX, startY],
+                    [startX, startY - 1],
+                    [startX, startY - 2]
+                ];
+            }
+            
+            randomDirection() {
+                const directions = [[0, 1], [1, 0], [0, -1], [-1, 0]];
+                return directions[Math.floor(Math.random() * directions.length)];
+            }
+            
+            placeApples(count, type) {
+                const apples = [];
+                for (let i = 0; i < count; i++) {
+                    let x, y;
+                    do {
+                        x = Math.floor(Math.random() * this.size);
+                        y = Math.floor(Math.random() * this.size);
+                    } while (this.isOccupied(x, y));
+                    apples.push([x, y]);
+                }
+                return apples;
+            }
+            
+            isOccupied(x, y) {
+                // Vérifie si la position est occupée par le serpent ou une pomme
+                return this.snake.some(segment => segment[0] === x && segment[1] === y) ||
+                       this.greenApples.some(apple => apple[0] === x && apple[1] === y) ||
+                       this.redApples.some(apple => apple[0] === x && apple[1] === y);
+            }
+            
+            updateGrid() {
+                // Réinitialiser la grille
+                this.grid = Array(this.size).fill().map(() => Array(this.size).fill('0'));
+                
+                // Placer les pommes vertes
+                this.greenApples.forEach(([x, y]) => {
+                    this.grid[x][y] = 'G';
+                });
+                
+                // Placer les pommes rouges
+                this.redApples.forEach(([x, y]) => {
+                    this.grid[x][y] = 'R';
+                });
+                
+                // Placer le serpent
+                this.snake.forEach(([x, y], index) => {
+                    this.grid[x][y] = index === 0 ? 'H' : 'S';
+                });
+            }
+            
+            getState() {
+                const head = this.snake[0];
+                return [
+                    this.getCellInfo(head[0] - 1, head[1]), // Up
+                    this.getCellInfo(head[0] + 1, head[1]), // Down
+                    this.getCellInfo(head[0], head[1] - 1), // Left
+                    this.getCellInfo(head[0], head[1] + 1)  // Right
+                ];
+            }
+            
+            getCellInfo(x, y) {
+                if (x < 0 || x >= this.size || y < 0 || y >= this.size) return 'W';
+                return this.grid[x][y];
+            }
+            
+            step() {
+                if (this.gameOver) return 'Game Over';
+                
+                const head = this.snake[0];
+                const newHead = [head[0] + this.direction[0], head[1] + this.direction[1]];
+                
+                // Vérifier les collisions avec les murs
+                if (newHead[0] < 0 || newHead[0] >= this.size || 
+                    newHead[1] < 0 || newHead[1] >= this.size) {
+                    this.gameOver = true;
+                    return 'Game Over';
+                }
+                
+                // Vérifier les collisions avec le corps
+                if (this.snake.some(segment => 
+                    segment[0] === newHead[0] && segment[1] === newHead[1])) {
+                    this.gameOver = true;
+                    return 'Hit Snake Body';
+                }
+                
+                // Vérifier les pommes
+                let appleIndex = this.greenApples.findIndex(
+                    apple => apple[0] === newHead[0] && apple[1] === newHead[1]
+                );
+                
+                if (appleIndex !== -1) {
+                    // Manger une pomme verte
+                    this.greenApples.splice(appleIndex, 1);
+                    this.greenApples.push(...this.placeApples(1, 'G'));
+                    this.score += 20;
+                    this.snake.unshift(newHead);
+                    this.maxLength = Math.max(this.maxLength, this.snake.length);
+                    return 'Ate Green Apple';
+                }
+                
+                appleIndex = this.redApples.findIndex(
+                    apple => apple[0] === newHead[0] && apple[1] === newHead[1]
+                );
+                
+                if (appleIndex !== -1) {
+                    // Manger une pomme rouge
+                    this.redApples.splice(appleIndex, 1);
+                    this.redApples.push(...this.placeApples(1, 'R'));
+                    this.score -= 10;
+                    this.snake.unshift(newHead);
+                    this.snake.pop();
+                    if (this.snake.length === 0) {
+                        this.gameOver = true;
+                        return 'Game Over';
+                    }
+                    return 'Ate Red Apple';
+                }
+                
+                // Déplacement normal
+                this.snake.unshift(newHead);
+                this.snake.pop();
+                this.score -= 1;
+                return 'Moved';
+            }
+        }
+
+        // Initialisation du jeu
+        let game = new SnakeGame();
+        let autoPlayInterval = null;
+
+        function renderGame() {
+            const container = document.getElementById('game-container');
+            container.innerHTML = '';
+            
+            const grid = document.createElement('div');
+            grid.className = 'grid';
+            grid.style.gridTemplateColumns = `repeat(${game.size}, 30px)`;
+            
+            for (let i = 0; i < game.size; i++) {
+                for (let j = 0; j < game.size; j++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'cell';
+                    
+                    switch (game.grid[i][j]) {
+                        case 'H': cell.className += ' snake-head'; cell.textContent = 'H'; break;
+                        case 'S': cell.className += ' snake-body'; cell.textContent = ''; break;
+                        case 'G': cell.className += ' green-apple'; cell.textContent = ''; break;
+                        case 'R': cell.className += ' red-apple'; cell.textContent = ''; break;
+                        case 'W': cell.className += ' wall'; cell.textContent = 'W'; break;
+                        default: cell.textContent = '';
+                    }
+                    
+                    grid.appendChild(cell);
+                }
+            }
+            
+            container.appendChild(grid);
+            
+            // Mettre à jour les statistiques
+            document.getElementById('score').textContent = game.score;
+            document.getElementById('max-length').textContent = game.maxLength;
+            document.getElementById('status').textContent = 
+                game.gameOver ? 'Game Over' : 'En cours';
+        }
+
+        function resetGame() {
+            stopAutoPlay();
+            game.reset();
+            renderGame();
+        }
+
+        function autoPlay() {
+            stopAutoPlay();
+            autoPlayInterval = setInterval(() => {
+                if (!game.gameOver) {
+                    game.step();
+                    game.updateGrid();
+                    renderGame();
+                } else {
+                    stopAutoPlay();
+                }
+            }, 200);
+        }
+
+        function stopAutoPlay() {
+            if (autoPlayInterval) {
+                clearInterval(autoPlayInterval);
+                autoPlayInterval = null;
+            }
+        }
+
+        // Raccourcis clavier
+        document.addEventListener('keydown', (e) => {
+            if (game.gameOver) return;
+            
+            switch(e.key) {
+                case 'ArrowUp': game.direction = [-1, 0]; break;
+                case 'ArrowDown': game.direction = [1, 0]; break;
+                case 'ArrowLeft': game.direction = [0, -1]; break;
+                case 'ArrowRight': game.direction = [0, 1]; break;
+            }
+            
+            game.step();
+            game.updateGrid();
+            renderGame();
+        });
+
+        // Initial render
+        renderGame();
+    </script>
+</body>
+</html>

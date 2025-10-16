@@ -1,0 +1,85 @@
+je veux changer la façon dont les pommes sont implimenter par defaut comme suite:
+    - la pomme rouge a l'attribut de lettre R le reword -10 il y a 1 sur le plateau placer aléatoiremet
+    - la pomme verte a l'attribut de lettre G le reword +20 il y a 2 sur le plateau placer aléatoiremet
+Je veux ajouter un bouton qui m'ouvre une fenêtre qui me permet de modifier le nombre de pommes rouge et/ou vert.
+
+je veux afficher les elements comme suite 
+exemple
+
+'H'  |  'snake_body'   |  'blue'   |  '.'  |  '---'   |         <=== tete de serpent juste l'afficher rien a modifier
+'S'  |  'snake_body'   |  'cyan'   |  '.'  |  '-50'   |         <=== corp de serpent juste l'afficher rien a modifier
+'W'  |  'wall'         |  'None'   |  '.'  |  '-100'  |         <=== pomme verte possibilité de modifier le nombre sur le plateau le reste des informations il faut juste les afficher 
+'G'  |  'green_apples' |  'green'  |  '2'  |  '+20'   |         <=== pomme verte possibilité de modifier le nombre sur le plateau le reste des informations il faut juste les afficher
+'R'  |  'red_apple'    |  'red'    |  '1'  |  '-10'   |         <=== pomme rouge possibilité de modifier le nombre sur le plateau le reste des informations il faut juste les afficher
+                                                     
+                                            confirmer           <=== un bouton quand j'appuis dessus je valide les modifications
+
+les champs de text pour c'est juste pour l'affichage a titre informatif mise a par green_apples et red_apple je veux modifier la quatrieme colone "le nombre de pommes sur le plateau"
+
+quatrieme colone champs de texte accepte seulement des chiffre entier positif
+
+
+
+
+
+
+
+
+
+
+
+
+je veux changer la façon dont les pommes sont implimenter par defaut comme suite:
+    - la pomme rouge a l'attribut de lettre R le reword -10 il y a 1 sur le plateau placer aléatoiremet
+    - la pomme verte a l'attribut de lettre G le reword +20 il y a 2 sur le plateau placer aléatoiremet
+** a chaque fois que l'agent mange une de ces pommes il y a une autres de meme attribut aparait dans le plateau aléatoirement
+Je veux ajouter un bouton qui m'ouvre une fenêtre qui me permet de rajouter des obstacle comme la pomme rouge ou la pomme verte.
+les obstacles apple red/green existe déjà, mais je veux avoir la possibilité de modifier le nombre de pomme rouge et vert.
+et en meme temps avoir la possibilité d'ajouter des nouvelles obstacles
+
+Je veux ajouter un bouton qui m'ouvre une fenêtre qui me permet de rajouter des obstacles.
+pour le faire:
+* il faut attribuer une lettre qui ne doit pas être pas utiliser avant
+* il faut lui attribuer un nom qui ne doit pas être pas utiliser avant
+* il faut choisir son couleurs "ouvrir une liste avec plusieurs couleurs a sélectionner "attention le couleur qui est choisis ne sort plus dans la liste, chaque obstacle a un couleur unique, donc ne propose pas un couleur déjà utiliser"
+* il faut ajouter le nombre de pièces sur le plateau, dès que le serpent mange une, une autre apparait aleatoirement
+* il faut ajouter son score positif ou négatifs, le choix de score modifie limpacte de l'objet sur le serpent comme suite
+   - (-50 ou plus) "obstacle mortel Game Over"
+   - (entre -25 et -49) "obstacle qui rétréci la taille de serpent de 2 case"
+   - (entre -5 et -24) "obstacle qui rétréci la taille de serpent de 1 case"
+   - (entre +5 et -4) "obstacle neutre au serpent qui a seulement un impacte sur le score"
+   - (entre +6 et +30) "obstacle qui augmente la taille de serpent de 1 case"
+   - (+31 ou plus) "obstacle qui augmente la taille de serpent de 2 cases"
+
+et avoir la possibilité de rajouter plusieurs obstacle a la fois donc proposer de rajouter une autre ou supprimer ce dernier
+je veux afficher en temp réel ce que je vien de demander comme suite 
+exemple
+
+'H'  |  'snake_body'   |  'blue'       |   '.'  |  '---'     |       ------          <=== tete de serpent juste l'afficher rien a modifier
+'S'  |  'snake_body'   |  'cyan'       |   '.'  |  '-50'     |       ------          <=== corp de serpent juste l'afficher rien a modifier
+'W'  |  'wall'         |  '-----'      |   '.'  |  '-100'    |       ------          <=== pomme verte possibilité de modifier le nombre sur le plateau le reste des informations il faut juste les afficher 
+'G'  |  'green_apples' |  'green'      |   '2'  |  '+20'     |       ------          <=== pomme verte possibilité de modifier le nombre sur le plateau le reste des informations il faut juste les afficher
+'R'  |  'red_apple'    |  'red'        |   '1'  |  '-10'     |       ------          <=== pomme rouge possibilité de modifier le nombre sur le plateau le reste des informations il faut juste les afficher
+-------------------------------------------------------------------------
+'X'  |  'hole'         |  'black'      |   '4'  |  '-70'     |       delete          <=== un trou recement rajouter possible de le modifier ou le supprimer
+'B'  |  'Banana'       |  'yellow'     |   '2'  |  '+30'     |       delete          <=== une banane recement rajouter possible de le modifier ou de le supprimer
+'P'  |  'prickly_pear' |  'yellow'     |   '1'  |  '-30'     |       delete          <=== une figue de barbarie recement rajouter possible de le modifier ou de le supprimer
+'-'  |  '-----'        |  '-----'      |   '-'  |  '---'     |       add             <=== un champ libre pour rajouter des nouvelles obstacles dès que c'est remplis est appuier sur add l'objet deviens comme les autres avec la possibilité de le supprimer et modifier et une autre ligne add apparait en dessous
+                                                               confirmer         <=== un bouton quand j'appuis dessus je valide les ajouts et le modifications
+
+les champs de text pour la premier partie c'est juste pour l'affichage mise a par green_apples et red_apple avec la possibilité de modifier seulement la quatrieme colone
+pour la deuxieme partie les champs de text sont comme suite 
+premier colone un suel lettre en capital
+deuxieme colone champs de texte libre sans espace et charactaire speciale
+troisieme colone liste deroulante de couleur comme expliquer au debut
+quatrieme colone champs de texte accepte seulement des chiffre entier positif
+cinquieme colone champs de texte accepte seulement des chiffre entier positif et negatif
+dernier colone des boutons 
+
+
+
+
+
+
+
+
