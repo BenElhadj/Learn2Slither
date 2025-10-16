@@ -1,80 +1,447 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Snake AI - Q-Learning</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        #game-container { margin: 20px 0; }
-        .grid { 
-            display: inline-grid;
-            grid-template-columns: repeat(10, 30px);
-            gap: 1px;
-            background-color: #ddd;
-            padding: 2px;
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
         }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: var(--primary-color);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 30px;
+            padding: 30px;
+        }
+        
+        .game-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        
+        .info-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        
+        .grid {
+            display: grid;
+            gap: 2px;
+            background: #bdc3c7;
+            padding: 2px;
+            border-radius: 5px;
+            margin: 20px auto;
+        }
+        
         .cell {
-            width: 30px;
-            height: 30px;
-            background-color: white;
+            width: 25px;
+            height: 25px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
+            font-size: 10px;
+            font-weight: bold;
+            border-radius: 3px;
+            transition: all 0.2s ease;
         }
-        .snake-head { background-color: #0066cc; color: white; }
-        .snake-body { background-color: #66aaff; }
-        .green-apple { background-color: #00cc66; }
-        .red-apple { background-color: #ff6666; }
-        .wall { background-color: #666666; color: white; }
-        .controls { margin: 10px 0; }
-        button { margin: 5px; padding: 8px 15px; }
-        .stats { margin: 10px 0; }
+        
+        .cell.snake-head { 
+            background: var(--secondary-color); 
+            color: white;
+        }
+        .cell.snake-body { 
+            background: #87CEEB; 
+        }
+        .cell.green-apple { 
+            background: var(--success-color); 
+            animation: pulse 1.5s infinite;
+        }
+        .cell.red-apple { 
+            background: var(--danger-color); 
+            animation: pulse 1.5s infinite;
+        }
+        .cell.wall { 
+            background: #7f8c8d; 
+            color: white;
+        }
+        .cell.empty { 
+            background: white; 
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            background: var(--primary-color);
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        button.primary { background: var(--secondary-color); }
+        button.success { background: var(--success-color); }
+        button.danger { background: var(--danger-color); }
+        button.warning { background: var(--warning-color); }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid var(--secondary-color);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .stat-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        
+        .info-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+        }
+        
+        .q-learning-info {
+            background: #e8f4f8;
+            border-left: 4px solid var(--secondary-color);
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
     </style>
 </head>
 <body>
-    <h1>🐍 Snake AI avec Q-Learning</h1>
-    
-    <div class="stats">
-        <div>Score: <span id="score">0</span></div>
-        <div>Longueur max: <span id="max-length">3</span></div>
-        <div>Status: <span id="status">En cours</span></div>
-    </div>
-    
-    <div id="game-container"></div>
-    
-    <div class="controls">
-        <button onclick="resetGame()">Nouvelle Partie</button>
-        <button onclick="autoPlay()">Auto-play</button>
-        <button onclick="stopAutoPlay()">Stop</button>
-    </div>
-    
-    <div class="info">
-        <h3>Comment ça marche :</h3>
-        <p>L'agent apprend à jouer au Snake en utilisant l'algorithme Q-learning.</p>
-        <p>• 🟦 Tête du serpent • 🟦 Corps du serpent</p>
-        <p>• 🟩 Pomme verte (+20 points) • 🟥 Pomme rouge (-10 points)</p>
+    <div class="container">
+        <header>
+            <h1>🐍 Snake AI avec Q-Learning</h1>
+            <p class="subtitle">Apprentissage par Renforcement - Intelligence Artificielle</p>
+        </header>
+        
+        <div class="main-content">
+            <div class="game-section">
+                <div class="info-card">
+                    <h2>🎮 Contrôles du Jeu</h2>
+                    <div class="controls">
+                        <button class="success" onclick="resetGame()">🔄 Nouvelle Partie</button>
+                        <button class="primary" onclick="toggleAutoPlay()">🎯 Auto-play IA</button>
+                        <button class="warning" onclick="toggleManualMode()">👆 Mode Manuel</button>
+                        <button class="danger" onclick="stopGame()">⏹️ Stop</button>
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <h2>📊 Statistiques</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value" id="score">0</div>
+                            <div class="stat-label">Score Actuel</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="max-length">3</div>
+                            <div class="stat-label">Longueur Max</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="steps">0</div>
+                            <div class="stat-label">Nombre de Pas</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="status">🟢 Actif</div>
+                            <div class="stat-label">Status</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <h2>🎯 Plateau de Jeu</h2>
+                    <div id="game-container"></div>
+                </div>
+            </div>
+            
+            <div class="info-section">
+                <div class="info-card">
+                    <h2>🧠 Algorithme Q-Learning</h2>
+                    <div class="q-learning-info">
+                        <p><strong>Q-learning</strong> est un algorithme d'apprentissage par renforcement sans modèle qui apprend une fonction d'action-valeur.</p>
+                        <p><strong>Formule :</strong> Q(s,a) = Q(s,a) + α[r + γmaxQ(s',a') - Q(s,a)]</p>
+                    </div>
+                    
+                    <h3>📖 Légende</h3>
+                    <div class="legend">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #3498db;"></div>
+                            <span>Tête du serpent (H)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #87CEEB;"></div>
+                            <span>Corps du serpent (S)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #27ae60;"></div>
+                            <span>Pomme verte (+20)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #e74c3c;"></div>
+                            <span>Pomme rouge (-10)</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #7f8c8d;"></div>
+                            <span>Mur (W)</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <h2>⚙️ Paramètres IA</h2>
+                    <div class="controls">
+                        <button onclick="changeSpeed('faster')">⚡ Plus rapide</button>
+                        <button onclick="changeSpeed('slower')">🐢 Plus lent</button>
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <label>Vitesse: <span id="speed-display">200</span>ms</label>
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <h2>📈 Apprentissage</h2>
+                    <div id="learning-stats">
+                        <p>🎯 Exploration rate: <span id="exploration-rate">100%</span></p>
+                        <p>📚 États appris: <span id="states-learned">0</span></p>
+                        <p>🎮 Actions optimales: <span id="optimal-actions">0%</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
-        // Implémentation JavaScript simplifiée de la logique du jeu
+        // Implémentation du jeu Snake avec IA Q-learning simplifiée
+        class QLearningAgent {
+            constructor(actions) {
+                this.actions = actions;
+                this.qTable = {};
+                this.learningRate = 0.1;
+                this.discountFactor = 0.9;
+                this.explorationRate = 1.0;
+                this.minExploration = 0.01;
+                this.explorationDecay = 0.995;
+            }
+
+            getQValue(state, action) {
+                const stateKey = JSON.stringify(state);
+                if (!this.qTable[stateKey]) {
+                    this.qTable[stateKey] = {};
+                    this.actions.forEach(a => this.qTable[stateKey][a] = 0);
+                }
+                return this.qTable[stateKey][action];
+            }
+
+            chooseAction(state) {
+                // Exploration vs exploitation
+                if (Math.random() < this.explorationRate) {
+                    return this.actions[Math.floor(Math.random() * this.actions.length)];
+                }
+
+                // Exploitation: choisir la meilleure action
+                const stateKey = JSON.stringify(state);
+                if (!this.qTable[stateKey]) {
+                    return this.actions[Math.floor(Math.random() * this.actions.length)];
+                }
+
+                let bestAction = this.actions[0];
+                let bestValue = this.qTable[stateKey][bestAction];
+                
+                this.actions.forEach(action => {
+                    if (this.qTable[stateKey][action] > bestValue) {
+                        bestValue = this.qTable[stateKey][action];
+                        bestAction = action;
+                    }
+                });
+
+                return bestAction;
+            }
+
+            learn(state, action, reward, nextState) {
+                const stateKey = JSON.stringify(state);
+                const nextStateKey = JSON.stringify(nextState);
+                
+                if (!this.qTable[stateKey]) {
+                    this.qTable[stateKey] = {};
+                    this.actions.forEach(a => this.qTable[stateKey][a] = 0);
+                }
+
+                // Q-learning formula
+                const currentQ = this.qTable[stateKey][action];
+                let maxNextQ = 0;
+
+                if (this.qTable[nextStateKey]) {
+                    maxNextQ = Math.max(...this.actions.map(a => this.qTable[nextStateKey][a]));
+                }
+
+                const newQ = currentQ + this.learningRate * (reward + this.discountFactor * maxNextQ - currentQ);
+                this.qTable[stateKey][action] = newQ;
+
+                // Decay exploration rate
+                this.explorationRate = Math.max(this.minExploration, this.explorationRate * this.explorationDecay);
+            }
+
+            getStats() {
+                return {
+                    explorationRate: this.explorationRate,
+                    statesLearned: Object.keys(this.qTable).length,
+                    optimalActions: this.calculateOptimalActions()
+                };
+            }
+
+            calculateOptimalActions() {
+                let optimalCount = 0;
+                let totalCount = 0;
+
+                Object.values(this.qTable).forEach(stateActions => {
+                    const values = Object.values(stateActions);
+                    const maxValue = Math.max(...values);
+                    optimalCount += values.filter(v => v === maxValue && maxValue > 0).length;
+                    totalCount += values.length;
+                });
+
+                return totalCount > 0 ? (optimalCount / totalCount * 100).toFixed(1) : '0';
+            }
+        }
+
         class SnakeGame {
-            constructor(size = 10) {
+            constructor(size = 12) {
                 this.size = size;
+                this.agent = new QLearningAgent(['UP', 'DOWN', 'LEFT', 'RIGHT']);
                 this.reset();
             }
-            
+
             reset() {
                 this.grid = Array(this.size).fill().map(() => Array(this.size).fill('0'));
                 this.snake = this.initializeSnake();
-                this.greenApples = this.placeApples(2, 'G');
-                this.redApples = this.placeApples(1, 'R');
+                this.greenApples = this.placeApples(2);
+                this.redApples = this.placeApples(1);
                 this.score = 0;
+                this.steps = 0;
                 this.maxLength = 3;
                 this.gameOver = false;
-                this.direction = this.randomDirection();
+                this.lastAction = null;
                 this.updateGrid();
             }
-            
+
             initializeSnake() {
                 const startX = Math.floor(this.size / 2);
                 const startY = Math.floor(this.size / 2);
@@ -84,13 +451,8 @@
                     [startX, startY - 2]
                 ];
             }
-            
-            randomDirection() {
-                const directions = [[0, 1], [1, 0], [0, -1], [-1, 0]];
-                return directions[Math.floor(Math.random() * directions.length)];
-            }
-            
-            placeApples(count, type) {
+
+            placeApples(count) {
                 const apples = [];
                 for (let i = 0; i < count; i++) {
                     let x, y;
@@ -102,34 +464,27 @@
                 }
                 return apples;
             }
-            
+
             isOccupied(x, y) {
-                // Vérifie si la position est occupée par le serpent ou une pomme
                 return this.snake.some(segment => segment[0] === x && segment[1] === y) ||
                        this.greenApples.some(apple => apple[0] === x && apple[1] === y) ||
                        this.redApples.some(apple => apple[0] === x && apple[1] === y);
             }
-            
+
             updateGrid() {
-                // Réinitialiser la grille
+                // Reset grid
                 this.grid = Array(this.size).fill().map(() => Array(this.size).fill('0'));
                 
-                // Placer les pommes vertes
-                this.greenApples.forEach(([x, y]) => {
-                    this.grid[x][y] = 'G';
-                });
+                // Place apples
+                this.greenApples.forEach(([x, y]) => this.grid[x][y] = 'G');
+                this.redApples.forEach(([x, y]) => this.grid[x][y] = 'R');
                 
-                // Placer les pommes rouges
-                this.redApples.forEach(([x, y]) => {
-                    this.grid[x][y] = 'R';
-                });
-                
-                // Placer le serpent
+                // Place snake
                 this.snake.forEach(([x, y], index) => {
                     this.grid[x][y] = index === 0 ? 'H' : 'S';
                 });
             }
-            
+
             getState() {
                 const head = this.snake[0];
                 return [
@@ -139,76 +494,111 @@
                     this.getCellInfo(head[0], head[1] + 1)  // Right
                 ];
             }
-            
+
             getCellInfo(x, y) {
                 if (x < 0 || x >= this.size || y < 0 || y >= this.size) return 'W';
                 return this.grid[x][y];
             }
-            
-            step() {
-                if (this.gameOver) return 'Game Over';
+
+            step(action = null) {
+                if (this.gameOver) return { result: 'Game Over', reward: 0 };
+
+                const state = this.getState();
                 
+                if (action === null) {
+                    action = this.agent.chooseAction(state);
+                }
+
+                this.lastAction = action;
+
                 const head = this.snake[0];
-                const newHead = [head[0] + this.direction[0], head[1] + this.direction[1]];
-                
-                // Vérifier les collisions avec les murs
+                let newHead;
+
+                switch(action) {
+                    case 'UP': newHead = [head[0] - 1, head[1]]; break;
+                    case 'DOWN': newHead = [head[0] + 1, head[1]]; break;
+                    case 'LEFT': newHead = [head[0], head[1] - 1]; break;
+                    case 'RIGHT': newHead = [head[0], head[1] + 1]; break;
+                }
+
+                // Check wall collision
                 if (newHead[0] < 0 || newHead[0] >= this.size || 
                     newHead[1] < 0 || newHead[1] >= this.size) {
                     this.gameOver = true;
-                    return 'Game Over';
+                    const reward = -100;
+                    this.agent.learn(state, action, reward, this.getState());
+                    return { result: 'Game Over', reward };
                 }
-                
-                // Vérifier les collisions avec le corps
+
+                // Check self collision
                 if (this.snake.some(segment => 
                     segment[0] === newHead[0] && segment[1] === newHead[1])) {
                     this.gameOver = true;
-                    return 'Hit Snake Body';
+                    const reward = -50;
+                    this.agent.learn(state, action, reward, this.getState());
+                    return { result: 'Hit Snake Body', reward };
                 }
-                
-                // Vérifier les pommes
+
+                let reward = -1; // Small penalty for each move
+                let result = 'Moved';
+
+                // Check apple collision
                 let appleIndex = this.greenApples.findIndex(
                     apple => apple[0] === newHead[0] && apple[1] === newHead[1]
                 );
-                
+
                 if (appleIndex !== -1) {
-                    // Manger une pomme verte
+                    // Eat green apple
                     this.greenApples.splice(appleIndex, 1);
-                    this.greenApples.push(...this.placeApples(1, 'G'));
+                    this.greenApples.push(...this.placeApples(1));
                     this.score += 20;
                     this.snake.unshift(newHead);
                     this.maxLength = Math.max(this.maxLength, this.snake.length);
-                    return 'Ate Green Apple';
-                }
-                
-                appleIndex = this.redApples.findIndex(
-                    apple => apple[0] === newHead[0] && apple[1] === newHead[1]
-                );
-                
-                if (appleIndex !== -1) {
-                    // Manger une pomme rouge
-                    this.redApples.splice(appleIndex, 1);
-                    this.redApples.push(...this.placeApples(1, 'R'));
-                    this.score -= 10;
-                    this.snake.unshift(newHead);
-                    this.snake.pop();
-                    if (this.snake.length === 0) {
-                        this.gameOver = true;
-                        return 'Game Over';
+                    reward = 20;
+                    result = 'Ate Green Apple';
+                } else {
+                    appleIndex = this.redApples.findIndex(
+                        apple => apple[0] === newHead[0] && apple[1] === newHead[1]
+                    );
+
+                    if (appleIndex !== -1) {
+                        // Eat red apple
+                        this.redApples.splice(appleIndex, 1);
+                        this.redApples.push(...this.placeApples(1));
+                        this.score -= 10;
+                        this.snake.unshift(newHead);
+                        this.snake.pop();
+                        reward = -10;
+                        result = 'Ate Red Apple';
+                        
+                        if (this.snake.length === 0) {
+                            this.gameOver = true;
+                            reward = -100;
+                            result = 'Game Over';
+                        }
+                    } else {
+                        // Normal move
+                        this.snake.unshift(newHead);
+                        this.snake.pop();
                     }
-                    return 'Ate Red Apple';
                 }
-                
-                // Déplacement normal
-                this.snake.unshift(newHead);
-                this.snake.pop();
-                this.score -= 1;
-                return 'Moved';
+
+                this.steps++;
+                this.updateGrid();
+
+                // Learn from this experience
+                const nextState = this.getState();
+                this.agent.learn(state, action, reward, nextState);
+
+                return { result, reward };
             }
         }
 
-        // Initialisation du jeu
+        // Game instance and UI state
         let game = new SnakeGame();
         let autoPlayInterval = null;
+        let manualMode = false;
+        let gameSpeed = 200;
 
         function renderGame() {
             const container = document.getElementById('game-container');
@@ -216,7 +606,7 @@
             
             const grid = document.createElement('div');
             grid.className = 'grid';
-            grid.style.gridTemplateColumns = `repeat(${game.size}, 30px)`;
+            grid.style.gridTemplateColumns = `repeat(${game.size}, 25px)`;
             
             for (let i = 0; i < game.size; i++) {
                 for (let j = 0; j < game.size; j++) {
@@ -224,12 +614,29 @@
                     cell.className = 'cell';
                     
                     switch (game.grid[i][j]) {
-                        case 'H': cell.className += ' snake-head'; cell.textContent = 'H'; break;
-                        case 'S': cell.className += ' snake-body'; cell.textContent = ''; break;
-                        case 'G': cell.className += ' green-apple'; cell.textContent = ''; break;
-                        case 'R': cell.className += ' red-apple'; cell.textContent = ''; break;
-                        case 'W': cell.className += ' wall'; cell.textContent = 'W'; break;
-                        default: cell.textContent = '';
+                        case 'H': 
+                            cell.className += ' snake-head';
+                            cell.textContent = 'H';
+                            break;
+                        case 'S': 
+                            cell.className += ' snake-body';
+                            cell.textContent = '';
+                            break;
+                        case 'G': 
+                            cell.className += ' green-apple';
+                            cell.textContent = '';
+                            break;
+                        case 'R': 
+                            cell.className += ' red-apple';
+                            cell.textContent = '';
+                            break;
+                        case 'W': 
+                            cell.className += ' wall';
+                            cell.textContent = 'W';
+                            break;
+                        default: 
+                            cell.className += ' empty';
+                            cell.textContent = '';
                     }
                     
                     grid.appendChild(cell);
@@ -238,30 +645,56 @@
             
             container.appendChild(grid);
             
-            // Mettre à jour les statistiques
+            // Update statistics
             document.getElementById('score').textContent = game.score;
             document.getElementById('max-length').textContent = game.maxLength;
+            document.getElementById('steps').textContent = game.steps;
             document.getElementById('status').textContent = 
-                game.gameOver ? 'Game Over' : 'En cours';
+                game.gameOver ? '🔴 Game Over' : (manualMode ? '👆 Manuel' : '🟢 IA Active');
+            document.getElementById('speed-display').textContent = gameSpeed;
+            
+            // Update learning stats
+            const stats = game.agent.getStats();
+            document.getElementById('exploration-rate').textContent = 
+                (stats.explorationRate * 100).toFixed(1) + '%';
+            document.getElementById('states-learned').textContent = stats.statesLearned;
+            document.getElementById('optimal-actions').textContent = stats.optimalActions + '%';
         }
 
         function resetGame() {
             stopAutoPlay();
-            game.reset();
+            manualMode = false;
+            game = new SnakeGame();
             renderGame();
         }
 
-        function autoPlay() {
+        function toggleAutoPlay() {
+            if (autoPlayInterval) {
+                stopAutoPlay();
+            } else {
+                manualMode = false;
+                autoPlayInterval = setInterval(() => {
+                    if (!game.gameOver) {
+                        game.step();
+                        renderGame();
+                    } else {
+                        stopAutoPlay();
+                    }
+                }, gameSpeed);
+            }
+            renderGame();
+        }
+
+        function toggleManualMode() {
             stopAutoPlay();
-            autoPlayInterval = setInterval(() => {
-                if (!game.gameOver) {
-                    game.step();
-                    game.updateGrid();
-                    renderGame();
-                } else {
-                    stopAutoPlay();
-                }
-            }, 200);
+            manualMode = !manualMode;
+            renderGame();
+        }
+
+        function stopGame() {
+            stopAutoPlay();
+            manualMode = false;
+            renderGame();
         }
 
         function stopAutoPlay() {
@@ -271,24 +704,53 @@
             }
         }
 
-        // Raccourcis clavier
-        document.addEventListener('keydown', (e) => {
-            if (game.gameOver) return;
-            
-            switch(e.key) {
-                case 'ArrowUp': game.direction = [-1, 0]; break;
-                case 'ArrowDown': game.direction = [1, 0]; break;
-                case 'ArrowLeft': game.direction = [0, -1]; break;
-                case 'ArrowRight': game.direction = [0, 1]; break;
+        function changeSpeed(direction) {
+            if (direction === 'faster') {
+                gameSpeed = Math.max(50, gameSpeed - 50);
+            } else {
+                gameSpeed = Math.min(1000, gameSpeed + 50);
             }
             
-            game.step();
-            game.updateGrid();
+            if (autoPlayInterval) {
+                stopAutoPlay();
+                toggleAutoPlay();
+            }
             renderGame();
+        }
+
+        // Keyboard controls for manual mode
+        document.addEventListener('keydown', (e) => {
+            if (!manualMode || game.gameOver) return;
+            
+            let action = null;
+            switch(e.key) {
+                case 'ArrowUp': action = 'UP'; break;
+                case 'ArrowDown': action = 'DOWN'; break;
+                case 'ArrowLeft': action = 'LEFT'; break;
+                case 'ArrowRight': action = 'RIGHT'; break;
+            }
+            
+            if (action) {
+                game.step(action);
+                renderGame();
+            }
         });
 
         // Initial render
         renderGame();
+
+        // Add some visual effects
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(button => {
+                button.addEventListener('click', function() {
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = '';
+                    }, 150);
+                });
+            });
+        });
     </script>
 </body>
 </html>
