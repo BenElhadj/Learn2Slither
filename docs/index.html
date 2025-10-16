@@ -399,6 +399,46 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* Styles d'accessibilité */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* Amélioration des labels */
+        .settings-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            font-size: 13px;
+            color: #2c3e50;
+            cursor: pointer;
+        }
+
+        .settings-group label:hover {
+            color: #3498db;
+        }
+
+        /* Focus visible pour l'accessibilité */
+        input:focus, button:focus {
+            outline: 2px solid #3498db;
+            outline-offset: 2px;
+        }
+
+        /* Amélioration des boutons pour l'accessibilité */
+        button:focus-visible {
+            outline: 2px solid #3498db;
+            outline-offset: 2px;
+            transform: translateY(-1px);
+        }
     </style>
 </head>
 <body>
@@ -431,35 +471,37 @@
                         
                         <!-- Section des paramètres -->
                         <div class="parameters-section">
-
-                            <div class="settings-group">
-                                <label>Sessions: <span id="sessions-value">10</span></label>
-                                <input type="range" id="sessions" min="1" max="100" value="10" onchange="updateSessionsValue()">
+                            <div>
+                                <div class="settings-group">
+                                    <label for="sessions">Sessions: <span id="sessions-value">10</span></label>
+                                    <input type="range" id="sessions" name="sessions" min="1" max="100" value="10" onchange="updateSessionsValue()">
+                                </div>
+                                
+                                <div class="settings-group">
+                                    <label for="board-size">Taille du plateau: <span id="size-value">10</span></label>
+                                    <input type="range" id="board-size" name="board-size" min="8" max="20" value="10" onchange="updateSizeValue()">
+                                </div>
                             </div>
-                            
-                            <div class="settings-group">
-                                <label>Taille du plateau: <span id="size-value">10</span></label>
-                                <input type="range" id="board-size" min="8" max="20" value="10" onchange="updateSizeValue()">
-                            </div>
-                            
-                            <div class="settings-group">
-                                <label>Pommes vertes: <span id="green-value">2</span></label>
-                                <input type="range" id="green-apples" min="1" max="5" value="2" onchange="updateGreenValue()">
-                            </div>
-                            
-                            <div class="settings-group">
-                                <label>Pommes rouges: <span id="red-value">1</span></label>
-                                <input type="range" id="red-apples" min="0" max="3" value="1" onchange="updateRedValue()">
+                            <div>
+                                <div class="settings-group">
+                                    <label for="green-apples">Pommes vertes: <span id="green-value">2</span></label>
+                                    <input type="range" id="green-apples" name="green-apples" min="1" max="5" value="2" onchange="updateGreenValue()">
+                                </div>
+                                
+                                <div class="settings-group">
+                                    <label for="red-apples">Pommes rouges: <span id="red-value">1</span></label>
+                                    <input type="range" id="red-apples" name="red-apples" min="0" max="3" value="1" onchange="updateRedValue()">
+                                </div>
                             </div>
                         </div>
-                        
+
                         <!-- Section fichiers -->
                         <div class="file-input-group">
-                            <input type="text" id="model-path" placeholder="Chemin du modèle...">
-                            <button onclick="loadModel()">📂 Charger</button>
-                            <button onclick="saveModel()">💾 Sauvegarder</button>
+                            <label for="model-path" class="sr-only">Chemin du modèle</label>
+                            <input type="text" id="model-path" name="model-path" placeholder="Chemin du modèle...">
+                            <button type="button" onclick="loadModel()">📂 Charger</button>
+                            <button type="button" onclick="saveModel()">💾 Sauvegarder</button>
                         </div>
-                    </div>
                     
                     <!-- Barre de status -->
                     <div class="status-bar">
