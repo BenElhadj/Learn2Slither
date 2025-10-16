@@ -13,16 +13,19 @@ Une implémentation du jeu Snake avec un agent intelligent utilisant l'apprentis
 
 ## 🚀 Démo en Ligne
 
-[Voir la démo sur GitHub Pages](https://votre-username.github.io/votre-repo/)
+[Voir la démo sur GitHub Pages](https://benelhadj.github.io/Learn2Slither/)
 
 ## 💻 Installation Locale
 
 ```bash
-git clone https://github.com/votre-username/votre-repo.git
+git clone https://github.com/BenElhadj/Learn2Slither.git
 cd votre-repo
 
 # Interface graphique
 python main.py -visual
 
 # Interface ligne de commande
+
 python main.py -sessions 10
+
+
