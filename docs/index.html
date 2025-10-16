@@ -122,6 +122,15 @@
         .file-input-group input {
             flex: 1;
         }
+
+        .file-input-wrapper {
+            flex: 1;
+            display: block;
+        }
+
+        .file-input-wrapper input {
+            width: 100%;
+        }
         
         /* Styles d'accessibilité */
         .sr-only {
@@ -460,7 +469,7 @@
                             </div>
                         </div>
                         
-                        <!-- Section des paramètres -->
+                        <!-- Section des paramètres - VERSION COMPLÈTE CORRIGÉE -->
                         <div class="parameters-section">
                             <div>
                                 <div class="settings-group">
@@ -485,15 +494,15 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        <!-- Section fichiers -->
+
+                        <!-- Section fichiers - VERSION COMPLÈTE CORRIGÉE -->
                         <div class="file-input-group">
-                            <label for="model-path" class="sr-only">Chemin du modèle</label>
-                            <input type="text" id="model-path" name="model-path" placeholder="Chemin du modèle...">
-                            <button type="button" onclick="loadModel()">📂 Charger</button>
-                            <button type="button" onclick="saveModel()">💾 Sauvegarder</button>
+                            <input type="text" id="model-path" name="model-path" 
+                                placeholder="Chemin du modèle..." 
+                                aria-label="Chemin du modèle pour charger ou sauvegarder le modèle">
+                            <button type="button" onclick="loadModel()" aria-label="Charger le modèle">📂 Charger</button>
+                            <button type="button" onclick="saveModel()" aria-label="Sauvegarder le modèle">💾 Sauvegarder</button>
                         </div>
-                    </div>
                     
                     <!-- Barre de status -->
                     <div class="status-bar">
