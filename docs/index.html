@@ -98,6 +98,11 @@
             font-weight: 600;
             font-size: 13px;
             color: #2c3e50;
+            cursor: pointer;
+        }
+        
+        .settings-group label:hover {
+            color: #3498db;
         }
         
         .settings-group input, .settings-group select {
@@ -116,6 +121,32 @@
         
         .file-input-group input {
             flex: 1;
+        }
+        
+        /* Styles d'accessibilité */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+        
+        /* Focus visible pour l'accessibilité */
+        input:focus, button:focus {
+            outline: 2px solid #3498db;
+            outline-offset: 2px;
+        }
+        
+        /* Amélioration des boutons pour l'accessibilité */
+        button:focus-visible {
+            outline: 2px solid #3498db;
+            outline-offset: 2px;
+            transform: translateY(-1px);
         }
         
         .game-board-container {
@@ -399,46 +430,6 @@
                 grid-template-columns: 1fr;
             }
         }
-
-        /* Styles d'accessibilité */
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            white-space: nowrap;
-            border: 0;
-        }
-
-        /* Amélioration des labels */
-        .settings-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
-            font-size: 13px;
-            color: #2c3e50;
-            cursor: pointer;
-        }
-
-        .settings-group label:hover {
-            color: #3498db;
-        }
-
-        /* Focus visible pour l'accessibilité */
-        input:focus, button:focus {
-            outline: 2px solid #3498db;
-            outline-offset: 2px;
-        }
-
-        /* Amélioration des boutons pour l'accessibilité */
-        button:focus-visible {
-            outline: 2px solid #3498db;
-            outline-offset: 2px;
-            transform: translateY(-1px);
-        }
     </style>
 </head>
 <body>
@@ -462,9 +453,9 @@
                             <div class="settings-group">
                                 <label>Mode de jeu:</label>
                                 <div class="mode-buttons">
-                                    <button class="primary" id="learning-mode" onclick="setMode('Learning')">🎓 Learning</button>
-                                    <button class="success" id="game-mode" onclick="setMode('Game')">🎮 Game</button>
-                                    <button class="warning" id="dontlearn-mode" onclick="setMode('Dontlearn')">🎲 Dontlearn</button>
+                                    <button type="button" class="primary" id="learning-mode" onclick="setMode('Learning')">🎓 Learning</button>
+                                    <button type="button" class="success" id="game-mode" onclick="setMode('Game')">🎮 Game</button>
+                                    <button type="button" class="warning" id="dontlearn-mode" onclick="setMode('Dontlearn')">🎲 Dontlearn</button>
                                 </div>
                             </div>
                         </div>
@@ -494,7 +485,7 @@
                                 </div>
                             </div>
                         </div>
-
+                        
                         <!-- Section fichiers -->
                         <div class="file-input-group">
                             <label for="model-path" class="sr-only">Chemin du modèle</label>
@@ -502,6 +493,7 @@
                             <button type="button" onclick="loadModel()">📂 Charger</button>
                             <button type="button" onclick="saveModel()">💾 Sauvegarder</button>
                         </div>
+                    </div>
                     
                     <!-- Barre de status -->
                     <div class="status-bar">
@@ -536,15 +528,15 @@
                 <div class="info-card">
                     <h2>🎮 Contrôles du Jeu</h2>
                     <div class="controls">
-                        <button class="success" onclick="resetGame()">🔄 Nouvelle Partie</button>
-                        <button class="primary" id="start-button" onclick="startTraining()">🚀 Start Training</button>
-                        <button class="warning" id="pause-button" onclick="pauseTraining()">⏸️ Pause</button>
-                        <button class="danger" id="stop-button" onclick="stopGame()">⏹️ Stop</button>
-                        <button id="step-button" onclick="stepTraining()">📝 Step</button>
-                        <button id="manual-mode-button" onclick="toggleManualMode()">👆 Manual Mode</button>
-                        <button id="spectrum-button" onclick="toggleSpectrum()">👻 Spectre</button>
-                        <button onclick="changeSpeed('slower')">🐢 Ralentir</button>
-                        <button onclick="changeSpeed('faster')">⚡ Accélérer</button>
+                        <button type="button" class="success" onclick="resetGame()">🔄 Nouvelle Partie</button>
+                        <button type="button" class="primary" id="start-button" onclick="startTraining()">🚀 Start Training</button>
+                        <button type="button" class="warning" id="pause-button" onclick="pauseTraining()">⏸️ Pause</button>
+                        <button type="button" class="danger" id="stop-button" onclick="stopGame()">⏹️ Stop</button>
+                        <button type="button" id="step-button" onclick="stepTraining()">📝 Step</button>
+                        <button type="button" id="manual-mode-button" onclick="toggleManualMode()">👆 Manual Mode</button>
+                        <button type="button" id="spectrum-button" onclick="toggleSpectrum()">👻 Spectre</button>
+                        <button type="button" onclick="changeSpeed('slower')">🐢 Ralentir</button>
+                        <button type="button" onclick="changeSpeed('faster')">⚡ Accélérer</button>
                     </div>
                 </div>
             </div>
