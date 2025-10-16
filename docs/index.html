@@ -28,7 +28,7 @@
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             background: white;
             border-radius: 15px;
@@ -39,37 +39,40 @@
         header {
             background: var(--primary-color);
             color: white;
-            padding: 30px;
+            padding: 20px;
             text-align: center;
         }
         
         h1 {
-            font-size: 2.5em;
+            font-size: 2.2em;
             margin-bottom: 10px;
         }
         
         .subtitle {
-            font-size: 1.2em;
+            font-size: 1.1em;
             opacity: 0.9;
         }
         
         .main-content {
             display: grid;
-            grid-template-columns: 1fr 400px;
-            gap: 30px;
-            padding: 30px;
+            grid-template-columns: 1fr 350px;
+            gap: 20px;
+            padding: 20px;
         }
         
         .game-section {
             background: #f8f9fa;
-            padding: 20px;
+            padding: 15px;
             border-radius: 10px;
         }
         
         .info-section {
             background: #f8f9fa;
-            padding: 20px;
+            padding: 15px;
             border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
         
         .grid {
@@ -78,7 +81,8 @@
             background: #bdc3c7;
             padding: 2px;
             border-radius: 5px;
-            margin: 20px auto;
+            margin: 15px auto;
+            border: 2px solid #7f8c8d;
         }
         
         .cell {
@@ -125,17 +129,17 @@
         .controls {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin: 20px 0;
+            gap: 8px;
+            margin: 15px 0;
         }
         
         button {
-            padding: 12px 20px;
+            padding: 10px 15px;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             background: var(--primary-color);
             color: white;
-            font-size: 16px;
+            font-size: 14px;
             cursor: pointer;
             transition: all 0.3s ease;
             font-weight: 600;
@@ -154,67 +158,134 @@
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin: 20px 0;
+            gap: 10px;
+            margin: 15px 0;
         }
         
         .stat-card {
             background: white;
-            padding: 15px;
-            border-radius: 8px;
+            padding: 12px;
+            border-radius: 6px;
             border-left: 4px solid var(--secondary-color);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         
         .stat-value {
-            font-size: 1.8em;
+            font-size: 1.5em;
             font-weight: bold;
             color: var(--primary-color);
         }
         
         .stat-label {
-            font-size: 0.9em;
+            font-size: 0.8em;
             color: #7f8c8d;
-            margin-top: 5px;
+            margin-top: 3px;
         }
         
         .info-card {
             background: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         
         .legend {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
-            margin: 15px 0;
+            gap: 8px;
+            margin: 10px 0;
         }
         
         .legend-item {
             display: flex;
             align-items: center;
-            gap: 5px;
-            font-size: 14px;
+            gap: 4px;
+            font-size: 12px;
         }
         
         .legend-color {
-            width: 20px;
-            height: 20px;
+            width: 16px;
+            height: 16px;
             border-radius: 3px;
         }
         
         .q-learning-info {
             background: #e8f4f8;
             border-left: 4px solid var(--secondary-color);
-            padding: 15px;
-            border-radius: 5px;
-            margin: 15px 0;
+            padding: 12px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-size: 12px;
         }
         
-        @media (max-width: 768px) {
+        .settings-panel {
+            background: #f1f2f6;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        
+        .settings-group {
+            margin-bottom: 12px;
+        }
+        
+        .settings-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+        
+        .settings-group input, .settings-group select {
+            width: 100%;
+            padding: 6px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        
+        .file-input-group {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .file-input-group input {
+            flex: 1;
+        }
+        
+        .file-input-group button {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+        
+        .mode-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin: 10px 0;
+        }
+        
+        .discovered-objects {
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        
+        .object-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 2px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .object-wall {
+            color: var(--danger-color);
+            font-weight: bold;
+        }
+        
+        @media (max-width: 1024px) {
             .main-content {
                 grid-template-columns: 1fr;
             }
@@ -223,13 +294,23 @@
                 grid-template-columns: repeat(2, 1fr);
             }
         }
+        
+        @media (max-width: 768px) {
+            .controls {
+                grid-template-columns: 1fr;
+            }
+            
+            .mode-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>🐍 Snake AI avec Q-Learning</h1>
-            <p class="subtitle">Apprentissage par Renforcement - Intelligence Artificielle</p>
+            <h1>🐍 Snake AI - Q-Learning</h1>
+            <p class="subtitle">Apprentissage par Renforcement - Reproduction fidèle de l'application Python</p>
         </header>
         
         <div class="main-content">
@@ -238,9 +319,53 @@
                     <h2>🎮 Contrôles du Jeu</h2>
                     <div class="controls">
                         <button class="success" onclick="resetGame()">🔄 Nouvelle Partie</button>
-                        <button class="primary" onclick="toggleAutoPlay()">🎯 Auto-play IA</button>
-                        <button class="warning" onclick="toggleManualMode()">👆 Mode Manuel</button>
+                        <button class="primary" onclick="startTraining()">🚀 Start Training</button>
+                        <button class="warning" onclick="pauseTraining()">⏸️ Pause</button>
                         <button class="danger" onclick="stopGame()">⏹️ Stop</button>
+                    </div>
+                    <div class="controls">
+                        <button onclick="stepTraining()">📝 Step</button>
+                        <button onclick="toggleManualMode()">👆 Manual Mode</button>
+                        <button onclick="toggleSpectrum()">👻 Spectre</button>
+                        <button onclick="changeSpeed('slower')">🐢 Ralentir</button>
+                        <button onclick="changeSpeed('faster')">⚡ Accélérer</button>
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <h2>⚙️ Paramètres du Jeu</h2>
+                    <div class="settings-panel">
+                        <div class="mode-buttons">
+                            <button class="primary" onclick="setMode('Learning')">🎓 Learning</button>
+                            <button class="success" onclick="setMode('Game')">🎮 Game</button>
+                            <button class="warning" onclick="setMode('Dontlearn')">🎲 Dontlearn</button>
+                        </div>
+                        
+                        <div class="settings-group">
+                            <label>Sessions: <span id="sessions-value">10</span></label>
+                            <input type="range" id="sessions" min="1" max="100" value="10" onchange="updateSessionsValue()">
+                        </div>
+                        
+                        <div class="settings-group">
+                            <label>Taille du plateau: <span id="size-value">10</span></label>
+                            <input type="range" id="board-size" min="8" max="20" value="10" onchange="updateSizeValue()">
+                        </div>
+                        
+                        <div class="settings-group">
+                            <label>Pommes vertes: <span id="green-value">2</span></label>
+                            <input type="range" id="green-apples" min="1" max="5" value="2" onchange="updateGreenValue()">
+                        </div>
+                        
+                        <div class="settings-group">
+                            <label>Pommes rouges: <span id="red-value">1</span></label>
+                            <input type="range" id="red-apples" min="0" max="3" value="1" onchange="updateRedValue()">
+                        </div>
+                        
+                        <div class="file-input-group">
+                            <input type="text" id="model-path" placeholder="Chemin du modèle...">
+                            <button onclick="loadModel()">📂 Charger</button>
+                            <button onclick="saveModel()">💾 Sauvegarder</button>
+                        </div>
                     </div>
                 </div>
                 
@@ -249,56 +374,62 @@
                     <div class="stats-grid">
                         <div class="stat-card">
                             <div class="stat-value" id="score">0</div>
-                            <div class="stat-label">Score Actuel</div>
+                            <div class="stat-label">Score</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="steps">0</div>
+                            <div class="stat-label">Steps</div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-value" id="max-length">3</div>
                             <div class="stat-label">Longueur Max</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-value" id="steps">0</div>
-                            <div class="stat-label">Nombre de Pas</div>
+                            <div class="stat-value" id="session">1/10</div>
+                            <div class="stat-label">Session</div>
                         </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="status">🟢 Actif</div>
-                            <div class="stat-label">Status</div>
-                        </div>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <div class="stat-label">Status: <span id="status">Prêt</span></div>
+                        <div class="stat-label">Mode: <span id="mode-display">Learning</span></div>
+                        <div class="stat-label">Vitesse: <span id="speed-display">200</span>ms</div>
                     </div>
                 </div>
                 
                 <div class="info-card">
                     <h2>🎯 Plateau de Jeu</h2>
-                    <div id="game-container">
-                        <p>Chargement du jeu...</p>
+                    <div id="game-container" style="text-align: center;">
+                        <p>Initialisation du jeu...</p>
                     </div>
                 </div>
             </div>
             
             <div class="info-section">
                 <div class="info-card">
-                    <h2>🧠 Algorithme Q-Learning</h2>
+                    <h2>🧠 Q-Learning Agent</h2>
                     <div class="q-learning-info">
-                        <p><strong>Q-learning</strong> est un algorithme d'apprentissage par renforcement sans modèle qui apprend une fonction d'action-valeur.</p>
-                        <p><strong>Formule :</strong> Q(s,a) = Q(s,a) + α[r + γmaxQ(s',a') - Q(s,a)]</p>
+                        <p><strong>Exploration Rate:</strong> <span id="exploration-rate">0.200</span></p>
+                        <p><strong>Learning Rate:</strong> 0.007 | <strong>Discount:</strong> 0.00995</p>
+                        <p><strong>Score Rate:</strong> 2e-05 | <strong>Heatmap Rate:</strong> -0.5</p>
                     </div>
                     
                     <h3>📖 Légende</h3>
                     <div class="legend">
                         <div class="legend-item">
                             <div class="legend-color" style="background: #3498db;"></div>
-                            <span>Tête du serpent (H)</span>
+                            <span>Tête (H)</span>
                         </div>
                         <div class="legend-item">
                             <div class="legend-color" style="background: #87CEEB;"></div>
-                            <span>Corps du serpent (S)</span>
+                            <span>Corps (S)</span>
                         </div>
                         <div class="legend-item">
                             <div class="legend-color" style="background: #27ae60;"></div>
-                            <span>Pomme verte (+20)</span>
+                            <span>Pomme verte (G)</span>
                         </div>
                         <div class="legend-item">
                             <div class="legend-color" style="background: #e74c3c;"></div>
-                            <span>Pomme rouge (-10)</span>
+                            <span>Pomme rouge (R)</span>
                         </div>
                         <div class="legend-item">
                             <div class="legend-color" style="background: #7f8c8d;"></div>
@@ -308,22 +439,32 @@
                 </div>
                 
                 <div class="info-card">
-                    <h2>⚙️ Paramètres IA</h2>
-                    <div class="controls">
-                        <button onclick="changeSpeed('faster')">⚡ Plus rapide</button>
-                        <button onclick="changeSpeed('slower')">🐢 Plus lent</button>
+                    <h2>📈 Q-Values Actuelles</h2>
+                    <div id="q-values-display" style="font-family: monospace; font-size: 12px; line-height: 1.4;">
+                        UP => W : 0.00<br>
+                        DOWN => S : 0.00<br>
+                        LEFT => S : 0.00<br>
+                        RIGHT => S : 0.00
                     </div>
-                    <div style="margin-top: 15px;">
-                        <label>Vitesse: <span id="speed-display">200</span>ms</label>
+                    <div style="margin-top: 8px; font-size: 12px;">
+                        <strong>Action choisie:</strong> <span id="action-chosen">-</span>
                     </div>
                 </div>
                 
                 <div class="info-card">
-                    <h2>📈 Apprentissage</h2>
-                    <div id="learning-stats">
-                        <p>🎯 Exploration rate: <span id="exploration-rate">100%</span></p>
-                        <p>📚 États appris: <span id="states-learned">0</span></p>
-                        <p>🎮 Actions optimales: <span id="optimal-actions">0%</span></p>
+                    <h2>🔍 Objets Découverts</h2>
+                    <div id="objects-display" class="discovered-objects">
+                        Aucun objet découvert
+                    </div>
+                    <div style="margin-top: 8px; font-size: 11px; color: #666;">
+                        Taille plateau: <span id="board-size-display">0x0</span>
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <h2>📋 Historique des Sessions</h2>
+                    <div id="history-display" style="max-height: 150px; overflow-y: auto; font-size: 11px; line-height: 1.3;">
+                        Aucune session terminée
                     </div>
                 </div>
             </div>
@@ -331,313 +472,610 @@
     </div>
 
     <script>
-        // 🎯 CORRECTION : Déclarer toutes les variables GLOBALES en premier
+        // =============================================================================
+        // IMPLÉMENTATION FIDÈLE DE VOTRE PROJET PYTHON EN JAVASCRIPT
+        // =============================================================================
+
+        // Variables globales
         let game = null;
+        let agent = null;
         let autoPlayInterval = null;
         let manualMode = false;
         let gameSpeed = 200;
+        let currentSession = 1;
+        let totalSessions = 10;
+        let lengthHistory = [];
+        let showSpectrum = false;
 
-        // Implémentation du jeu Snake avec IA Q-learning simplifiée
-        class QLearningAgent {
-            constructor(actions) {
-                this.actions = actions;
-                this.qTable = {};
-                this.learningRate = 0.1;
-                this.discountFactor = 0.9;
-                this.explorationRate = 1.0;
-                this.minExploration = 0.01;
-                this.explorationDecay = 0.995;
-            }
+        // Configuration actuelle
+        let config = {
+            mode: 'Learning',
+            boardSize: 10,
+            greenApples: 2,
+            redApples: 1,
+            sessions: 10
+        };
 
-            getQValue(state, action) {
-                const stateKey = JSON.stringify(state);
-                if (!this.qTable[stateKey]) {
-                    this.qTable[stateKey] = {};
-                    this.actions.forEach(a => this.qTable[stateKey][a] = 0);
-                }
-                return this.qTable[stateKey][action];
-            }
+        // =============================================================================
+        // CLASSE BOARD - Reproduction fidèle de board.py
+        // =============================================================================
 
-            chooseAction(state) {
-                // Exploration vs exploitation
-                if (Math.random() < this.explorationRate) {
-                    return this.actions[Math.floor(Math.random() * this.actions.length)];
-                }
-
-                // Exploitation: choisir la meilleure action
-                const stateKey = JSON.stringify(state);
-                if (!this.qTable[stateKey]) {
-                    return this.actions[Math.floor(Math.random() * this.actions.length)];
-                }
-
-                let bestAction = this.actions[0];
-                let bestValue = this.qTable[stateKey][bestAction];
-                
-                this.actions.forEach(action => {
-                    if (this.qTable[stateKey][action] > bestValue) {
-                        bestValue = this.qTable[stateKey][action];
-                        bestAction = action;
-                    }
-                });
-
-                return bestAction;
-            }
-
-            learn(state, action, reward, nextState) {
-                const stateKey = JSON.stringify(state);
-                const nextStateKey = JSON.stringify(nextState);
-                
-                if (!this.qTable[stateKey]) {
-                    this.qTable[stateKey] = {};
-                    this.actions.forEach(a => this.qTable[stateKey][a] = 0);
-                }
-
-                // Q-learning formula
-                const currentQ = this.qTable[stateKey][action];
-                let maxNextQ = 0;
-
-                if (this.qTable[nextStateKey]) {
-                    maxNextQ = Math.max(...this.actions.map(a => this.qTable[nextStateKey][a]));
-                }
-
-                const newQ = currentQ + this.learningRate * (reward + this.discountFactor * maxNextQ - currentQ);
-                this.qTable[stateKey][action] = newQ;
-
-                // Decay exploration rate
-                this.explorationRate = Math.max(this.minExploration, this.explorationRate * this.explorationDecay);
-            }
-
-            getStats() {
-                return {
-                    explorationRate: this.explorationRate,
-                    statesLearned: Object.keys(this.qTable).length,
-                    optimalActions: this.calculateOptimalActions()
-                };
-            }
-
-            calculateOptimalActions() {
-                let optimalCount = 0;
-                let totalCount = 0;
-
-                Object.values(this.qTable).forEach(stateActions => {
-                    const values = Object.values(stateActions);
-                    const maxValue = Math.max(...values);
-                    optimalCount += values.filter(v => v === maxValue && maxValue > 0).length;
-                    totalCount += values.length;
-                });
-
-                return totalCount > 0 ? (optimalCount / totalCount * 100).toFixed(1) : '0';
-            }
-        }
-
-        class SnakeGame {
-            constructor(size = 12) {
+        class Board {
+            constructor(size = 10, nb_r_app = 1, nb_g_app = 2) {
                 this.size = size;
-                this.agent = new QLearningAgent(['UP', 'DOWN', 'LEFT', 'RIGHT']);
-                this.reset();
+                this.grid = Array(size).fill().map(() => Array(size).fill('0'));
+                this.snake = this.initialize_snake();
+                this.green_apples = [];
+                this.nb_g_app = nb_g_app;
+                this.red_apples = [];
+                this.nb_r_app = nb_r_app;
+                this.place_apples();
+                this.snake_dir = this.random_or_advantageous_direction();
+                this.score = 0;
+                this.steps = 0;
+                this.max_length = 3;
+                this.initial_score = 0;
+                this.max_length_reached = 3;
+            }
+
+            initialize_snake() {
+                const start_x = Math.floor(Math.random() * (this.size - 2)) + 1;
+                const start_y = Math.floor(Math.random() * (this.size - 4)) + 1;
+                return [
+                    [start_x, start_y],
+                    [start_x, start_y + 1],
+                    [start_x, start_y + 2]
+                ];
+            }
+
+            random_or_advantageous_direction() {
+                const directions = [[0, 1], [1, 0], [0, -1], [-1, 0]];
+                const advantages = {};
+                directions.forEach(d => {
+                    advantages[d] = this.evaluate_direction(d);
+                });
+                
+                if (Object.values(advantages).every(value => value === 0)) {
+                    return directions[Math.floor(Math.random() * directions.length)];
+                }
+                
+                return directions.reduce((best, current) => 
+                    advantages[current] > advantages[best] ? current : best
+                );
+            }
+
+            evaluate_direction(direction) {
+                const [head_x, head_y] = this.snake[0];
+                const [dx, dy] = direction;
+                const new_head = [head_x + dx, head_y + dy];
+
+                if (!(0 <= new_head[0] && new_head[0] < this.size && 0 <= new_head[1] && new_head[1] < this.size)) {
+                    return -100; // Mur
+                }
+                if (this.snake.some(segment => segment[0] === new_head[0] && segment[1] === new_head[1])) {
+                    return -50; // Corps du serpent
+                }
+                if (this.green_apples.some(apple => apple[0] === new_head[0] && apple[1] === new_head[1])) {
+                    return 20; // Pomme verte
+                }
+                if (this.red_apples.some(apple => apple[0] === new_head[0] && apple[1] === new_head[1])) {
+                    return -10; // Pomme rouge
+                }
+                return 0; // Case vide
             }
 
             reset() {
-                // 🎯 CORRECTION : Initialiser d'abord les tableaux VIDE
-                this.snake = this.initializeSnake();
-                this.greenApples = [];
-                this.redApples = [];
-                
-                // 🎯 CORRECTION : Maintenant initialiser la grille et les pommes
-                this.grid = Array(this.size).fill().map(() => Array(this.size).fill('0'));
-                this.score = 0;
+                this.snake = this.initialize_snake();
+                this.snake_dir = this.random_or_advantageous_direction();
+                this.score = this.initial_score;
                 this.steps = 0;
-                this.maxLength = 3;
-                this.gameOver = false;
-                this.lastAction = null;
-                
-                // 🎯 CORRECTION : Placer les pommes après avoir initialisé les tableaux
-                this.greenApples = this.placeApples(2);
-                this.redApples = this.placeApples(1);
-                this.updateGrid();
+                this.max_length = 3;
+                this.green_apples = [];
+                this.red_apples = [];
+                this.place_apples();
             }
 
-            initializeSnake() {
-                const startX = Math.floor(this.size / 2);
-                const startY = Math.floor(this.size / 2);
-                return [
-                    [startX, startY],
-                    [startX, startY - 1],
-                    [startX, startY - 2]
-                ];
+            place_apples() {
+                this.green_apples = Array(this.nb_g_app).fill().map(() => this.random_empty_cell());
+                this.red_apples = Array(this.nb_r_app).fill().map(() => this.random_empty_cell());
             }
 
-            placeApples(count) {
-                const apples = [];
-                for (let i = 0; i < count; i++) {
-                    let x, y;
-                    do {
-                        x = Math.floor(Math.random() * this.size);
-                        y = Math.floor(Math.random() * this.size);
-                    } while (this.isOccupied(x, y));
-                    apples.push([x, y]);
-                }
-                return apples;
-            }
-
-            isOccupied(x, y) {
-                // 🎯 CORRECTION : Vérifier que les tableaux existent avant d'utiliser .some()
-                const snakeOccupied = this.snake ? this.snake.some(segment => 
-                    segment[0] === x && segment[1] === y) : false;
+            random_empty_cell() {
+                while (true) {
+                    const x = Math.floor(Math.random() * this.size);
+                    const y = Math.floor(Math.random() * this.size);
                     
-                const greenOccupied = this.greenApples ? this.greenApples.some(apple => 
-                    apple[0] === x && apple[1] === y) : false;
+                    const notInSnake = !this.snake.some(segment => segment[0] === x && segment[1] === y);
+                    const notInGreen = !this.green_apples.some(apple => apple[0] === x && apple[1] === y);
+                    const notInRed = !this.red_apples.some(apple => apple[0] === x && apple[1] === y);
                     
-                const redOccupied = this.redApples ? this.redApples.some(apple => 
-                    apple[0] === x && apple[1] === y) : false;
-                    
-                return snakeOccupied || greenOccupied || redOccupied;
-            }
-
-            updateGrid() {
-                // Reset grid
-                this.grid = Array(this.size).fill().map(() => Array(this.size).fill('0'));
-                
-                // Place apples
-                this.greenApples.forEach(([x, y]) => this.grid[x][y] = 'G');
-                this.redApples.forEach(([x, y]) => this.grid[x][y] = 'R');
-                
-                // Place snake
-                this.snake.forEach(([x, y], index) => {
-                    this.grid[x][y] = index === 0 ? 'H' : 'S';
-                });
-            }
-
-            getState() {
-                const head = this.snake[0];
-                return [
-                    this.getCellInfo(head[0] - 1, head[1]), // Up
-                    this.getCellInfo(head[0] + 1, head[1]), // Down
-                    this.getCellInfo(head[0], head[1] - 1), // Left
-                    this.getCellInfo(head[0], head[1] + 1)  // Right
-                ];
-            }
-
-            getCellInfo(x, y) {
-                if (x < 0 || x >= this.size || y < 0 || y >= this.size) return 'W';
-                return this.grid[x][y];
-            }
-
-            step(action = null) {
-                if (this.gameOver) return { result: 'Game Over', reward: 0 };
-
-                const state = this.getState();
-                
-                if (action === null) {
-                    action = this.agent.chooseAction(state);
-                }
-
-                this.lastAction = action;
-
-                const head = this.snake[0];
-                let newHead;
-
-                switch(action) {
-                    case 'UP': newHead = [head[0] - 1, head[1]]; break;
-                    case 'DOWN': newHead = [head[0] + 1, head[1]]; break;
-                    case 'LEFT': newHead = [head[0], head[1] - 1]; break;
-                    case 'RIGHT': newHead = [head[0], head[1] + 1]; break;
-                }
-
-                // Check wall collision
-                if (newHead[0] < 0 || newHead[0] >= this.size || 
-                    newHead[1] < 0 || newHead[1] >= this.size) {
-                    this.gameOver = true;
-                    const reward = -100;
-                    this.agent.learn(state, action, reward, this.getState());
-                    return { result: 'Game Over', reward };
-                }
-
-                // Check self collision
-                if (this.snake.some(segment => 
-                    segment[0] === newHead[0] && segment[1] === newHead[1])) {
-                    this.gameOver = true;
-                    const reward = -50;
-                    this.agent.learn(state, action, reward, this.getState());
-                    return { result: 'Hit Snake Body', reward };
-                }
-
-                let reward = -1; // Small penalty for each move
-                let result = 'Moved';
-
-                // Check apple collision
-                let appleIndex = this.greenApples.findIndex(
-                    apple => apple[0] === newHead[0] && apple[1] === newHead[1]
-                );
-
-                if (appleIndex !== -1) {
-                    // Eat green apple
-                    this.greenApples.splice(appleIndex, 1);
-                    this.greenApples.push(...this.placeApples(1));
-                    this.score += 20;
-                    this.snake.unshift(newHead);
-                    this.maxLength = Math.max(this.maxLength, this.snake.length);
-                    reward = 20;
-                    result = 'Ate Green Apple';
-                } else {
-                    appleIndex = this.redApples.findIndex(
-                        apple => apple[0] === newHead[0] && apple[1] === newHead[1]
-                    );
-
-                    if (appleIndex !== -1) {
-                        // Eat red apple
-                        this.redApples.splice(appleIndex, 1);
-                        this.redApples.push(...this.placeApples(1));
-                        this.score -= 10;
-                        this.snake.unshift(newHead);
-                        this.snake.pop();
-                        reward = -10;
-                        result = 'Ate Red Apple';
-                        
-                        if (this.snake.length === 0) {
-                            this.gameOver = true;
-                            reward = -100;
-                            result = 'Game Over';
-                        }
-                    } else {
-                        // Normal move
-                        this.snake.unshift(newHead);
-                        this.snake.pop();
+                    if (notInSnake && notInGreen && notInRed) {
+                        return [x, y];
                     }
                 }
+            }
 
-                this.steps++;
-                this.updateGrid();
+            update() {
+                const [head_x, head_y] = this.snake[0];
+                const [dx, dy] = this.snake_dir;
+                const new_head = [head_x + dx, head_y + dy];
 
-                // Learn from this experience
-                const nextState = this.getState();
-                this.agent.learn(state, action, reward, nextState);
+                // Vérifier collision avec le corps
+                if (this.snake.some(segment => segment[0] === new_head[0] && segment[1] === new_head[1])) {
+                    return "Hit Snake Body";
+                }
 
-                return { result, reward };
+                // Vérifier collision avec les murs
+                if (!(0 <= new_head[0] && new_head[0] < this.size && 0 <= new_head[1] && new_head[1] < this.size)) {
+                    return "Game Over";
+                }
+
+                // Vérifier les pommes vertes
+                const greenAppleIndex = this.green_apples.findIndex(apple => 
+                    apple[0] === new_head[0] && apple[1] === new_head[1]
+                );
+                if (greenAppleIndex !== -1) {
+                    this.snake.unshift(new_head);
+                    this.green_apples.splice(greenAppleIndex, 1);
+                    this.green_apples.push(this.random_empty_cell());
+                    this.score += 20;
+                    this.max_length = Math.max(this.max_length, this.snake.length);
+                    this.max_length_reached = Math.max(this.max_length_reached, this.snake.length);
+                    return "Ate Green Apple";
+                }
+
+                // Vérifier les pommes rouges
+                const redAppleIndex = this.red_apples.findIndex(apple => 
+                    apple[0] === new_head[0] && apple[1] === new_head[1]
+                );
+                if (redAppleIndex !== -1) {
+                    this.snake.pop();
+                    if (this.snake.length === 0) {
+                        return "Game Over";
+                    }
+                    this.red_apples.splice(redAppleIndex, 1);
+                    this.red_apples.push(this.random_empty_cell());
+                    this.score -= 10;
+                    return "Ate Red Apple";
+                }
+
+                // Déplacement normal
+                this.snake.unshift(new_head);
+                this.snake.pop();
+                this.score -= 1;
+                return "Moved";
+            }
+
+            get_state() {
+                const [head_x, head_y] = this.snake[0];
+                return [
+                    this.cell_info(head_x - 1, head_y),
+                    this.cell_info(head_x + 1, head_y),
+                    this.cell_info(head_x, head_y - 1),
+                    this.cell_info(head_x, head_y + 1)
+                ];
+            }
+
+            cell_info(x, y) {
+                if (!(0 <= x && x < this.size && 0 <= y && y < this.size)) {
+                    return "W";
+                }
+                if (this.snake.some(segment => segment[0] === x && segment[1] === y)) {
+                    return "S";
+                }
+                if (this.green_apples.some(apple => apple[0] === x && apple[1] === y)) {
+                    return "G";
+                }
+                if (this.red_apples.some(apple => apple[0] === x && apple[1] === y)) {
+                    return "R";
+                }
+                return "0";
+            }
+
+            render() {
+                this.grid = Array(this.size).fill().map(() => Array(this.size).fill('0'));
+                
+                this.green_apples.forEach(([gx, gy]) => {
+                    this.grid[gx][gy] = 'G';
+                });
+                
+                this.red_apples.forEach(([rx, ry]) => {
+                    this.grid[rx][ry] = 'R';
+                });
+                
+                this.snake.forEach(([x, y], i) => {
+                    this.grid[x][y] = i === 0 ? 'H' : 'S';
+                });
             }
         }
 
-        // 🎯 FONCTIONS CORRIGÉES - TOUTES LES VARIABLES SONT MAINTENANT DÉCLARÉES
+        // =============================================================================
+        // CLASSE QLEARNINGAGENT - Reproduction fidèle de agent.py
+        // =============================================================================
+
+        class QLearningAgent {
+            constructor(actions, verbose = false) {
+                this.actions = actions;
+                this.score_rate = 2e-05;
+                this.heatmap_rate = -0.5;
+                this.learning_rate = 0.007;
+                this.discount_factor = 0.00995;
+                this.min_exploration = 0.01;
+                this.exploration_rate = 0.2;
+                this.exploration_decay = 0.0999;
+                this.q_table = {};
+                this.discovered_objects = {};
+                this.verbose = verbose;
+                this.steps = 0;
+                this.dontlearn_enabled = true;
+                this.position_history = [];
+                this.current_position = [0, 0];
+                this.history_length = 3;
+                this.board_size = [0, 0];
+                this.wall_obj = "";
+                this.wall_up = false;
+                this.wall_left = false;
+                this.max_x = 0;
+                this.max_y = 0;
+                this.locked_x = 0;
+                this.locked_y = 0;
+                this.mini_size = [7, 7];
+            }
+
+            dontlearn() {
+                this.dontlearn_enabled = false;
+                this.exploration_rate = 1.0;
+            }
+
+            update_position(action, state) {
+                let [x, y] = this.current_position;
+                switch(action) {
+                    case "UP": x -= 1; break;
+                    case "DOWN": x += 1; break;
+                    case "LEFT": y -= 1; break;
+                    case "RIGHT": y += 1; break;
+                }
+
+                this.current_position = [x, y];
+                this.position_history.push([x, y]);
+
+                if (this.position_history.length > this.history_length) {
+                    this.position_history.shift();
+                }
+
+                this.detect_board(state);
+                this.adjust_positions(state);
+            }
+
+            detect_board(state) {
+                if (this.board_size[0] > this.mini_size[0] && this.board_size[1] > this.mini_size[1]) {
+                    return;
+                }
+
+                this.detect_walls(state);
+
+                if (!this.wall_obj) return;
+
+                const [obj_up, obj_down, obj_left, obj_right] = state;
+
+                // Détection des murs
+                if (obj_up === this.wall_obj) {
+                    this.current_position = [1, this.current_position[1]];
+                    this.wall_up = true;
+                }
+                if (obj_up !== this.wall_obj && this.current_position[0] <= 0) {
+                    this.current_position = [1, this.current_position[1]];
+                }
+
+                if (obj_left === this.wall_obj) {
+                    this.current_position = [this.current_position[0], 1];
+                    this.wall_left = true;
+                }
+                if (obj_left !== this.wall_obj && this.current_position[1] < 0) {
+                    this.current_position = [this.current_position[0], 1];
+                }
+
+                // Détection de la taille du plateau
+                if (this.locked_x < 3 && obj_down === this.wall_obj && this.wall_up) {
+                    if (this.current_position[0] + 1 > this.mini_size[0]) {
+                        if (this.max_x === this.current_position[0] + 1) {
+                            this.locked_x += 1;
+                        }
+                        this.max_x = this.current_position[0] + 1;
+                        this.wall_up = false;
+                    }
+                } else if (this.locked_x >= 3 && obj_down === this.wall_obj) {
+                    this.current_position = [this.max_x - 2, this.current_position[1]];
+                }
+
+                if (this.locked_y < 3 && obj_right === this.wall_obj && this.wall_left) {
+                    if (this.current_position[1] + 1 > this.mini_size[1]) {
+                        if (this.max_y === this.current_position[1] + 1) {
+                            this.locked_y += 1;
+                        }
+                        this.max_y = this.current_position[1] + 1;
+                        this.wall_left = false;
+                    }
+                } else if (this.locked_y >= 3 && obj_right === this.wall_obj) {
+                    this.current_position = [this.current_position[0], this.max_y - 2];
+                }
+
+                if (this.locked_x >= 3 && this.max_x > 0 && this.board_size[0] !== this.max_x) {
+                    this.board_size[0] = this.max_x;
+                }
+
+                if (this.locked_y >= 3 && this.max_y > 0 && this.board_size[1] !== this.max_y) {
+                    this.board_size[1] = this.max_y;
+                }
+            }
+
+            detect_walls(state) {
+                const [obj_up, , obj_left] = state;
+                const reward_up = this.discovered_objects[obj_up] || 0;
+                const reward_left = this.discovered_objects[obj_left] || 0;
+                const reward_wall_obj = this.discovered_objects[this.wall_obj] || 0;
+
+                if (!this.wall_obj) {
+                    this.wall_obj = reward_up < reward_left ? obj_up : obj_left;
+                } else {
+                    if (reward_up < reward_wall_obj) {
+                        this.wall_obj = obj_up;
+                    }
+                    if (reward_left < reward_wall_obj) {
+                        this.wall_obj = obj_left;
+                    }
+                }
+            }
+
+            adjust_positions(state) {
+                if (this.board_size[0] <= this.mini_size[0] || this.board_size[1] <= this.mini_size[1]) {
+                    return;
+                }
+
+                const [max_x, max_y] = this.board_size;
+                const [obj_up, obj_down, obj_left, obj_right] = state;
+
+                let [new_x, new_y] = this.current_position;
+
+                if (obj_up === this.wall_obj) {
+                    new_x = 1;
+                } else if (this.current_position[0] < 1) {
+                    new_x = 0;
+                }
+
+                if (obj_left === this.wall_obj) {
+                    new_y = 1;
+                } else if (this.current_position[1] < 1) {
+                    new_y = 0;
+                }
+
+                if (obj_down === this.wall_obj) {
+                    new_x = max_x - 2;
+                } else if (this.current_position[0] > max_x - 2) {
+                    new_x = max_x - 1;
+                }
+
+                if (obj_right === this.wall_obj) {
+                    new_y = max_y - 2;
+                } else if (this.current_position[1] > max_y - 2) {
+                    new_y = max_y - 1;
+                }
+
+                const dx = new_x - this.current_position[0];
+                const dy = new_y - this.current_position[1];
+
+                if (dx !== 0 || dy !== 0) {
+                    this.position_history = this.position_history.map(([x, y]) => [x + dx, y + dy]);
+                }
+
+                this.current_position = [new_x, new_y];
+
+                this.position_history = this.position_history.map(([x, y]) => [
+                    Math.max(0, Math.min(x, max_x - 1)),
+                    Math.max(0, Math.min(y, max_y - 1))
+                ]);
+
+                this.current_position = [
+                    Math.max(0, Math.min(this.current_position[0], max_x - 1)),
+                    Math.max(0, Math.min(this.current_position[1], max_y - 1))
+                ];
+            }
+
+            adjust_history_length(reward) {
+                if (reward > 0) {
+                    this.history_length += 1;
+                } else if (reward < -1) {
+                    this.history_length = Math.max(0, this.history_length - 1);
+                    if (this.position_history.length > 0) {
+                        this.position_history.shift();
+                    }
+                }
+            }
+
+            reset_history() {
+                this.position_history = [];
+                this.history_length = 3;
+                this.wall_up = false;
+                this.wall_left = false;
+            }
+
+            learn(state, action, reward, next_state) {
+                if (!this.dontlearn_enabled) return;
+
+                const obj = state[this.actions.indexOf(action)];
+                this.discovered_objects[obj] = Math.max(
+                    this.discovered_objects[obj] || -Infinity,
+                    reward
+                );
+
+                if (!this.q_table[state]) {
+                    this.q_table[state] = {};
+                    this.actions.forEach(a => this.q_table[state][a] = 0);
+                }
+
+                const next_q_values = this.q_table[next_state] || {};
+                const best_next_action = Object.keys(next_q_values).length > 0 ? 
+                    Object.keys(next_q_values).reduce((a, b) => next_q_values[a] > next_q_values[b] ? a : b) : 
+                    this.actions[0];
+
+                const td_target = reward + this.discount_factor * (next_q_values[best_next_action] || 0);
+                const td_error = td_target - this.q_table[state][action];
+                this.q_table[state][action] += this.learning_rate * td_error * (1 - this.exploration_rate);
+
+                this.adjust_history_length(reward);
+            }
+
+            handle_new_objects(state, action, reward) {
+                if (!this.dontlearn_enabled) return;
+
+                const obj = state[this.actions.indexOf(action)];
+                const previous_reward = this.discovered_objects[obj] !== undefined ? this.discovered_objects[obj] : "Inconnu";
+
+                if (this.discovered_objects[obj] === undefined || reward < this.discovered_objects[obj]) {
+                    this.discovered_objects[obj] = reward;
+                    if (this.verbose) {
+                        console.log(`Objet ${obj} mis à jour: Ancienne récompense = ${previous_reward}, Nouvelle récompense = ${reward}`);
+                    }
+                }
+            }
+
+            decay_exploration() {
+                this.exploration_rate = Math.max(
+                    this.min_exploration,
+                    this.exploration_rate * this.exploration_decay
+                );
+            }
+
+            get_q_values(state) {
+                return this.q_table[state] || this.actions.reduce((acc, action) => {
+                    acc[action] = 0;
+                    return acc;
+                }, {});
+            }
+
+            get_position_history() {
+                return this.position_history;
+            }
+
+            compute_free_space(position) {
+                const queue = [position];
+                const visited = new Set([position.toString()]);
+                let count = 0;
+
+                while (queue.length > 0) {
+                    const [x, y] = queue.shift();
+                    count += 1;
+
+                    const directions = [[-1, 0], [1, 0], [0, -1], [0, 1]];
+                    for (const [dx, dy] of directions) {
+                        const new_pos = [x + dx, y + dy];
+                        const new_pos_str = new_pos.toString();
+
+                        if (0 <= new_pos[0] && new_pos[0] < this.board_size[0] &&
+                            0 <= new_pos[1] && new_pos[1] < this.board_size[1] &&
+                            !visited.has(new_pos_str) &&
+                            !this.position_history.some(pos => pos[0] === new_pos[0] && pos[1] === new_pos[1]) &&
+                            new_pos.toString() !== this.wall_obj.toString()) {
+                            queue.push(new_pos);
+                            visited.add(new_pos_str);
+                        }
+                    }
+                }
+
+                return count;
+            }
+
+            compute_heatmap() {
+                const heatmap = {};
+                this.position_history.forEach(pos => {
+                    const key = pos.toString();
+                    heatmap[key] = (heatmap[key] || 0) + 1;
+                });
+                return heatmap;
+            }
+
+            choose_action(state, training = true) {
+                if (!this.dontlearn_enabled) {
+                    return this.actions[Math.floor(Math.random() * this.actions.length)];
+                }
+
+                const unknown_objects = state.filter(obj => this.discovered_objects[obj] === undefined);
+
+                if (unknown_objects.length > 0) {
+                    const chosen_object = unknown_objects[Math.floor(Math.random() * unknown_objects.length)];
+                    const action_index = state.indexOf(chosen_object);
+                    const action = this.actions[action_index];
+                    this.update_position(action, state);
+                    return action;
+                } else {
+                    const heatmap = this.compute_heatmap();
+                    const best_actions = [];
+                    const action_scores = {};
+
+                    this.actions.forEach((action, i) => {
+                        const obj = state[i];
+                        let [x, y] = this.current_position;
+
+                        switch(action) {
+                            case "UP": x -= 1; break;
+                            case "DOWN": x += 1; break;
+                            case "LEFT": y -= 1; break;
+                            case "RIGHT": y += 1; break;
+                        }
+
+                        const reward = this.discovered_objects[obj] || 0;
+                        const free_space = this.compute_free_space([x, y]);
+                        const visit_penalty = (heatmap[[x, y].toString()] || 0) * this.learning_rate;
+                        let score = reward + free_space * this.score_rate + visit_penalty;
+
+                        if (free_space < 2) {
+                            score -= 50;
+                        }
+
+                        action_scores[action] = score;
+                    });
+
+                    const max_score = Math.max(...Object.values(action_scores));
+                    Object.keys(action_scores).forEach(action => {
+                        if (action_scores[action] === max_score) {
+                            best_actions.push(action);
+                        }
+                    });
+
+                    const action = best_actions[Math.floor(Math.random() * best_actions.length)];
+                    this.update_position(action, state);
+                    return action;
+                }
+            }
+        }
+
+        // =============================================================================
+        // FONCTIONS DE GESTION DE L'INTERFACE
+        // =============================================================================
+
         function initializeGame() {
-            console.log("🎮 Initialisation du jeu Snake AI...");
-            game = new SnakeGame();
+            config.boardSize = parseInt(document.getElementById('board-size').value);
+            config.greenApples = parseInt(document.getElementById('green-apples').value);
+            config.redApples = parseInt(document.getElementById('red-apples').value);
+            config.sessions = parseInt(document.getElementById('sessions').value);
+            totalSessions = config.sessions;
+
+            game = new Board(config.boardSize, config.redApples, config.greenApples);
+            agent = new QLearningAgent(["UP", "DOWN", "LEFT", "RIGHT"]);
+
+            if (config.mode === 'Dontlearn') {
+                agent.dontlearn();
+            }
+
+            updateDisplay();
             renderGame();
-            
-            // Lancer l'auto-play après 1 seconde
-            setTimeout(() => {
-                console.log("🚀 Lancement automatique du mode IA");
-                toggleAutoPlay();
-            }, 1000);
         }
 
         function renderGame() {
             const container = document.getElementById('game-container');
-            if (!container) {
-                console.error("❌ Element 'game-container' non trouvé!");
-                return;
-            }
-            
             container.innerHTML = '';
+            
+            game.render();
             
             const grid = document.createElement('div');
             grid.className = 'grid';
@@ -679,84 +1117,165 @@
             }
             
             container.appendChild(grid);
-            updateStatistics();
-        }
 
-        function updateStatistics() {
-            if (!game) return;
-            
-            document.getElementById('score').textContent = game.score;
-            document.getElementById('max-length').textContent = game.maxLength;
-            document.getElementById('steps').textContent = game.steps;
-            document.getElementById('status').textContent = 
-                game.gameOver ? '🔴 Game Over' : (manualMode ? '👆 Manuel' : '🟢 IA Active');
-            document.getElementById('speed-display').textContent = gameSpeed;
-            
-            const stats = game.agent.getStats();
-            document.getElementById('exploration-rate').textContent = 
-                (stats.explorationRate * 100).toFixed(1) + '%';
-            document.getElementById('states-learned').textContent = stats.statesLearned;
-            document.getElementById('optimal-actions').textContent = stats.optimalActions + '%';
-        }
-
-        function resetGame() {
-            stopAutoPlay();
-            manualMode = false;
-            game = new SnakeGame();
-            renderGame();
-            
-            // Relancer l'auto-play après reset
-            setTimeout(() => toggleAutoPlay(), 500);
-        }
-
-        function toggleAutoPlay() {
-            if (!game) return;
-            
-            if (autoPlayInterval) {
-                stopAutoPlay();
-                document.querySelector('button.primary').textContent = '🎯 Auto-play IA';
-            } else {
-                manualMode = false;
-                document.querySelector('button.primary').textContent = '⏸️ Pause IA';
-                autoPlayInterval = setInterval(() => {
-                    if (!game.gameOver) {
-                        game.step();
-                        renderGame();
-                    } else {
-                        stopAutoPlay();
-                        // Redémarrer automatiquement après game over
-                        setTimeout(() => {
-                            resetGame();
-                            toggleAutoPlay();
-                        }, 2000);
-                    }
-                }, gameSpeed);
+            // Afficher le spectre si activé
+            if (showSpectrum) {
+                drawPositionHistory();
             }
-            updateStatistics();
         }
 
-        function toggleManualMode() {
-            if (!game) return;
+        function drawPositionHistory() {
+            const positionHistory = agent.get_position_history();
+            const container = document.getElementById('game-container');
             
-            stopAutoPlay();
-            manualMode = !manualMode;
-            updateStatistics();
+            positionHistory.forEach(([x, y]) => {
+                const dot = document.createElement('div');
+                dot.style.position = 'absolute';
+                dot.style.left = `${y * 25 + 12}px`;
+                dot.style.top = `${x * 25 + 12}px`;
+                dot.style.width = '6px';
+                dot.style.height = '6px';
+                dot.style.backgroundColor = 'rgba(128, 128, 128, 0.6)';
+                dot.style.borderRadius = '50%';
+                dot.style.transform = 'translate(-50%, -50%)';
+                container.appendChild(dot);
+            });
         }
 
-        function stopGame() {
-            stopAutoPlay();
-            manualMode = false;
-            updateStatistics();
+        function updateDisplay() {
+            // Mise à jour des statistiques
+            document.getElementById('score').textContent = game.score;
+            document.getElementById('steps').textContent = game.steps;
+            document.getElementById('max-length').textContent = game.max_length_reached;
+            document.getElementById('session').textContent = `${currentSession}/${totalSessions}`;
+            document.getElementById('status').textContent = getStatusText();
+            document.getElementById('mode-display').textContent = config.mode;
+            document.getElementById('speed-display').textContent = gameSpeed;
+            document.getElementById('exploration-rate').textContent = agent.exploration_rate.toFixed(3);
+
+            // Mise à jour des Q-values
+            const state = game.get_state();
+            const qValues = agent.get_q_values(state.toString());
+            let qValuesText = '';
+            const stateMapping = {
+                "UP": state[0],
+                "DOWN": state[1],
+                "LEFT": state[2],
+                "RIGHT": state[3]
+            };
+            
+            Object.keys(stateMapping).forEach(action => {
+                qValuesText += `${action} => ${stateMapping[action]} : ${qValues[action].toFixed(2)}<br>`;
+            });
+            document.getElementById('q-values-display').innerHTML = qValuesText;
+
+            // Mise à jour des objets découverts
+            updateObjectsDisplay();
+
+            // Mise à jour de l'historique
+            updateHistoryDisplay();
+
+            // Mise à jour de la taille du plateau détectée
+            document.getElementById('board-size-display').textContent = 
+                `${agent.board_size[0]}x${agent.board_size[1]}`;
         }
 
-        function stopAutoPlay() {
+        function updateObjectsDisplay() {
+            const objectsContainer = document.getElementById('objects-display');
+            const discoveredObjects = agent.discovered_objects;
+            
+            if (Object.keys(discoveredObjects).length === 0) {
+                objectsContainer.innerHTML = 'Aucun objet découvert';
+                return;
+            }
+
+            let objectsHTML = '';
+            Object.entries(discoveredObjects).forEach(([obj, reward]) => {
+                const isWall = obj === agent.wall_obj;
+                objectsHTML += `
+                    <div class="object-item ${isWall ? 'object-wall' : ''}">
+                        <span>${obj}</span>
+                        <span>${reward}</span>
+                        ${isWall ? '<span>-Wall</span>' : ''}
+                    </div>
+                `;
+            });
+            objectsContainer.innerHTML = objectsHTML;
+        }
+
+        function updateHistoryDisplay() {
+            const historyContainer = document.getElementById('history-display');
+            
+            if (lengthHistory.length === 0) {
+                historyContainer.innerHTML = 'Aucune session terminée';
+                return;
+            }
+
+            let historyHTML = '';
+            lengthHistory.forEach((length, index) => {
+                historyHTML += `Session ${index + 1}: Longueur max = ${length}<br>`;
+            });
+            historyContainer.innerHTML = historyHTML;
+        }
+
+        function getStatusText() {
+            if (!autoPlayInterval) return 'Arrêté';
+            if (manualMode) return 'Mode Manuel';
+            return 'En cours';
+        }
+
+        // =============================================================================
+        // FONCTIONS DE CONTRÔLE
+        // =============================================================================
+
+        function startTraining() {
+            if (autoPlayInterval) {
+                clearInterval(autoPlayInterval);
+            }
+            
+            autoPlayInterval = setInterval(runGameStep, gameSpeed);
+            document.getElementById('status').textContent = 'Entraînement en cours';
+        }
+
+        function pauseTraining() {
             if (autoPlayInterval) {
                 clearInterval(autoPlayInterval);
                 autoPlayInterval = null;
-                if (document.querySelector('button.primary')) {
-                    document.querySelector('button.primary').textContent = '🎯 Auto-play IA';
-                }
             }
+            document.getElementById('status').textContent = 'En pause';
+        }
+
+        function stopGame() {
+            pauseTraining();
+            currentSession = 1;
+            lengthHistory = [];
+            initializeGame();
+            document.getElementById('status').textContent = 'Arrêté';
+        }
+
+        function stepTraining() {
+            pauseTraining();
+            runGameStep();
+        }
+
+        function resetGame() {
+            stopGame();
+            initializeGame();
+        }
+
+        function toggleManualMode() {
+            manualMode = !manualMode;
+            if (manualMode) {
+                pauseTraining();
+                document.getElementById('status').textContent = 'Mode Manuel';
+            } else {
+                document.getElementById('status').textContent = 'Arrêté';
+            }
+        }
+
+        function toggleSpectrum() {
+            showSpectrum = !showSpectrum;
+            renderGame();
         }
 
         function changeSpeed(direction) {
@@ -767,45 +1286,182 @@
             }
             
             if (autoPlayInterval) {
-                stopAutoPlay();
-                toggleAutoPlay();
+                pauseTraining();
+                startTraining();
             }
-            updateStatistics();
+            
+            document.getElementById('speed-display').textContent = gameSpeed;
         }
 
-        // Keyboard controls for manual mode
-        document.addEventListener('keydown', (e) => {
-            if (!game || !manualMode || game.gameOver) return;
+        function setMode(mode) {
+            config.mode = mode;
+            pauseTraining();
             
-            let action = null;
-            switch(e.key) {
-                case 'ArrowUp': action = 'UP'; break;
-                case 'ArrowDown': action = 'DOWN'; break;
-                case 'ArrowLeft': action = 'LEFT'; break;
-                case 'ArrowRight': action = 'RIGHT'; break;
+            if (mode === 'Dontlearn') {
+                agent.dontlearn();
+            } else {
+                agent.dontlearn_enabled = true;
+                agent.exploration_rate = 0.2;
             }
             
-            if (action) {
-                game.step(action);
+            document.getElementById('mode-display').textContent = mode;
+            document.getElementById('status').textContent = `Mode ${mode} - Prêt`;
+        }
+
+        function runGameStep() {
+            if (!game || !agent) return;
+
+            const state = game.get_state();
+            const action = agent.choose_action(state, config.mode !== 'Dontlearn');
+            
+            // Mettre à jour la direction du serpent
+            const directionMapping = {
+                "UP": [-1, 0],
+                "DOWN": [1, 0],
+                "LEFT": [0, -1],
+                "RIGHT": [0, 1]
+            };
+            game.snake_dir = directionMapping[action];
+
+            const result = game.update();
+            
+            // Calculer la récompense
+            let reward = -1;
+            if (result === "Ate Green Apple") reward = 20;
+            else if (result === "Ate Red Apple") reward = -10;
+            else if (result === "Hit Snake Body") reward = -50;
+            else if (result === "Game Over") reward = -100;
+
+            // Gérer les nouveaux objets
+            agent.handle_new_objects(state, action, reward);
+
+            // Apprentissage
+            if (result !== "Game Over" && result !== "Hit Snake Body") {
+                const next_state = game.get_state();
+                if (config.mode !== 'Dontlearn') {
+                    agent.learn(state, action, reward, next_state);
+                    agent.decay_exploration();
+                }
+                game.steps += 1;
+            }
+
+            // Mettre à jour l'affichage
+            document.getElementById('action-chosen').textContent = action;
+            updateDisplay();
+            renderGame();
+
+            // Gérer la fin de partie
+            if (result === "Game Over" || result === "Hit Snake Body") {
+                lengthHistory.push(game.max_length_reached);
+                pauseTraining();
+                
+                // Passer à la session suivante
+                currentSession++;
+                if (currentSession <= totalSessions) {
+                    setTimeout(() => {
+                        agent.reset_history();
+                        game.reset();
+                        startTraining();
+                    }, 1000);
+                } else {
+                    document.getElementById('status').textContent = 'Toutes les sessions terminées';
+                }
+            }
+        }
+
+        // =============================================================================
+        // GESTION DES PARAMÈTRES
+        // =============================================================================
+
+        function updateSessionsValue() {
+            const value = document.getElementById('sessions').value;
+            document.getElementById('sessions-value').textContent = value;
+            config.sessions = parseInt(value);
+            totalSessions = config.sessions;
+        }
+
+        function updateSizeValue() {
+            const value = document.getElementById('board-size').value;
+            document.getElementById('size-value').textContent = value;
+            config.boardSize = parseInt(value);
+        }
+
+        function updateGreenValue() {
+            const value = document.getElementById('green-apples').value;
+            document.getElementById('green-value').textContent = value;
+            config.greenApples = parseInt(value);
+        }
+
+        function updateRedValue() {
+            const value = document.getElementById('red-apples').value;
+            document.getElementById('red-value').textContent = value;
+            config.redApples = parseInt(value);
+        }
+
+        function loadModel() {
+            const path = document.getElementById('model-path').value;
+            if (path) {
+                // Simulation du chargement d'un modèle
+                alert(`Chargement du modèle depuis: ${path}\n(Cette fonctionnalité serait implémentée avec une vraie API)`);
+                setMode('Game');
+            }
+        }
+
+        function saveModel() {
+            const path = document.getElementById('model-path').value;
+            if (path) {
+                // Simulation de la sauvegarde d'un modèle
+                alert(`Sauvegarde du modèle dans: ${path}\n(Cette fonctionnalité serait implémentée avec une vraie API)`);
+            }
+        }
+
+        // =============================================================================
+        // GESTION DU CLAVIER POUR LE MODE MANUEL
+        // =============================================================================
+
+        document.addEventListener('keydown', (e) => {
+            if (!manualMode || !game) return;
+
+            const keyToDirection = {
+                "ArrowUp": [-1, 0],
+                "ArrowDown": [1, 0],
+                "ArrowLeft": [0, -1],
+                "ArrowRight": [0, 1]
+            };
+
+            if (keyToDirection[e.key]) {
+                game.snake_dir = keyToDirection[e.key];
+                const result = game.update();
+                
+                if (result === "Moved" || result === "Ate Green Apple" || result === "Ate Red Apple") {
+                    game.steps += 1;
+                }
+                
+                updateDisplay();
                 renderGame();
+
+                if (result === "Game Over" || result === "Hit Snake Body") {
+                    manualMode = false;
+                    document.getElementById('status').textContent = 'Game Over - Mode Manuel désactivé';
+                }
             }
         });
 
-        // 🚨 LANCEMENT AUTOMATIQUE AU CHARGEMENT DE LA PAGE
+        // =============================================================================
+        // INITIALISATION
+        // =============================================================================
+
         document.addEventListener('DOMContentLoaded', function() {
-            console.log("📄 Page chargée, initialisation du jeu...");
             initializeGame();
             
-            // Effets visuels sur les boutons
-            const buttons = document.querySelectorAll('button');
-            buttons.forEach(button => {
-                button.addEventListener('click', function() {
-                    this.style.transform = 'scale(0.95)';
-                    setTimeout(() => {
-                        this.style.transform = '';
-                    }, 150);
-                });
-            });
+            // Initialiser les valeurs d'affichage
+            updateSessionsValue();
+            updateSizeValue();
+            updateGreenValue();
+            updateRedValue();
+            
+            console.log("🎮 Snake AI Q-Learning initialisé avec succès!");
+            console.log("📋 Reproduit fidèlement l'application Python originale");
         });
     </script>
 </body>
