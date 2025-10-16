@@ -431,26 +431,25 @@
                         
                         <!-- Section des paramètres -->
                         <div class="parameters-section">
-                            <div class="parameters-grid">
-                                <div class="settings-group">
-                                    <label>Sessions: <span id="sessions-value">10</span></label>
-                                    <input type="range" id="sessions" min="1" max="100" value="10" onchange="updateSessionsValue()">
-                                </div>
-                                
-                                <div class="settings-group">
-                                    <label>Taille du plateau: <span id="size-value">10</span></label>
-                                    <input type="range" id="board-size" min="8" max="20" value="10" onchange="updateSizeValue()">
-                                </div>
-                                
-                                <div class="settings-group">
-                                    <label>Pommes vertes: <span id="green-value">2</span></label>
-                                    <input type="range" id="green-apples" min="1" max="5" value="2" onchange="updateGreenValue()">
-                                </div>
-                                
-                                <div class="settings-group">
-                                    <label>Pommes rouges: <span id="red-value">1</span></label>
-                                    <input type="range" id="red-apples" min="0" max="3" value="1" onchange="updateRedValue()">
-                                </div>
+
+                            <div class="settings-group">
+                                <label>Sessions: <span id="sessions-value">10</span></label>
+                                <input type="range" id="sessions" min="1" max="100" value="10" onchange="updateSessionsValue()">
+                            </div>
+                            
+                            <div class="settings-group">
+                                <label>Taille du plateau: <span id="size-value">10</span></label>
+                                <input type="range" id="board-size" min="8" max="20" value="10" onchange="updateSizeValue()">
+                            </div>
+                            
+                            <div class="settings-group">
+                                <label>Pommes vertes: <span id="green-value">2</span></label>
+                                <input type="range" id="green-apples" min="1" max="5" value="2" onchange="updateGreenValue()">
+                            </div>
+                            
+                            <div class="settings-group">
+                                <label>Pommes rouges: <span id="red-value">1</span></label>
+                                <input type="range" id="red-apples" min="0" max="3" value="1" onchange="updateRedValue()">
                             </div>
                         </div>
                         
@@ -1341,8 +1340,8 @@
             }
 
             let historyHTML = '';
-            lengthHistory.forEach((length, index) => {
-                historyHTML += `Session ${index + 1}: Longueur max = ${length}<br>`;
+            lengthHistory.forEach((score, index) => {
+                historyHTML += `Session ${index + 1}: Longueur max = ${score}<br>`;
             });
             historyContainer.innerHTML = historyHTML;
         }
