@@ -268,7 +268,9 @@
                 
                 <div class="info-card">
                     <h2>🎯 Plateau de Jeu</h2>
-                    <div id="game-container"></div>
+                    <div id="game-container">
+                        <p>Chargement du jeu...</p>
+                    </div>
                 </div>
             </div>
             
@@ -594,14 +596,30 @@
             }
         }
 
-        // Game instance and UI state
+        // 🎯 CODE CORRIGÉ - LANCEMENT AUTOMATIQUE
         let game = new SnakeGame();
         let autoPlayInterval = null;
         let manualMode = false;
         let gameSpeed = 200;
 
+        function initializeGame() {
+            console.log("🎮 Initialisation du jeu Snake AI...");
+            renderGame();
+            
+            // Lancer l'auto-play après 1 seconde
+            setTimeout(() => {
+                console.log("🚀 Lancement automatique du mode IA");
+                toggleAutoPlay();
+            }, 1000);
+        }
+
         function renderGame() {
             const container = document.getElementById('game-container');
+            if (!container) {
+                console.error("❌ Element 'game-container' non trouvé!");
+                return;
+            }
+            
             container.innerHTML = '';
             
             const grid = document.createElement('div');
@@ -644,8 +662,10 @@
             }
             
             container.appendChild(grid);
-            
-            // Update statistics
+            updateStatistics();
+        }
+
+        function updateStatistics() {
             document.getElementById('score').textContent = game.score;
             document.getElementById('max-length').textContent = game.maxLength;
             document.getElementById('steps').textContent = game.steps;
@@ -653,7 +673,6 @@
                 game.gameOver ? '🔴 Game Over' : (manualMode ? '👆 Manuel' : '🟢 IA Active');
             document.getElementById('speed-display').textContent = gameSpeed;
             
-            // Update learning stats
             const stats = game.agent.getStats();
             document.getElementById('exploration-rate').textContent = 
                 (stats.explorationRate * 100).toFixed(1) + '%';
@@ -666,41 +685,52 @@
             manualMode = false;
             game = new SnakeGame();
             renderGame();
+            
+            // Relancer l'auto-play après reset
+            setTimeout(() => toggleAutoPlay(), 500);
         }
 
         function toggleAutoPlay() {
             if (autoPlayInterval) {
                 stopAutoPlay();
+                document.querySelector('button.primary').textContent = '🎯 Auto-play IA';
             } else {
                 manualMode = false;
+                document.querySelector('button.primary').textContent = '⏸️ Pause IA';
                 autoPlayInterval = setInterval(() => {
                     if (!game.gameOver) {
                         game.step();
                         renderGame();
                     } else {
                         stopAutoPlay();
+                        // Redémarrer automatiquement après game over
+                        setTimeout(() => {
+                            resetGame();
+                            toggleAutoPlay();
+                        }, 2000);
                     }
                 }, gameSpeed);
             }
-            renderGame();
+            updateStatistics();
         }
 
         function toggleManualMode() {
             stopAutoPlay();
             manualMode = !manualMode;
-            renderGame();
+            updateStatistics();
         }
 
         function stopGame() {
             stopAutoPlay();
             manualMode = false;
-            renderGame();
+            updateStatistics();
         }
 
         function stopAutoPlay() {
             if (autoPlayInterval) {
                 clearInterval(autoPlayInterval);
                 autoPlayInterval = null;
+                document.querySelector('button.primary').textContent = '🎯 Auto-play IA';
             }
         }
 
@@ -715,7 +745,7 @@
                 stopAutoPlay();
                 toggleAutoPlay();
             }
-            renderGame();
+            updateStatistics();
         }
 
         // Keyboard controls for manual mode
@@ -736,11 +766,12 @@
             }
         });
 
-        // Initial render
-        renderGame();
-
-        // Add some visual effects
+        // 🚨 LANCEMENT AUTOMATIQUE AU CHARGEMENT DE LA PAGE
         document.addEventListener('DOMContentLoaded', function() {
+            console.log("📄 Page chargée, initialisation du jeu...");
+            initializeGame();
+            
+            // Effets visuels sur les boutons
             const buttons = document.querySelectorAll('button');
             buttons.forEach(button => {
                 button.addEventListener('click', function() {
