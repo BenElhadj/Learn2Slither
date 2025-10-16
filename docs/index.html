@@ -205,6 +205,8 @@
             cursor: pointer;
             transition: all 0.3s ease;
             font-weight: 600;
+            position: relative;
+            overflow: hidden;
         }
         
         button:hover {
@@ -217,11 +219,43 @@
         button.danger { background: var(--danger-color); }
         button.warning { background: var(--warning-color); }
         
+        /* Styles pour les boutons activés */
+        button.active {
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3);
+            transform: translateY(-1px);
+        }
+        
+        button.active::after {
+            content: "✓";
+            position: absolute;
+            top: 2px;
+            right: 5px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
         .mode-buttons {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 8px;
             margin: 10px 0;
+        }
+        
+        .mode-section {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .parameters-section {
+            margin-top: 10px;
+        }
+        
+        .parameters-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 10px;
         }
         
         .info-section {
@@ -360,6 +394,10 @@
             .settings-content {
                 grid-template-columns: 1fr;
             }
+            
+            .parameters-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -379,62 +417,70 @@
                         <span id="settings-arrow">▼</span>
                     </div>
                     <div class="settings-content" id="settings-content">
-                        <div class="settings-group">
-                            <label>Mode de jeu:</label>
-                            <div class="mode-buttons">
-                                <button class="primary" onclick="setMode('Learning')">🎓 Learning</button>
-                                <button class="success" onclick="setMode('Game')">🎮 Game</button>
-                                <button class="warning" onclick="setMode('Dontlearn')">🎲 Dontlearn</button>
-                            </div>
-                        </div>
-                        <div>
+                        <!-- Section des modes de jeu -->
+                        <div class="mode-section">
                             <div class="settings-group">
-                                <label>Sessions: <span id="sessions-value">10</span></label>
-                                <input type="range" id="sessions" min="1" max="100" value="10" onchange="updateSessionsValue()">
-                            </div>
-                            
-                            <div class="settings-group">
-                                <label>Taille du plateau: <span id="size-value">10</span></label>
-                                <input type="range" id="board-size" min="8" max="20" value="10" onchange="updateSizeValue()">
-                            </div>
-                        </div>
-                        <div>
-                            <div class="settings-group">
-                                <label>Pommes vertes: <span id="green-value">2</span></label>
-                                <input type="range" id="green-apples" min="1" max="5" value="2" onchange="updateGreenValue()">
-                            </div>
-                            
-                            <div class="settings-group">
-                                <label>Pommes rouges: <span id="red-value">1</span></label>
-                                <input type="range" id="red-apples" min="0" max="3" value="1" onchange="updateRedValue()">
+                                <label>Mode de jeu:</label>
+                                <div class="mode-buttons">
+                                    <button class="primary" id="learning-mode" onclick="setMode('Learning')">🎓 Learning</button>
+                                    <button class="success" id="game-mode" onclick="setMode('Game')">🎮 Game</button>
+                                    <button class="warning" id="dontlearn-mode" onclick="setMode('Dontlearn')">🎲 Dontlearn</button>
+                                </div>
                             </div>
                         </div>
                         
+                        <!-- Section des paramètres -->
+                        <div class="parameters-section">
+                            <div class="parameters-grid">
+                                <div class="settings-group">
+                                    <label>Sessions: <span id="sessions-value">10</span></label>
+                                    <input type="range" id="sessions" min="1" max="100" value="10" onchange="updateSessionsValue()">
+                                </div>
+                                
+                                <div class="settings-group">
+                                    <label>Taille du plateau: <span id="size-value">10</span></label>
+                                    <input type="range" id="board-size" min="8" max="20" value="10" onchange="updateSizeValue()">
+                                </div>
+                                
+                                <div class="settings-group">
+                                    <label>Pommes vertes: <span id="green-value">2</span></label>
+                                    <input type="range" id="green-apples" min="1" max="5" value="2" onchange="updateGreenValue()">
+                                </div>
+                                
+                                <div class="settings-group">
+                                    <label>Pommes rouges: <span id="red-value">1</span></label>
+                                    <input type="range" id="red-apples" min="0" max="3" value="1" onchange="updateRedValue()">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Section fichiers -->
                         <div class="file-input-group">
                             <input type="text" id="model-path" placeholder="Chemin du modèle...">
                             <button onclick="loadModel()">📂 Charger</button>
                             <button onclick="saveModel()">💾 Sauvegarder</button>
                         </div>
-
+                    </div>
+                    
+                    <!-- Barre de status -->
+                    <div class="status-bar">
+                        <div class="status-item">
+                            <span>Status:</span>
+                            <span class="status-value" id="status">Prêt</span>
                         </div>
-                                            <div class="status-bar">
-                            <div class="status-item">
-                                <span>Status:</span>
-                                <span class="status-value" id="status">Prêt</span>
-                            </div>
-                            <div class="status-item">
-                                <span>Mode:</span>
-                                <span class="status-value" id="mode-display">Learning</span>
-                            </div>
-                            <div class="status-item">
-                                <span>Vitesse:</span>
-                                <span class="status-value" id="speed-display">200</span>ms
-                            </div>
-                            <div class="status-item">
-                                <span>Session:</span>
-                                <span class="status-value" id="session">1/10</span>
-                            </div>
+                        <div class="status-item">
+                            <span>Mode:</span>
+                            <span class="status-value" id="mode-display">Learning</span>
                         </div>
+                        <div class="status-item">
+                            <span>Vitesse:</span>
+                            <span class="status-value" id="speed-display">200</span>ms
+                        </div>
+                        <div class="status-item">
+                            <span>Session:</span>
+                            <span class="status-value" id="session">1/10</span>
+                        </div>
+                    </div>
                 </div>
                 
                 <!-- Plateau de jeu -->
@@ -450,16 +496,15 @@
                     <h2>🎮 Contrôles du Jeu</h2>
                     <div class="controls">
                         <button class="success" onclick="resetGame()">🔄 Nouvelle Partie</button>
-                        <button class="primary" onclick="startTraining()">🚀 Start Training</button>
-                        <button class="warning" onclick="pauseTraining()">⏸️ Pause</button>
-                        <button class="danger" onclick="stopGame()">⏹️ Stop</button>
-                        <button onclick="stepTraining()">📝 Step</button>
-                        <button onclick="toggleManualMode()">👆 Manual Mode</button>
-                        <button onclick="toggleSpectrum()">👻 Spectre</button>
+                        <button class="primary" id="start-button" onclick="startTraining()">🚀 Start Training</button>
+                        <button class="warning" id="pause-button" onclick="pauseTraining()">⏸️ Pause</button>
+                        <button class="danger" id="stop-button" onclick="stopGame()">⏹️ Stop</button>
+                        <button id="step-button" onclick="stepTraining()">📝 Step</button>
+                        <button id="manual-mode-button" onclick="toggleManualMode()">👆 Manual Mode</button>
+                        <button id="spectrum-button" onclick="toggleSpectrum()">👻 Spectre</button>
                         <button onclick="changeSpeed('slower')">🐢 Ralentir</button>
                         <button onclick="changeSpeed('faster')">⚡ Accélérer</button>
                     </div>
-                    
                 </div>
             </div>
             
@@ -574,6 +619,7 @@
         let lengthHistory = [];
         let showSpectrum = false;
         let settingsVisible = true;
+        let isTraining = false;
 
         // Configuration actuelle
         let config = {
@@ -1155,6 +1201,7 @@
                 agent.dontlearn();
             }
 
+            updateButtonStates();
             updateDisplay();
             renderGame();
         }
@@ -1321,6 +1368,25 @@
         }
 
         // =============================================================================
+        // GESTION DES ÉTATS DES BOUTONS
+        // =============================================================================
+
+        function updateButtonStates() {
+            // Modes de jeu
+            document.getElementById('learning-mode').classList.toggle('active', config.mode === 'Learning');
+            document.getElementById('game-mode').classList.toggle('active', config.mode === 'Game');
+            document.getElementById('dontlearn-mode').classList.toggle('active', config.mode === 'Dontlearn');
+            
+            // Boutons de contrôle
+            document.getElementById('start-button').classList.toggle('active', isTraining);
+            document.getElementById('pause-button').classList.toggle('active', autoPlayInterval !== null && !isTraining);
+            document.getElementById('stop-button').classList.toggle('active', !isTraining && currentSession > 1);
+            document.getElementById('manual-mode-button').classList.toggle('active', manualMode);
+            document.getElementById('spectrum-button').classList.toggle('active', showSpectrum);
+            document.getElementById('step-button').classList.toggle('active', !autoPlayInterval && !manualMode);
+        }
+
+        // =============================================================================
         // FONCTIONS DE CONTRÔLE
         // =============================================================================
 
@@ -1329,16 +1395,20 @@
                 clearInterval(autoPlayInterval);
             }
             
+            isTraining = true;
             autoPlayInterval = setInterval(runGameStep, gameSpeed);
             document.getElementById('status').textContent = 'Entraînement en cours';
+            updateButtonStates();
         }
 
         function pauseTraining() {
             if (autoPlayInterval) {
                 clearInterval(autoPlayInterval);
                 autoPlayInterval = null;
+                isTraining = false;
             }
             document.getElementById('status').textContent = 'En pause';
+            updateButtonStates();
         }
 
         function stopGame() {
@@ -1347,11 +1417,13 @@
             lengthHistory = [];
             initializeGame();
             document.getElementById('status').textContent = 'Arrêté';
+            updateButtonStates();
         }
 
         function stepTraining() {
             pauseTraining();
             runGameStep();
+            updateButtonStates();
         }
 
         function resetGame() {
@@ -1367,11 +1439,13 @@
             } else {
                 document.getElementById('status').textContent = 'Arrêté';
             }
+            updateButtonStates();
         }
 
         function toggleSpectrum() {
             showSpectrum = !showSpectrum;
             renderGame();
+            updateButtonStates();
         }
 
         function changeSpeed(direction) {
@@ -1402,6 +1476,7 @@
             
             document.getElementById('mode-display').textContent = mode;
             document.getElementById('status').textContent = `Mode ${mode} - Prêt`;
+            updateButtonStates();
         }
 
         function runGameStep() {
@@ -1461,7 +1536,9 @@
                     }, 1000);
                 } else {
                     document.getElementById('status').textContent = 'Toutes les sessions terminées';
+                    isTraining = false;
                 }
+                updateButtonStates();
             }
         }
 
@@ -1539,6 +1616,7 @@
                 if (result === "Game Over" || result === "Hit Snake Body") {
                     manualMode = false;
                     document.getElementById('status').textContent = 'Game Over - Mode Manuel désactivé';
+                    updateButtonStates();
                 }
             }
         });
